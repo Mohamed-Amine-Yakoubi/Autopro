@@ -1,0 +1,20 @@
+#overlay-left {
+  background-image: url("../public/images/SignUp_img.png"); /* Replace 'image.jpg' with the path to your image */
+
+  background-size: cover; /* This property ensures that the background image covers the entire element */
+  background-position: center; /* This property centers the background image */
+  background-repeat: no-repeat;
+}
+#overlay-right {
+  background-image: url("../public/images/SignIn_img.jpg"); /* Replace 'image.jpg' with the path to your image */
+
+	background-size: cover; /* This property ensures that the background image covers the entire element */
+	background-position: center; /* This property centers the background image */
+	background-repeat: no-repeat;
+  }
+  #overlay {
+    background-image: url("../public/images/login1_img.png"); /* Replace 'image.jpg' with the path to your image */
+    background-size: cover; /* This property ensures that the background image covers the entire element */
+    background-position: center; /* This property centers the background image */
+    background-repeat: no-repeat;
+    }

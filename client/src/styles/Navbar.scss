@@ -1,0 +1,24 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+.NavbarTitle {
+  font-family: "29LT Bukra", sans-serif;
+  color: #3c3c3c;
+  font-size: 12px;
+  &:hover {
+    background-color: #4baf4f;
+    color: white;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 768px) {
+    font-family: "29LT Bukra", sans-serif;
+    color: #3c3c3c;
+    font-size: 13px;
+    &:hover {
+      background-color: #4baf4f;
+      color: white;
+      border-radius: 8px;
+    }
+  }
+}
