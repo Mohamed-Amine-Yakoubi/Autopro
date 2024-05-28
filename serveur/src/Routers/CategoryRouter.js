@@ -3,6 +3,7 @@ const route = express.Router();
 const CategoryControllers = require("../Controllers/CategoryController");
  
 route.post("/addCategory",  CategoryControllers.CreateCategories);
+route.post("/addSubCategory",  CategoryControllers.CreatesubCategory);
 route.get("/getAllCategories", CategoryControllers.GetAllCategories);
 route.get("/getcategory/:id_cat", CategoryControllers.GetCategory);
 route.put("/updateCategory/:id_cat",  CategoryControllers.UpdateCategory);

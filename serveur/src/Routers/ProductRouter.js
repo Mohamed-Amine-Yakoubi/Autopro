@@ -28,12 +28,12 @@ route.put(
 );
 route.delete(
   "/DeleteProduct/:id_prod",
-  AuthMiddlware.Protect,
+  // AuthMiddlware.Protect,
   ProductControllers.Delete_spec_Product
 );
 route.delete(
   "/DeleteAllProduct",
-  AuthMiddlware.Protect,
+  // AuthMiddlware.Protect,
   ProductControllers.Delete_All_Product
 );
 route.post("/SearchProduct", ProductControllers.Search_product);

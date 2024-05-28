@@ -3,7 +3,7 @@ import { Modal, ModalContent, ModalBody, Button, useDisclosure } from "@nextui-o
 import "../styles/Modal.scss";
 import Login from './LoginPage/Login';
  
-const ModalComponent = ({ isOpen, onClose, children, icon }) => {
+const ModalLogin = ({ isOpen, onClose, children, icon }) => {
     const { isOpen: isModalOpen, onOpen: openModal, onClose: closeModal } = useDisclosure();
   
     return (
@@ -22,4 +22,4 @@ const ModalComponent = ({ isOpen, onClose, children, icon }) => {
     );
 };
 
-export default ModalComponent;
+export default ModalLogin;

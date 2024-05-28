@@ -10,7 +10,9 @@ module.exports = {
   theme: {
     extend: {
       screens: {
-        '2xl': '1600px', // Add a custom breakpoint for resolutions larger than 1600 pixels
+        '2xl': '1600px', 
+        'md': '800px',// Add a custom breakpoint for resolutions larger than 1600 pixels
+        'sm': '500px',// Add a custom breakpoint for resolutions larger than 1600 pixels
       },
       animation: {
         "loop-scroll": "loop-scroll 50s linear infinite",
@@ -41,6 +43,8 @@ module.exports = {
         inputColor: "#EBEBEB",
         buttonColor: "#333333", 
         grayColor: "#EBEBEB" ,
+        grayLight:"#F5F5F7", 
+        blueDark:"#344155",
         sousTitle: "#6F6F6F"
       },
     },

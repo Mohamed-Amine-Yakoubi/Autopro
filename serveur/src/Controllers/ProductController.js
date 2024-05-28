@@ -109,10 +109,7 @@ exports.Get_spec_ProductByIdUser = asyncHandler(async (req, res) => {
       where: { createdBy: createdBy },
     });
     if (productbyiduser) {
-      res.status(201).json({
-        message: "your product have been successfully found",
-        data: productbyiduser,
-      });
+      res.status(201).json(productbyiduser);
     } else {
       res.status(400).json({ message: "your product have not been found" });
     }
@@ -126,10 +123,7 @@ exports.Get_spec_Product = asyncHandler(async (req, res) => {
     const { id_prod } = req.params;
     const get_spec_product = await ProductModel.findByPk(id_prod);
     if (get_spec_product) {
-      res.status(201).json({
-        message: "your product have been successfully found",
-        data: get_spec_product,
-      });
+      res.status(201).json(get_spec_product);
     } else {
       res.status(404).json({ message: "your product have not been found" });
     }
@@ -209,7 +203,6 @@ exports.Delete_All_Product = asyncHandler(async (req, res) => {
     if (delete_all_product) {
       res.status(201).json({
         message: "all products have been successfully deleted",
-        data: delete_all_product,
       });
     } else {
       res.status(400).json({ message: " products have not been found " });

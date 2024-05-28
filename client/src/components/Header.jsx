@@ -10,7 +10,7 @@ const Header = ({Title}) => {
        
          <Image
           src={golf_header}
-          className=" object-cover   h-[280px]   w-full    "
+          className=" object-cover   h-[250px]   w-full   "
           alt="header image"
         />
         <div className="absolute inset-0 bg-gray-900 opacity-50 rounded-md"></div>

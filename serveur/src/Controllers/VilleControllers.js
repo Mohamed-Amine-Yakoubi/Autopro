@@ -11,10 +11,7 @@ exports.Get_AllVille = asyncHandler(async (req, res) => {
   try {
     const Get_AllVille = await Ville.findAll({});
     if (Get_AllVille) {
-      res.status(201).json({
-        message: "ville have been successfully found",
-        data: Get_AllVille,
-      });
+      res.status(201).json(  Get_AllVille );
     } else {
       res.status(404).json({ message: "ville have not been found" });
     }

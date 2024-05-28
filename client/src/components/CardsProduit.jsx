@@ -9,7 +9,7 @@ const CardsProduit = ({ image, libelle, categorie, prix, stock }) => {
 
   return (
     <div
-      className="relative max-w-sm rounded overflow-hidden border border-zinc-200 mx-3 w-60 h-82 group"
+      className="relative max-w-sm rounded overflow-hidden border border-zinc-200 mx-3 w-56 h-70 group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -20,10 +20,10 @@ const CardsProduit = ({ image, libelle, categorie, prix, stock }) => {
 
       <div className=" flex justify-center">
         <Image
-          className="w-52 p-4"
+          className="  p-4"
           src={image}
-          width={50}
-          height={50}
+          width={240}
+          height={240}
           alt="piece"
         />
       </div>

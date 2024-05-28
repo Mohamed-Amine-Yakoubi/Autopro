@@ -16,6 +16,10 @@ const Magasin = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    Email_magasin: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     Adresse_magasin: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -32,11 +36,19 @@ const Magasin = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    Ouverture_magasin: {
+    Lien_facebook: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    Fermeture_magasin: {
+    Lien_instagram: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    Lien_linkedin: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    Lien_siteWeb: {
       type: DataTypes.STRING,
       allowNull: false,
     },

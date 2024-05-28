@@ -1,6 +1,7 @@
 const CategoryModel = require("../Models/CategoryModel");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
+const SubCategory = require("../Models/SubCategoryModel");
 require("dotenv").config();
 const privatekey = process.env.PRIVATE_KEY;
 /**************************** */
@@ -29,16 +30,35 @@ exports.CreateCategories = asyncHandler(async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+// sub category
+
+exports.CreatesubCategory = asyncHandler(async (req, res) => {
+  try {
+    const {Libelle_subcat ,id_cat} = req.body;
+    const subcategory = await SubCategory.create({
+      Libelle_subcat,id_cat
+    });
+    if (subcategory) {
+      res.status(201).json({
+        message: "Category has been added successfully",
+        data: subcategory,
+      });
+    } else {
+      res.status(404).json({
+        message: "The category has not been added",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 /****************get all categories*************** */
 exports.GetAllCategories = asyncHandler(async (req, res) => {
   try {
     const categories = await CategoryModel.findAll({});
     if (categories) {
-      res.status(201).json({
-        message: "Categories has been added successfully",
-        data: categories,
-      });
+      res.status(201).json(categories);
     } else {
       res.status(404).json({ message: "Your categories have not been found" });
     }

@@ -6,11 +6,10 @@ import Autopro_logo from "../public/images/Autopro_logo.png";
 import { FaBars, FaUser, FaRegHeart } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
 import "../styles/Navbar.scss";
-import ModalComponent from "./Modal";
+import ModalComponent from "./ModalLogin";
 import { useSession } from "next-auth/react";
  
-import DropDown from "./DropDown";
-import { button } from "@nextui-org/react";
+import DropDown from "./DropDown"; 
 
 const Navbar = () => {
   const { data: session, status } = useSession();

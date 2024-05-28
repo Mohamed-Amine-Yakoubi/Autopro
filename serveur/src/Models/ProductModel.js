@@ -30,7 +30,7 @@ const Product = sequelize.define(
       allowNull: false,
     },
     Image_prod: {
-      type: DataTypes.STRING, // or DataTypes.TEXT if storing image data directly
+      type: DataTypes.STRING(1000), // or DataTypes.TEXT if storing image data directly
       allowNull: false,
     },
     Stock_prod: {

@@ -13,17 +13,19 @@ import Carousel from "@/components/Carousel";
 import { getAllProducts } from "../lib/Product";
 import { useEffect, useState } from "react";
 import { getCategory } from "../lib/Category";
+import Link from "next/link";
+import { Loading } from "@/components/Loading";
+ 
 
 const Accueil = () => {
   const [product, setProduct] = useState([]);
-  const [category, setCategory] = useState("");
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     getAllProducts()
       .then((products) => {
         const promises = products.map((prod) => {
           return getCategory(prod.id_cat)
             .then((category) => {
-         
               return { ...prod, category };
             })
             .catch((error) => {
@@ -37,10 +39,11 @@ const Accueil = () => {
       .then((productsWithCategory) => {
         // Set the state with products containing category information
         setProduct(productsWithCategory);
-      })
-     
+        setLoading(false);
+
+      });
   }, []);
-  console.log(product);
+  if (loading) return <div><Loading/></div>;
   return (
     <div className="   ">
       <div className="relative      ">
@@ -74,7 +77,7 @@ const Accueil = () => {
         {" "}
         <Slider />
       </div>
-
+   
       {/* section 2 */}
       <div className="   mt-32  mb-32  ">
         <div className="   2xl:mx-48  lg:mx-28 md:text-center   lg:text-start mx-0 text-center  ">
@@ -105,13 +108,15 @@ const Accueil = () => {
             {product.map((product) => (
               <div key={product.id_prod}>
                 <div className="flex justify-center ">
-                  <CardsProduit
-                    image={product.Image_thumbnail}
-                    libelle={product.Libelle_prod}
-                    categorie={product.category.Libelle_cat}
-                    prix={product.prix_prod}
-                    stock={product.Stock_prod}
-                  />
+                  <Link href={`/Catalogue/${product.id_prod}`}>
+                    <CardsProduit
+                      image={product.Image_thumbnail}
+                      libelle={product.Libelle_prod}
+                      categorie={product.category.Libelle_cat}
+                      prix={product.prix_prod}
+                      stock={product.Stock_prod}
+                    />
+                  </Link>
                 </div>
               </div>
             ))}
