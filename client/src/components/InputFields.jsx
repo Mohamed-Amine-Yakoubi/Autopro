@@ -18,7 +18,7 @@ const InputFields = ({
     return (
       <div className=" ">
         <textarea
-          className="bg-grayColor rounded-lg outline-none px-5 pt-2   "
+          className="bg-grayLight rounded-lg outline-none px-5 pt-2   "
           style={inputStyle}
           type={type}
           name={name}
@@ -30,7 +30,7 @@ const InputFields = ({
     return (
       <div className=" ">
         <input
-          className={`bg-grayColor rounded-lg outline-none px-5    text-[14px]  `}
+          className={`bg-grayLight rounded-lg outline-none pl-10 text-[14px]  `}
           style={inputStyle}
           type={type}
           name={name}

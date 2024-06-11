@@ -7,8 +7,13 @@ const { DbConnection, sequelize } = require("./src/config/Database");
 const UserRouter = require("./src/Routers/UserRouter");
 const ProductRouter = require("./src/Routers/ProductRouter");
 const CategoryRouter = require("./src/Routers/CategoryRouter");
+const SubCategoryRouter = require("./src/Routers/SubCategoryRouter");
 const MagasinRouter = require("./src/Routers/MagasinRouter");
 const VilleRouter = require("./src/Routers/VilleRouter");
+const MarqueRouter = require("./src/Routers/MarqueRouter");
+const MotorisationRouter = require("./src/Routers/MotorisationRouter");
+const ModeleRouter = require("./src/Routers/ModeleCarRouter");
+const FavorisRouter = require("./src/Routers/FavorisRouter");
 const ApiError = require("./src/Utils/ApiError");
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -21,8 +26,13 @@ app.use(cors());
 /************************/
 
 app.use("/api/v1/user", UserRouter);
+app.use("/api/v1/favoris", FavorisRouter);
+app.use("/api/v1/Marque", MarqueRouter);
+app.use("/api/v1/Motorisation",MotorisationRouter);
+app.use("/api/v1/Modele", ModeleRouter);
 app.use("/api/v1/product", ProductRouter);
 app.use("/api/v1/category", CategoryRouter);
+app.use("/api/v1/subcategory", SubCategoryRouter);
 app.use("/api/v1/magasin", MagasinRouter);
 app.use("/api/v1/ville", VilleRouter);
 app.all("*", (req, res, next) => {

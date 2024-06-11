@@ -6,7 +6,7 @@ route.post("/addStore",  upload.single("Logo_magasin"), MagasinControllers.Creat
 route.get("/getAllStore", MagasinControllers.Get_AllStore);
 route.get("/getStoreByID/:id_magasin", MagasinControllers.Get_spec_Store);
 route.get("/getStoreByUserID/:id_proprietaire", MagasinControllers.Get_spec_StoreByIdUser);
-route.put("/updateStore/:id_magasin",  MagasinControllers.Update_spec_Store);
+route.put("/updateStore/:id_magasin", upload.single("Logo_magasin"),  MagasinControllers.Update_spec_Store);
 route.delete("/deleteStore/:id_magasin", MagasinControllers.Delete_spec_Store);
 route.post("/SearchStore", MagasinControllers.Search_Store);
 module.exports = route;

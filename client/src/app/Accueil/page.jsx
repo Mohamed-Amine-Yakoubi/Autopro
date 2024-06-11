@@ -15,11 +15,14 @@ import { useEffect, useState } from "react";
 import { getCategory } from "../lib/Category";
 import Link from "next/link";
 import { Loading } from "@/components/Loading";
+import { useSession } from "next-auth/react";
  
 
 const Accueil = () => {
   const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { data: session } = useSession();
+ 
   useEffect(() => {
     getAllProducts()
       .then((products) => {
@@ -43,6 +46,37 @@ const Accueil = () => {
 
       });
   }, []);
+
+
+
+
+  const handleFavoris = async (id_prod) => {
+    try {
+      const id_user=session.user.id_user;
+      const res = await fetch(
+        `http://localhost:4000/api/v1/favoris/AddFavoris`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id_user, id_prod }),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to add to favorites");
+      }
+
+      await res.json();
+
+    
+    } catch (error) {
+      alert("Failed to add to favorites");
+    }
+  };
+
+
   if (loading) return <div><Loading/></div>;
   return (
     <div className="   ">
@@ -51,7 +85,7 @@ const Accueil = () => {
           src={bmw_header}
           className=" object-cover  md:h-[550px] h-[650px] w-full   "
           alt="header image"
-        />
+          loading="eager"        />
         <div className="absolute inset-0 bg-gray-700 opacity-50 rounded-md"></div>
 
         <div className="container absolute inset-0 flex    items-center    mx-auto   justify-center ">
@@ -108,15 +142,16 @@ const Accueil = () => {
             {product.map((product) => (
               <div key={product.id_prod}>
                 <div className="flex justify-center ">
-                  <Link href={`/Catalogue/${product.id_prod}`}>
+                  {/* <Link href={`/Catalogue/${product.id_prod}`}> */}
                     <CardsProduit
                       image={product.Image_thumbnail}
                       libelle={product.Libelle_prod}
                       categorie={product.category.Libelle_cat}
                       prix={product.prix_prod}
                       stock={product.Stock_prod}
+                      handleFavoris={() => handleFavoris(product.id_prod)}
                     />
-                  </Link>
+                  {/* </Link> */}
                 </div>
               </div>
             ))}

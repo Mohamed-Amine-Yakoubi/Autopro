@@ -43,16 +43,16 @@ const Catalogue = () => {
     <div className="mb-28">
       {/* section 1 */}
       <div>
-        <Header Title={"Contactez-nous"} />
+        <Header Title={"Catalogue"} />
       </div>
       {/* section 2 */}
 
-      <div className="  md:w-1/1 flex md:flex-row flex-col    mx-12  mt-12  md:space-x-12   ">
-        <div className=" md:w-1/4    ">
+      <div className="    flex md:flex-row flex-col    mx-12  mt-12  md:space-x-12   ">
+        <div className=" md:w-1/3  w-full ">
           <Filter />
         </div>
 
-        <div className=" md:w-1/1     ">
+        <div className=" md:w-1/1    w-full  ">
           <div className="flex   items-center   bg-grayLight h-14 rounded-md   ">
             <FaSearch className="mx-5" />
           </div>

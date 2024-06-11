@@ -13,18 +13,21 @@ route.get(
 );
 route.get(
   "/GetUserById/:id_user",
-  AuthMiddlware.Protect,
+  // AuthMiddlware.Protect,
   UserControllers.GetUserById
 );
 route.put(
   "/UpdateAccount/:id_user",
-  AuthMiddlware.Protect,   UserControllers.Update_spec_User
+  // AuthMiddlware.Protect, 
+    UserControllers.Update_spec_User
 );
 route.patch(
   "/UpdateAccountPassword/:id_user",
-  AuthMiddlware.Protect,
+  // AuthMiddlware.Protect,
   UserControllers.Update_spec_UserPassword
 );
+
+
 route.delete(
   "/DeleteAllUsers",
   // AuthMiddlware.Protect,

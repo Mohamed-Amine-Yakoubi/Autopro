@@ -24,10 +24,6 @@ exports.CreateStore = asyncHandler(async (req, res) => {
 
     const image = req.file; // Assuming you're using 'req.file' for single file upload
 
-    if (!image) {
-      return res.status(400).json({ error: "No image uploaded" });
-    }
-
     // Upload the image to Cloudinary
     const result = await cloudinary.uploader.upload(image.path, {
       resource_type: "auto",
@@ -102,10 +98,7 @@ exports.Get_spec_Store = asyncHandler(async (req, res) => {
     const { id_magasin } = req.params;
     const get_spec_store = await MagasinModel.findByPk(id_magasin);
     if (get_spec_store) {
-      res.status(201).json({
-        message: "store have been successfully found",
-        data: get_spec_store,
-      });
+      res.status(201).json(get_spec_store);
     } else {
       res.status(404).json({ message: "magasin have not been found" });
     }
@@ -118,27 +111,39 @@ exports.Get_spec_Store = asyncHandler(async (req, res) => {
 exports.Update_spec_Store = asyncHandler(async (req, res) => {
   try {
     const { id_magasin } = req.params;
-
     const {
       Libelle_magasin,
       Adresse_magasin,
       Telephone_magasin,
       Description_magasin,
-      Logo_magasin,
-      Ouverture_magasin,
-      Fermeture_magasin,
-      isActive,
+      Lien_facebook,
+      Lien_instagram,
+      Lien_linkedin,
+      Lien_siteWeb,
+      id_ville,
     } = req.body;
+
+    let thumbnailUrl = ""; // Initialize thumbnail URL variable
+
+    if (req.file) {
+      // If a new image is uploaded, upload it to Cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        resource_type: "auto",
+      });
+      thumbnailUrl = result.secure_url;
+    }
 
     const updateFields = {
       Libelle_magasin,
       Adresse_magasin,
       Telephone_magasin,
       Description_magasin,
-      Logo_magasin,
-      Ouverture_magasin,
-      Fermeture_magasin,
-      isActive,
+      Logo_magasin: thumbnailUrl || req.body.Logo_magasin, // Use the new URL if image was uploaded, otherwise use existing URL
+      Lien_facebook,
+      Lien_instagram,
+      Lien_linkedin,
+      Lien_siteWeb,
+      id_ville,
     };
 
     const updatedStore = await MagasinModel.update(updateFields, {
@@ -147,12 +152,9 @@ exports.Update_spec_Store = asyncHandler(async (req, res) => {
     });
 
     if (updatedStore) {
-      res.status(201).json({
-        message: "store has been successfully updated",
-        data: updatedStore,
-      });
+      res.status(201).json(updateFields);
     } else {
-      res.status(404).json({ message: `store with ID ${id_prod} not found` });
+      res.status(404).json({ message: `Store with ID ${id_prod} not found` });
     }
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });

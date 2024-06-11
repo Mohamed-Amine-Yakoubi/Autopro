@@ -4,6 +4,11 @@ const Category = require("./CategoryModel");
 const User = require("./UserModel");
 const Magasin = require("./MagasinModel");
 const Ville = require("./VilleModel");
+const Marque = require("./MarqueModel");
+const Modele = require("./ModeleCarModel");
+const Motor = require("./MotorisationModel");
+const Matiere = require("./MatiereModel");
+const SubCategory = require("./SubCategoryModel");
 
 const Product = sequelize.define(
   "Products",
@@ -17,10 +22,15 @@ const Product = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    Description_prod: {
+    Caracteristiques_prod: {
+      type: DataTypes.STRING(1000),
+      allowNull: false,
+    },
+    Reference_prod: {
       type: DataTypes.STRING,
       allowNull: false,
     },
+ 
     prix_prod: {
       type: DataTypes.FLOAT,
       allowNull: false,
@@ -37,6 +47,7 @@ const Product = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -62,7 +73,35 @@ Product.belongsTo(User, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
+Product.belongsTo(Magasin, {
+  foreignKey: "id_magasin",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
- 
- 
+Product.belongsTo(Marque, {
+  foreignKey: "id_marque",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Product.belongsTo(Modele, {
+  foreignKey: "id_modele",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Product.belongsTo(Motor, {
+  foreignKey: "id_motor",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Product.belongsTo(Matiere, {
+  foreignKey: "id_mat",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Product.belongsTo(SubCategory, {
+  foreignKey: "id_subcat",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 module.exports = Product;

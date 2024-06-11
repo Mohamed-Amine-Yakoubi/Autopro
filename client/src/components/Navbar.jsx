@@ -90,12 +90,12 @@ const Navbar = () => {
             >
               <FaCartShopping />
             </button>
-            <button
-              type="button"
+            <Link
+              href="/Favoris"
               className="text-iconColor text-2xl     px-4 py-2 text-center  hover:bg-greenColor rounded-lg hover:text-white"
             >
               <FaRegHeart />
-            </button>
+            </Link>
           </div>
         </div>
       </nav>

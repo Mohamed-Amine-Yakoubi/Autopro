@@ -19,11 +19,18 @@ route.get(
   "/Get_spec_ProductByIdUser/:createdBy",
   ProductControllers.Get_spec_ProductByIdUser
 );
+
+route.get(
+  "/Get_spec_ProductByIdStore/:id_magasin",
+  ProductControllers.Get_spec_ProductByIdStore
+);
+
 route.get("/get_specProduct/:id_prod", ProductControllers.Get_spec_Product);
 
 route.put(
   "/UpdateProduct/:id_prod",
-  AuthMiddlware.Protect,
+  // AuthMiddlware.Protect,
+  upload.array("Image_prod", 5),
   ProductControllers.Update_spec_Product
 );
 route.delete(
@@ -41,4 +48,8 @@ route.post(
   "/get_specProductByVille/:id_ville",
   ProductControllers.Get_spec_ProductByVille
 );
+
+//Get_AllMatter
+route.get("/Get_AllMatter", ProductControllers.Get_AllMatter);
+
 module.exports = route;

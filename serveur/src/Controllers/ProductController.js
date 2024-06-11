@@ -5,6 +5,7 @@ const asyncHandler = require("express-async-handler");
 const cloudinary = require("../Utils/Cloudinary");
 const Ville = require("../Models/VilleModel");
 const Magasin = require("../Models/MagasinModel");
+const Matiere = require("../Models/MatiereModel");
 require("dotenv").config();
 const privatekey = process.env.PRIVATE_KEY;
 
@@ -17,10 +18,17 @@ exports.Create_Product = asyncHandler(async (req, res) => {
   try {
     const {
       Libelle_prod,
-      Description_prod,
+      Caracteristiques_prod,
       prix_prod,
       Stock_prod,
+      Reference_prod,
+      id_mat,
 
+      id_magasin,
+      id_marque,
+      id_modele,
+      id_motor,
+      id_subcat,
       id_cat,
       createdBy,
     } = req.body;
@@ -46,13 +54,20 @@ exports.Create_Product = asyncHandler(async (req, res) => {
     const imageUrlsString = imagesUrls.join(",");
     const Products = await ProductModel.create({
       Libelle_prod,
-      Description_prod,
+      Caracteristiques_prod,
       prix_prod,
+      Stock_prod,
+      Reference_prod,
+      id_magasin,
+      id_marque,
+      id_modele,
+      id_motor,
+      id_cat,
+      id_mat,
+      id_subcat,
+      createdBy,
       Image_thumbnail: thumbnailUrl,
       Image_prod: imageUrlsString,
-      Stock_prod,
-      id_cat,
-      createdBy,
     });
 
     if (Products) {
@@ -131,7 +146,22 @@ exports.Get_spec_Product = asyncHandler(async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
+// /**************Get specific product by id store************* */
+exports.Get_spec_ProductByIdStore = asyncHandler(async (req, res) => {
+  try {
+    const {id_magasin } = req.params;
+    const productbyidstore = await ProductModel.findAll({
+      where: { id_magasin: id_magasin },
+    });
+    if (productbyidstore) {
+      res.status(201).json(productbyidstore);
+    } else {
+      res.status(400).json({ message: "your product have not been found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 // /**************Update specific product************* */
 exports.Update_spec_Product = asyncHandler(async (req, res) => {
   try {
@@ -139,20 +169,55 @@ exports.Update_spec_Product = asyncHandler(async (req, res) => {
 
     const {
       Libelle_prod,
-      Description_prod,
+      Caracteristiques_prod,
       prix_prod,
-      Image_prod,
       Stock_prod,
       id_cat,
+      createdBy,
+      id_magasin,
+      
+      id_marque,
+      id_modele,
+      id_motor,
+      Reference_prod,
+      id_mat,
+      id_subcat
     } = req.body;
+    const images = req.files;
+    const imagesUrls = [];
+    let thumbnailUrl;
+
+    // Loop through each image to upload to Cloudinary
+    for (const image of images) {
+      const result = await cloudinary.uploader.upload(image.path, {
+        resource_type: "auto",
+      });
+
+      // Check if this is the first image, if so, set it as the thumbnail
+      if (!thumbnailUrl) {
+        thumbnailUrl = result.secure_url;
+      }
+
+      imagesUrls.push(result.secure_url);
+    }
+    const imageUrlsString = imagesUrls.join(",");
 
     const updateFields = {
       Libelle_prod,
-      Description_prod,
+      Caracteristiques_prod,
       prix_prod,
-      Image_prod,
       Stock_prod,
       id_cat,
+      createdBy,
+      id_magasin,
+      Image_thumbnail: thumbnailUrl,
+      Image_prod: imageUrlsString  ,
+      id_marque,
+      id_modele,
+      id_motor,
+      Reference_prod,
+      id_mat,
+      id_subcat
     };
 
     const updatedProduct = await ProductModel.update(updateFields, {
@@ -255,6 +320,19 @@ exports.Get_spec_ProductByVille = asyncHandler(async (req, res) => {
       });
     } else {
       res.status(404).json({ message: "your product have not been found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+/**************Get all matter************* */
+exports.Get_AllMatter = asyncHandler(async (req, res) => {
+  try {
+    const AllMatter = await Matiere.findAll({});
+    if (AllMatter) {
+      res.status(201).json(AllMatter);
+    } else {
+      res.status(404).json({ message: "your products have not been found" });
     }
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });

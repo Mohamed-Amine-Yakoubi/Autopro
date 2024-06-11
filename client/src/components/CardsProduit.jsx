@@ -3,9 +3,11 @@ import Image from "next/image";
 import { useState } from "react";
 import { FaCartShopping } from "react-icons/fa6";
 import { FaHeart } from "react-icons/fa";
+import { useSession } from "next-auth/react";
 
-const CardsProduit = ({ image, libelle, categorie, prix, stock }) => {
+const CardsProduit = ({ image, libelle, categorie, prix, stock,handleFavoris}) => {
   const [isHovered, setIsHovered] = useState(false);
+
 
   return (
     <div
@@ -20,21 +22,24 @@ const CardsProduit = ({ image, libelle, categorie, prix, stock }) => {
 
       <div className=" flex justify-center">
         <Image
-          className="  p-4"
+          className="  p-2"
           src={image}
-          width={240}
-          height={240}
+          width={180}
+          height={180}
           alt="piece"
+          loading="eager"
         />
       </div>
       {isHovered && (
         <div className="flex flex-col  ">
-          <div className="absolute top-2 right-3 bg-greenColor rounded-full h-6 w-6 flex justify-center items-center">
-            <FaCartShopping className="text-[14px] text-white" />
-          </div>
-          <div className="absolute top-10 right-3 bg-greenColor  rounded-full h-6 w-6 flex justify-center items-center">
-            <FaHeart className="text-[14px] text-white" />
-          </div>
+    
+            <div className="absolute top-2 right-3 bg-greenColor rounded-full h-6 w-6 flex justify-center items-center">
+              <FaCartShopping className="text-[14px] text-white" />
+            </div>
+            <button onClick={handleFavoris} className="absolute top-10 right-3 bg-greenColor  rounded-full h-6 w-6 flex justify-center items-center">
+              <FaHeart className="text-[14px] text-white" />
+            </button>
+    
         </div>
       )}
       <div className="px-6 py-4 mt-5 ">
@@ -43,11 +48,11 @@ const CardsProduit = ({ image, libelle, categorie, prix, stock }) => {
         <div className="flex justify-between mt-3">
           <p className="text-gray-700 text-[13px] font-bold ">{prix} TND</p>
           {stock > 0 ? (
-            <p className="text-greenColor rounded-full font-bold text-[13px]">
+            <p className="bg-greenColor text-white px-2 py-1 rounded-full   text-[11px]">
               en stock
             </p>
           ) : (
-            <p className="text-red-600 rounded-full font-bold text-[13px]">
+            <p className="bg-red-600  text-white px-2 py-1 rounded-full   text-[11px]">
               Epuisé
             </p>
           )}

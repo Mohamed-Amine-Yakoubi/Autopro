@@ -14,14 +14,19 @@ import { ImProfile } from "react-icons/im";
 import { FaShop } from "react-icons/fa6";
 import ModalStore from "./ModalStore";
 import Link from "next/link";
+import ModalUpdateProfile from "./ModalUpdateProfile";
 
 const DropDown = ({ openMenu }) => {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession(); 
+  const [isModalProfileOpen, setIsModalProfileOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
- 
+
+  const openModalProfile = () =>setIsModalProfileOpen(true);
+  const closeModalProfile = () =>setIsModalProfileOpen(false);
+
   return (
     <div>
       <Dropdown
@@ -64,8 +69,7 @@ const DropDown = ({ openMenu }) => {
               </Link>
             </DropdownItem>
           ) : null}
-
-          <DropdownItem>
+          <DropdownItem onClick={openModalProfile}>
             <div className="flex items-center mt-3">
               <ImProfile className="text-iconColor mr-2 text-[20px]" />
               Profile
@@ -88,6 +92,7 @@ const DropDown = ({ openMenu }) => {
         </DropdownMenu>
       </Dropdown>
       <ModalStore isOpen={isModalOpen} onClose={closeModal} />
+      <ModalUpdateProfile isOpen={isModalProfileOpen}  onClose={closeModalProfile} />
     </div>
   );
 };

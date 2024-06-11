@@ -3,7 +3,8 @@ const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const SubCategory = require("../Models/SubCategoryModel");
 require("dotenv").config();
-const privatekey = process.env.PRIVATE_KEY;
+const cloudinary = require("../Utils/Cloudinary");
+
 /**************************** */
 // Function to generate JWT token
 
@@ -13,8 +14,18 @@ const createToken = (payload) => {
 exports.CreateCategories = asyncHandler(async (req, res) => {
   try {
     const Libelle_cat = req.body.Libelle_cat;
+    const image = req.file; // Assuming you're using 'req.file' for single file upload
+ 
+
+    // Upload the image to Cloudinary
+    const result = await cloudinary.uploader.upload(image.path, {
+      resource_type: "auto",
+    });
+
+    const thumbnailUrl = result.secure_url;
     const category = await CategoryModel.create({
       Libelle_cat,
+      Image_cat: thumbnailUrl,
     });
     if (category) {
       res.status(201).json({
@@ -30,28 +41,7 @@ exports.CreateCategories = asyncHandler(async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-// sub category
 
-exports.CreatesubCategory = asyncHandler(async (req, res) => {
-  try {
-    const {Libelle_subcat ,id_cat} = req.body;
-    const subcategory = await SubCategory.create({
-      Libelle_subcat,id_cat
-    });
-    if (subcategory) {
-      res.status(201).json({
-        message: "Category has been added successfully",
-        data: subcategory,
-      });
-    } else {
-      res.status(404).json({
-        message: "The category has not been added",
-      });
-    }
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
 
 /****************get all categories*************** */
 exports.GetAllCategories = asyncHandler(async (req, res) => {

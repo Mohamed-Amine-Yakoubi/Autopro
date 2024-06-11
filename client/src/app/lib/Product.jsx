@@ -1,7 +1,11 @@
 "use server"
 export async function getAllProducts() {
     const res = await fetch(
-      "http://localhost:4000/api/v1/product/GetAllProducts"
+      "http://localhost:4000/api/v1/product/GetAllProducts",{
+      next:{
+        revalidate : 10
+      }
+      }
     );
     const data = await res.json();
     if (!res.ok) {
@@ -45,3 +49,17 @@ export async function getAllProducts() {
     } 
     return data;
   }
+
+
+  export async function getProductbyStoreId(id_magasin) {
+    const res = await fetch(
+      `  http://localhost:4000/api/v1/product/Get_spec_ProductByIdStore/${id_magasin}`
+    );
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error("Failed to fetch data");
+    } 
+    return data;
+  }
+
+ 

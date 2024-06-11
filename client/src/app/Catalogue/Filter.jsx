@@ -32,13 +32,13 @@ export const Filter = () => {
       <CardsFilterCatalogue />
       <hr className="mt-8 mb-8" />
       {/* checkobx */}
-      <h1 className="font-bold mb-5">Catégories</h1>{" "}
+      <h1 className="font-bold mb-5 text-[15px]  ">Catégories</h1>{" "}
       <div className="bg-grayLight rounded-md pt-4 pb-4">
         {categories
           .slice(0, showAllCategories ? categories.length : 3)
           .map((cat) => (
             <div key={cat.id_cat} className="mt-2 mx-5">
-              <label className="text-[14px]">
+              <label className="text-[12.5px]">
                 <input
                   type="checkbox"
                   className="mr-2  "
@@ -71,7 +71,7 @@ export const Filter = () => {
       <hr className="mt-8 mb-8" />
       {/* ville */}
       <div>
-        <h1 className="font-bold mb-5">Ville</h1>
+        <h1 className="font-bold mb-5 text-[15px]">Ville</h1>
 
         <select
           className="flex rounded-md h-9 p-2 w-full max-w-lg outline-none  bg-grayLight text-textColor mt-4 text-[14px]"
@@ -91,7 +91,7 @@ export const Filter = () => {
       <hr className="mt-8 mb-8" />
       {/* prix */}
       <div>
-        <h1 className="font-bold mb-5">Prix</h1>
+        <h1 className="font-bold mb-5 text-[15px]">Prix</h1>
         <div className="relative mb-6">
           <label className="sr-only">Labels range</label>
           <input
@@ -101,11 +101,11 @@ export const Filter = () => {
             max="1500"
             className="w-full h-2   rounded-lg appearance-none cursor-pointer  bg-greenColor  "
           />
-          <span className="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">
+          <span className=" text-gray-500 text-[13px] dark:text-gray-400 absolute start-0 -bottom-6">
             100 TND
           </span>
 
-          <span className="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">
+          <span className=" text-gray-500 text-[13px] dark:text-gray-400 absolute end-0 -bottom-6">
             1500 TND
           </span>
         </div>{" "}

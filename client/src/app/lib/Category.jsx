@@ -1,7 +1,10 @@
 "use server"
 export async function getCategory(id_cat) {
     const res = await fetch(
-        `http://localhost:4000/api/v1/category/getcategory/${id_cat}`
+        `http://localhost:4000/api/v1/category/getcategory/${id_cat}`,
+        {next:{
+          revalidate : 10
+        }}
     );
     const data = await res.json();
     if (!res.ok) {

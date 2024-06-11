@@ -4,7 +4,7 @@ export const Loading = () => {
     <div className="flex flex-col  justify-center items-center  h-[90vh]  ">
       {" "}
       <div>
-        <Ellipsis color="#4BAF4F" size={100} thickness={7} />
+        <Ellipsis color="#4BAF4F" size={90} thickness={7} />
         <p className=" ">chargement...</p>
       </div>
     </div>

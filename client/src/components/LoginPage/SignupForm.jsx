@@ -5,6 +5,7 @@ import InputFields from "../InputFields";
 import Button from "../Button";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Input from "../Input";
 
 const SignupForm = ({ isAnimated, setIsAnimated }) => {
   const [user, setUser] = useState({
@@ -15,10 +16,18 @@ const SignupForm = ({ isAnimated, setIsAnimated }) => {
     Telephone_user: "",
     Adresse_user: "",
   });
-
+ 
   const handleChangeValue = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
-  }; 
+    const { name, value } = e.target;
+
+   
+      setUser((prevUser) => ({
+        ...prevUser,
+        [name]: value,
+      }));
+ 
+  };
+
   const handleNewUser = async (e) => {
     e.preventDefault();
 
@@ -64,6 +73,7 @@ const SignupForm = ({ isAnimated, setIsAnimated }) => {
       }
     }
   };
+  console.log(user)
   return (
     <div className="    w-full h-full  flex flex-col justify-center    ">
       <div className="   md:mx-10   mt-10">
@@ -75,54 +85,53 @@ const SignupForm = ({ isAnimated, setIsAnimated }) => {
           <div className="space-y-5    ">
             <div className="flex flex-row  space-x-2  justify-between">
               {" "}
-              <InputFields
+              <Input
                 type={"text"}
                 name={"Nom_user"}
-                className="text-black    "
-                placeholder="Nom"
-                height={43}
+                placeholder={"Nom"}
+                value={user.Nom_user}
                 onChange={handleChangeValue}
               />
-              <InputFields
+              <Input
                 type={"text"}
-                className="text-black      "
-                name="Prenom_user"
+                name={"Prenom_user"}
                 placeholder={"Prénom"}
-                height={43}
                 onChange={handleChangeValue}
+                value={user.Prenom_user}
+
               />
             </div>
-            <InputFields
+            <Input
               type={"text"}
-              className="text-black      "
-              name="Email_user"
+              name={"Email_user"}
               placeholder={"Email"}
-              height={43}
               onChange={handleChangeValue}
+              value={user.Email_user}
+
             />
-            <InputFields
-              type={"text"}
-              name="MotDePasse_user"
-              className="   "
+            <Input
+              type={"password"}
+              name={"MotDePasse_user"}
               placeholder={"Mot De Passe"}
-              height={43}
+              value={user.MotDePasse_user}
+
               onChange={handleChangeValue}
             />
 
-            <InputFields
+            <Input
               type={"text"}
-              className="   "
-              name="Telephone_user"
+              name={"Telephone_user"}
               placeholder={"Numéro de téléphone"}
-              height={43}
+              value={user.Telephone_user}
+
               onChange={handleChangeValue}
             />
-            <InputFields
+            <Input
               type={"text"}
-              className=" w-90  "
-              name="Adresse_user"
+              name={"Adresse_user"}
               placeholder={"Adresse"}
-              height={43}
+              value={user.Adresse_user}
+
               onChange={handleChangeValue}
             />
           </div>

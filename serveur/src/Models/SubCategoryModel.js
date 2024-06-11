@@ -14,6 +14,10 @@ const SubCategory = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    Image_subcat: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
 
     createdAt: {
       type: DataTypes.DATE,

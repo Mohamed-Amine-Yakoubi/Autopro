@@ -44,6 +44,7 @@ const authOptions = {
   pages: {
     SignIn: "/components/LoginPage/SigninForm",
   },
+ 
 };
 
 const handler = NextAuth(authOptions);

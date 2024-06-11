@@ -23,26 +23,26 @@ const SideBar = () => {
 
   if (status === "authenticated") {
     return (
-      <div className="h-[400px] w-64 md:mb-28 bg-gray-100 text-iconColor m-5 rounded-lg">
+      <div className="h-[420px] w-64 md:mb-28  bg-gray-100 text-iconColor m-5 rounded-lg">
         {store.map((item) => (
           <div key={item.id_magasin}>
             <div className="flex  py-10 px-4 flex-col items-center justify-center">
               <Image
                 src={item.Logo_magasin}
-                className="rounded-full "
-                width={50}
-                height={50}
+                className="rounded-full bg-white border-2  border-gray-200 "
+                width={80}
+                height={80}
                 alt="alt"
               />
-              <p className="p-3 text-[14px]   font-semibold ">
+              <p className="mt-3 text-[14px]   font-semibold ">
                 {item.Libelle_magasin}
               </p>
             </div>
-            <ul className="px-5">
-              <li className="p-4 hover:bg-greenColor hover:text-white flex items-center space-x-3 rounded-md">
+            <ul className="px-5   ">
+              <li className="px-4 py-4 hover:bg-greenColor hover:text-white flex items-center space-x-3 rounded-md">
                 {" "}
                 <AiFillDashboard className="  text-[20px]" />
-                <Link href="/Dashboard" className="font-poppins text-[15px]">
+                <Link href="/Dashboard" className="font-poppins text-[14px]">
                   Dashboard
                 </Link>
               </li>
@@ -51,7 +51,7 @@ const SideBar = () => {
                 <FaBoxOpen className="  text-[20px]" />
                 <Link
                   href="/Dashboard/Articles"
-                  className="font-poppins text-[15px]"
+                  className="font-poppins text-[14px]"
                 >
                   Mes Articles
                 </Link>
@@ -60,14 +60,14 @@ const SideBar = () => {
                 <ImProfile className="  text-[20px]" />
                 <Link
                   href="/Dashboard/Information"
-                  className="font-poppins text-[15px]"
+                  className="font-poppins text-[14px]"
                 >
                   Mes Information
                 </Link>
               </li>
               <li className="p-4 hover:bg-greenColor hover:text-white flex items-center space-x-3 rounded-md">
                 <FaShoppingBasket className=" or text-[20px]" />
-                <Link href="/page3" className="font-poppins text-[15px]">
+                <Link href="/page3" className="font-poppins text-[14px]">
                   Commande Client
                 </Link>
               </li>

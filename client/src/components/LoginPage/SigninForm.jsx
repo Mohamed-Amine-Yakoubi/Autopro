@@ -3,16 +3,32 @@
 import { signIn } from "next-auth/react";
 import Autopro_logo from "../../public/images/Autopro_logo.png";
 import Image from "next/image";
-import InputFields from "../InputFields";
+ 
 import Button from "../Button";
 import { MdFacebook } from "react-icons/md";
 import { RiInstagramLine } from "react-icons/ri";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import { FaUser, FaLock } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+ 
+import { useState } from "react";
+import InputIcon from "../InputIcon";
 
 const SigninForm = ({ isAnimated, setIsAnimated }) => {
   const router = useRouter();
+
+  const [user, setUser] = useState({
+    Email_user: "",
+    MotDePasse_user: "",
+  });
+  const handleChangeValue = (e) => {
+    const { name, value } = e.target;
+
+    setUser((prevUser) => ({
+      ...prevUser,
+      [name]: value,
+    }));
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -25,7 +41,7 @@ const SigninForm = ({ isAnimated, setIsAnimated }) => {
         alert("Authentication failed: " + res.error);
       } else {
         // Redirect to a specific page after successful authentication
-        router.replace("/contact");
+        router.replace("/Accueil");
       }
     });
   };
@@ -39,24 +55,25 @@ const SigninForm = ({ isAnimated, setIsAnimated }) => {
           Bienvenue chez Autopro
         </h1>
         <form className="mt-12   " onSubmit={handleSubmit}>
-          <div className="space-y-3    ">
+          <div className="space-y-5    ">
             <div className="relative">
-              <InputFields
+              <InputIcon
                 type={"text"}
-                name="Email_user"
-                className="text-black     "
+                name={"Email_user"}
+                value={user.Email_user}
+                onChange={handleChangeValue}
                 placeholder={"Email"}
-                height={43}
               />
 
-              <FaUser className="text-[26px]  absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-iconColor" />
+              <FaUser className="text-[26px]  absolute left-3  top-1/2 transform -translate-y-1/2 h-5 w-5 text-iconColor" />
             </div>
             <div className="relative">
-              <InputFields
-                type={"text"}
-                name="MotDePasse_user"
+              <InputIcon
+                type={"password"}
+                name={"MotDePasse_user"}
                 placeholder={"Mot De Passe"}
-                height={43}
+                value={user.MotDePasse_user}
+                onChange={handleChangeValue}
               />
               <FaLock className="text-[26px]  absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-iconColor" />
             </div>

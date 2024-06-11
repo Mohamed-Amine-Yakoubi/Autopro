@@ -96,13 +96,13 @@ exports.GetAllUsers = asyncHandler(async (req, res) => {
 });
 //get user by id
 exports.GetUserById = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+  const { id_user } = req.params;
   try {
-    const getuserbyid = await UserModel.findByPk(id);
+    const getuserbyid = await UserModel.findByPk(id_user);
     if (getuserbyid) {
       res
         .status(201)
-        .json({ message: `user with id ${id}`, data: getuserbyid });
+        .json(  getuserbyid );
     } else {
       res.status(404).json({ message: " account have not been found" });
     }
@@ -149,7 +149,7 @@ exports.DeleteSpecificUser = asyncHandler(async (req, res) => {
 exports.Update_spec_User = asyncHandler(async (req, res) => {
   try {
     const { id_user } = req.params;
-    const { Nom_user, Prenom_user, Email_user, Telephone_user, Profil_user } =
+    const { Nom_user, Prenom_user, Email_user, Telephone_user,Adresse_user, Profil_user } =
       req.body;
 
     const updateFields = {
@@ -157,6 +157,7 @@ exports.Update_spec_User = asyncHandler(async (req, res) => {
       Prenom_user: Prenom_user,
       Email_user: Email_user,
       Telephone_user: Telephone_user,
+      Adresse_user : Adresse_user,
       Profil_user: Profil_user,
     };
     const [update_spec_user] = await UserModel.update(updateFields, {
@@ -180,14 +181,14 @@ exports.Update_spec_User = asyncHandler(async (req, res) => {
 //update user password
 exports.Update_spec_UserPassword = asyncHandler(async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id_user } = req.params;
     const { MotDePasse_user } = req.body;
     const hashedPassword = await bcrypt.hash(MotDePasse_user, 10);
     const updateFields = {
       MotDePasse_user: hashedPassword,
     };
     const update_spec_userpassword = await UserModel.update(updateFields, {
-      where: { id_user: id },
+      where: { id_user: id_user },
       new: true,
     });
     if (update_spec_userpassword) {
