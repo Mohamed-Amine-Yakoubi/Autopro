@@ -14,6 +14,7 @@ const MarqueRouter = require("./src/Routers/MarqueRouter");
 const MotorisationRouter = require("./src/Routers/MotorisationRouter");
 const ModeleRouter = require("./src/Routers/ModeleCarRouter");
 const FavorisRouter = require("./src/Routers/FavorisRouter");
+const CommandeRouter = require("./src/Routers/CommandeRouter");
 const ApiError = require("./src/Utils/ApiError");
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -26,6 +27,7 @@ app.use(cors());
 /************************/
 
 app.use("/api/v1/user", UserRouter);
+app.use("/api/v1/commande", CommandeRouter);
 app.use("/api/v1/favoris", FavorisRouter);
 app.use("/api/v1/Marque", MarqueRouter);
 app.use("/api/v1/Motorisation",MotorisationRouter);

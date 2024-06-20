@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { IoMdPhotos } from "react-icons/io";
 import { FaPlus } from "react-icons/fa";
 
-import { getSubCategory } from "@/app/lib/SubCategory";
+import { getSubCategory, getSubCategoryByIdCat } from "@/app/lib/SubCategory";
 import { getAllCategories } from "@/app/lib/Category";
 import {
   ModeleByIdMarque,
@@ -14,7 +14,7 @@ import {
 } from "@/app/lib/Car";
 
 import { useSession } from "next-auth/react";
-import Input from "./InputWhite";
+import Input from "./Input";
 import Textarea from "./Textarea";
 
 const AddProduct = () => {
@@ -80,7 +80,7 @@ const AddProduct = () => {
     });
 
     if (OptionCategory) {
-      getSubCategory(OptionCategory).then((SubCat) => {
+      getSubCategoryByIdCat(OptionCategory).then((SubCat) => {
         setSubCategory(SubCat);
       });
     }
@@ -194,7 +194,7 @@ const AddProduct = () => {
   };
 
   return (
-    <div className="py-5 px-4  rounded-lg overflow-y-auto bg-grayLight shadow-lg">
+    <div className="py-5 px-4   ">
       <form onSubmit={HandleSubmit}>
         <div className=" flex md:flex-row flex-col md:items-center md:space-y-0 space-y-4 md:space-x-10 space-x-0 md:justify-around">
           <div className="md:w-1/2 w-full space-y-8 flex flex-col justify-center items-center">
@@ -202,7 +202,7 @@ const AddProduct = () => {
               <div className="flex flex-col items-center">
                 <div>
                   <label htmlFor="fileInput">
-                    <IoMdPhotos className="rounded-full bg-white border-4 p-10 border-gray-200 text-greenColor text-[170px] cursor-pointer" />
+                    <IoMdPhotos className="rounded-full bg-grayLight border-4 p-10 border-gray-200 text-greenColor text-[170px] cursor-pointer" />
                   </label>
 
                   <input
@@ -232,7 +232,7 @@ const AddProduct = () => {
 
             <div className=" space-y-2  w-full">
               <select
-                className="rounded-lg text-[12.5px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-white text-textColor"
+                className="rounded-lg text-[12.5px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-grayLight text-textColor"
                 defaultValue=""
                 name="id_mat"
                 onChange={(e) => {
@@ -251,7 +251,7 @@ const AddProduct = () => {
               </select>
               <div className="flex md:flex-row w-full items-center mb-2 space-x-2">
                 <select
-                  className="rounded-lg text-[12.5px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-white text-textColor"
+                  className="rounded-lg text-[12.5px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-grayLight text-textColor"
                   defaultValue=""
                   onChange={(e) => {
                     handleChange(e);
@@ -270,13 +270,13 @@ const AddProduct = () => {
                 </select>
 
                 <select
-                  className="rounded-lg text-[12.5px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-white text-textColor"
+                  className="rounded-lg text-[12.5px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-grayLight text-textColor"
                   defaultValue=""
                   onChange={(e) => {
                     handleYear(e);
                   }}
                 >
-                  <option value="">Select a year</option>
+                  <option value="">Sélectionnez une année</option>
                   {years.map((year) => (
                     <option key={year} value={year}>
                       {year}
@@ -286,7 +286,7 @@ const AddProduct = () => {
               </div>
               <div className="flex md:flex-row w-full items-center space-x-2">
                 <select
-                  className="rounded-lg text-[12.5px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-white text-textColor"
+                  className="rounded-lg text-[12.5px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-grayLight text-textColor"
                   defaultValue=""
                   name="id_modele"
                   onChange={(e) => {
@@ -303,7 +303,7 @@ const AddProduct = () => {
                 </select>
 
                 <select
-                  className="rounded-lg text-[12.5px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-white text-textColor"
+                  className="rounded-lg text-[12.5px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-grayLight text-textColor"
                   defaultValue=""
                   name="id_motor"
                   onChange={(e) => {
@@ -358,7 +358,7 @@ const AddProduct = () => {
             />
             <div className="flex md:flex-row w-full items-center mb-2 space-x-2">
               <select
-                className="rounded-lg text-[12.5px] py-3 px-2 w-full outline-none border-2 border-gray-200 bg-white text-textColor"
+                className="rounded-lg text-[12.5px] py-3 px-2 w-full outline-none border-2 border-gray-200 bg-grayLight text-textColor"
                 defaultValue=""
                 name="id_cat"
                 onChange={(e) => {
@@ -377,7 +377,7 @@ const AddProduct = () => {
               </select>
 
               <select
-                className="rounded-lg text-[12.5px] py-3 px-2 w-full outline-none border-2 border-gray-200 bg-white text-textColor"
+                className="rounded-lg text-[12.5px] py-3 px-2 w-full outline-none border-2 border-gray-200 bg-grayLight text-textColor"
                 defaultValue=""
                 name="id_subcat"
                 onChange={handleChange}

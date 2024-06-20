@@ -132,9 +132,9 @@ const Accueil = () => {
             </h1>
           </div>
           <div className="hidden md:block">
-            <button className=" text-sm xl:mx-24  lg:mx-24 border-greenColor border-[2px] rounded-full p-2 px-4 hover:bg-greenColor hover:text-white">
+            <Link href={`./Catalogue`} className=" text-sm xl:mx-24  lg:mx-24 border-greenColor border-[2px] rounded-full p-2 px-4 hover:bg-greenColor hover:text-white">
               Voir plus...
-            </button>
+            </Link>
           </div>
         </div>
         <div className="container mx-auto flex flex-col justify-center    ">
@@ -149,6 +149,7 @@ const Accueil = () => {
                       categorie={product.category.Libelle_cat}
                       prix={product.prix_prod}
                       stock={product.Stock_prod}
+                      link={`./Catalogue/${product.id_prod}`}
                       handleFavoris={() => handleFavoris(product.id_prod)}
                     />
                   {/* </Link> */}

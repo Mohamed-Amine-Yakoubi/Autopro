@@ -1,12 +1,17 @@
-const Select = ({ placeholder, option }) => {
+const Select = ({ placeholder, options, name,onchange }) => {
   return (
     <select
       className="flex rounded-md h-9 p-2 w-full max-w-lg outline-none bg-grayColor text-textColor mt-4 text-[13.5px]"
-      defaultValue="" // Set defaultValue here
-      placeholder="Choisir la marque"
+      defaultValue=""
+      name={name}
+      onChange={onchange}
     >
       <option value="">{placeholder}</option>
-      <option value="brand1">{option}</option>
+      {options && options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
     </select>
   );
 };

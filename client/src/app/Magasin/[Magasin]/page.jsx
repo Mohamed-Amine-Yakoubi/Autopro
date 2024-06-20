@@ -172,15 +172,16 @@ const Magasin = (props) => {
           <div className="flex   flex-wrap  justify-center ">
             {product.map((product) => (
               <div key={product.id_prod} className="mt-5     ">
-                <Link href={`/Catalogue/${product.id_prod}`}>
+              
                   <CardsProduit
                     image={product.Image_thumbnail}
                     libelle={product.Libelle_prod}
                     categorie={product.category.Libelle_cat}
                     prix={product.prix_prod}
                     stock={product.Stock_prod}
+                    link={`../Catalogue/${product.id_prod}`}
                   />
-                </Link>
+              
               </div>
             ))}
           </div>

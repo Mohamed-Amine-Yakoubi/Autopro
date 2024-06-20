@@ -3,7 +3,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { IoMdPhotos } from "react-icons/io";
 
-import { getSubCategory } from "@/app/lib/SubCategory";
+import { getSubCategory, getSubCategoryByIdCat } from "@/app/lib/SubCategory";
 import { getAllCategories } from "@/app/lib/Category";
 import {
   ModeleByIdMarque,
@@ -95,7 +95,7 @@ export const UpdateProduct = ({idprod}) => {
   useEffect(() => {
     // Fetch motor based on selected modele
     if (product.id_cat) {
-      getSubCategory(product.id_cat).then((SubCat) => {
+      getSubCategoryByIdCat(product.id_cat).then((SubCat) => {
         setSubCategory(SubCat);
       });
     }
@@ -214,7 +214,7 @@ export const UpdateProduct = ({idprod}) => {
                     handleYear(e);
                   }}
                 >
-                  <option value="">Select a year</option>
+                  <option value="">Sélectionnez une année</option>
                   {years.map((year) => (
                     <option key={year} value={year}>
                       {year}

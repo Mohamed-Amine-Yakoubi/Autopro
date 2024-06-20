@@ -63,3 +63,16 @@ export async function getAllMarque() {
 
   return data;
 }
+
+ /***********************************************/
+ export async function getMatterById(id_mat) {
+  const res = await fetch(
+      `http://localhost:4000/api/v1/product/Get_MatterById/${id_mat}`
+  );
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+
+  return data;
+}

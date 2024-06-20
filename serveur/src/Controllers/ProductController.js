@@ -338,3 +338,17 @@ exports.Get_AllMatter = asyncHandler(async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+/**************Get all matter************* */
+exports.Get_MatterByid = asyncHandler(async (req, res) => {
+  try {
+    const {id_mat}=req.params;
+    const AllMatter = await Matiere.findByPk(id_mat);
+    if (AllMatter) {
+      res.status(201).json(AllMatter);
+    } else {
+      res.status(404).json({ message: "your products have not been found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});

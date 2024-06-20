@@ -55,7 +55,7 @@ const DropDown = ({ openMenu }) => {
           {session.user.Profil_user === "client" ? (
             <DropdownItem onClick={openModal}>
               <div className="flex items-center">
-                <FaShop className="text-iconColor mr-2 text-[20px]" />
+                <FaShop className="text-iconColor mr-2 text-[17px]" />
                 Demande boutique
               </div>
             </DropdownItem>
@@ -63,7 +63,7 @@ const DropDown = ({ openMenu }) => {
             <DropdownItem>
               <Link href="/Dashboard">
                 <div className="flex items-center">
-                  <FaShop className="text-iconColor mr-2 text-[20px]" />
+                  <FaShop className="text-iconColor mr-2 text-[17px]" />
                   Votre Dashboard
                 </div>
               </Link>
@@ -71,7 +71,7 @@ const DropDown = ({ openMenu }) => {
           ) : null}
           <DropdownItem onClick={openModalProfile}>
             <div className="flex items-center mt-3">
-              <ImProfile className="text-iconColor mr-2 text-[20px]" />
+              <ImProfile className="text-iconColor mr-2 text-[17px]" />
               Profile
             </div>
           </DropdownItem>
@@ -85,7 +85,7 @@ const DropDown = ({ openMenu }) => {
           >
             <hr className="w-72 h-px my-2 mb-4 mt-4 dark:bg-gray-300" />
             <div className="flex items-center">
-              <HiOutlineLogout className="text-iconColor mr-2 text-[24px]" />
+              <HiOutlineLogout className="text-iconColor mr-2 text-[17px]" />
               Se déconnecter
             </div>
           </DropdownItem>

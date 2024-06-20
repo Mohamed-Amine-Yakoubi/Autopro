@@ -107,6 +107,7 @@ const Favoris = () => {
                       categorie={product.category.Libelle_cat}
                       prix={product.prix_prod}
                       stock={product.Stock_prod}
+                      link={`./Catalogue/${product.id_prod}`}
                       handleFavoris={() =>
                         handleFavoris(product.id_prod, session.user.id_user)
                       }
@@ -115,18 +116,18 @@ const Favoris = () => {
                 </div>
               ))
             ) : (
-              <div className="font-poppins text-[20px] text-gray-400">
+              <p className="font-poppins text-[20px] text-gray-400">
                 Aucun article ajouté à la liste de souhaits
-              </div>
+              </p>
             )}
           </div>
           </div>
         </div>
       ) : (
         <div className="flex md:flex-row flex-col my-28 justify-center">
-          <div className="font-poppins text-[20px] text-gray-400">
+          <p className="font-poppins text-[20px] text-gray-400">
             Veuillez vous connecter pour voir vos favoris
-          </div>
+          </p>
         </div>
       )}
     </div>

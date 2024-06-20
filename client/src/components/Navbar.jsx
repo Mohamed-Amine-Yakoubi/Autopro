@@ -8,12 +8,14 @@ import { FaCartShopping } from "react-icons/fa6";
 import "../styles/Navbar.scss";
 import ModalComponent from "./ModalLogin";
 import { useSession } from "next-auth/react";
- 
-import DropDown from "./DropDown"; 
+
+import DropDown from "./DropDown";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const cart = useSelector((state) => state.cart);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -53,7 +55,10 @@ const Navbar = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/Catalogue" className=" block py-2 px-3 NavbarTitle   ">
+                <Link
+                  href="/Catalogue"
+                  className=" block py-2 px-3 NavbarTitle   "
+                >
                   Catalogue
                 </Link>
               </li>
@@ -75,8 +80,8 @@ const Navbar = () => {
             } md:block items-center justify-between w-full md:flex md:w-auto  lg:mx-28 flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse`}
           >
             {session && session.user ? (
-              <div className=" placeholder: text-2xl      text-center text-greenColor  hover:bg-iconColor rounded-lg hover:text-white "> 
-                <DropDown   openMenu={<FaUser />}   />
+              <div className=" placeholder: text-2xl      text-center text-greenColor  hover:bg-iconColor rounded-lg hover:text-white ">
+                <DropDown openMenu={<FaUser />} />
               </div>
             ) : (
               <div className="text-iconColor text-2xl      text-center   hover:bg-greenColor rounded-lg hover:text-white ">
@@ -84,12 +89,28 @@ const Navbar = () => {
               </div>
             )}
 
-            <button
-              type="button"
-              className="text-iconColor text-2xl    px-4 py-2 text-center  hover:bg-greenColor rounded-lg hover:text-white"
-            >
-              <FaCartShopping />
-            </button>
+            <Link
+                href="/Panier"
+                className="  text-iconColor text-2xl    px-4 py-2 text-center  hover:bg-greenColor rounded-lg hover:text-white"
+              >
+                <FaCartShopping />
+          
+              </Link>
+
+            {/* <div className="relative text-iconColor text-2xl    px-4 py-2 text-center  hover:bg-greenColor rounded-lg hover:text-white">
+              <Link href="/Panier">
+                {" "}
+                <FaCartShopping />
+              </Link>
+              {cart.totalQuantity > 0 && (
+                <div className="absolute bottom-0 -top-3 left-8">
+                  <span className="px-1.5 py-0.5    text-[12px] bg-greenColor hover:bg-white hover:text-greenColor rounded-full text-white">
+                    {cart.totalQuantity} 
+                  </span>
+                </div>
+              )}
+            </div> */}
+
             <Link
               href="/Favoris"
               className="text-iconColor text-2xl     px-4 py-2 text-center  hover:bg-greenColor rounded-lg hover:text-white"

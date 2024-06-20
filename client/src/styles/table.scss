@@ -1,0 +1,17 @@
+ 
+
+ 
+
+@media (max-width: 768px) {
+    .responsive-table .tab1 {
+        display: block;
+        width: 100%;
+    }
+
+    .responsive-table .tab1 tr,
+    .responsive-table .tab1 td {
+        display: block;
+        text-align: left;
+        width: 100%;
+    }
+}

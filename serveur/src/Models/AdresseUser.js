@@ -1,8 +1,8 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/Database");
- 
+
 const User = require("./UserModel");
- 
+const Ville = require("./VilleModel");
 
 const AdresseUser = sequelize.define(
   "Adresse_User",
@@ -12,10 +12,7 @@ const AdresseUser = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    ville_adr: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+
     code_adr: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -33,7 +30,12 @@ const AdresseUser = sequelize.define(
 );
 
 AdresseUser.belongsTo(User, {
-  foreignKey: "user_ID",
+  foreignKey: "id_user",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+AdresseUser.belongsTo(Ville, {
+  foreignKey: "id_ville",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });

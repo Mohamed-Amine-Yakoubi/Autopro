@@ -39,7 +39,7 @@ module.exports = {
         iconColor: "#2A2A2A", // Example using hex code
         textColor: "#3B3B3B", // Example using hex code
         greenColor: "#4BAF4F",
-        darkColor:"#2D2D2D",
+        darkColor:"#212429",
         inputColor: "#EBEBEB",
         buttonColor: "#333333", 
         grayColor: "#EBEBEB" ,

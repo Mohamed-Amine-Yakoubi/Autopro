@@ -1,9 +1,11 @@
 const express = require("express");
 const route = express.Router();
 const UserControllers = require("../Controllers/UserController");
+const AdresseUserController = require("../Controllers/AdresseUserController");
 const AuthMiddlware = require("../Middleware/AuthMiddleware");
 
 route.post("/SignUp", UserControllers.SignUp);
+
 route.post("/SignIn", UserControllers.SingIn);
 route.get(
   "/GetAllUsers",
@@ -43,4 +45,9 @@ route.delete(
 route.post("/SearchUser", UserControllers.Search_User);
 route.get("/activate/:token", UserControllers.activateAccount);
 route.post("/FindUserByEmail", UserControllers.FindUserByEmail);
+
+ 
+route.post("/Add_Adresse", AdresseUserController.Add_Adresse);
+route.get("/GetAdrByIdUser/:id_user", AdresseUserController.GetAdrByIdUser);
+route.patch("/Update_Adresse/:id_user", AdresseUserController.Update_Adresse);
 module.exports = route;

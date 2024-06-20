@@ -11,6 +11,7 @@ import { Loading } from "@/components/Loading";
 
 import { Filter } from "./Filter";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
 
 const Catalogue = () => {
   const [product, setProduct] = useState([]);
@@ -37,7 +38,7 @@ const Catalogue = () => {
         setLoading(false);
       });
   }, []);
- 
+
   if (loading) return <div><Loading/></div>;
   return (
     <div className="mb-28">
@@ -48,7 +49,7 @@ const Catalogue = () => {
       {/* section 2 */}
 
       <div className="    flex md:flex-row flex-col    mx-12  mt-12  md:space-x-12   ">
-        <div className=" md:w-1/3  w-full ">
+        <div className=" md:w-1/3  w-full   ">
           <Filter />
         </div>
 
@@ -59,18 +60,17 @@ const Catalogue = () => {
           <div className="flex   flex-wrap  justify-center ">
             {product.map((product) => (
               <div key={product.id_prod} className="mt-5     ">
-                <Link
                
-                  href={`/Catalogue/${product.id_prod}`}
-                >
                   <CardsProduit
                     image={product.Image_thumbnail}
                     libelle={product.Libelle_prod}
                     categorie={product.category.Libelle_cat}
                     prix={product.prix_prod}
                     stock={product.Stock_prod}
+                    product={product}
+                    link={`./Catalogue/${product.id_prod}`}
                   />
-                </Link>
+      
               </div>
             ))}
           </div>

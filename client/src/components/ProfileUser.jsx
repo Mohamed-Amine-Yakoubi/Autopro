@@ -3,7 +3,7 @@
 import { getUser } from "@/app/lib/User";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
-import Input from "./InputWhite";
+import Input from "./Input";
 const ProfileUser = () => {
   const { data: session, status } = useSession();
   const id_user = session?.user?.id_user || "";
@@ -110,9 +110,9 @@ const ProfileUser = () => {
   };
  
   return (
-    <div className="p-6 py-8 shadow-lg rounded-lg overflow-hidden bg-grayLight">
+    <div className="p-6 py-8  ">
       <form onSubmit={handleSubmit}>
-        <div className="w-full flex flex-col items-center space-y-5">
+        <div className="w-full flex flex-col items-center space-y-6">
           <div className="flex md:flex-row flex-col space-y-3 md:space-y-0 w-full justify-between">
             <div>
               <Input
@@ -145,6 +145,7 @@ const ProfileUser = () => {
             type="password"
             name={"MotDePasse_user"}
             placeholder={"Mot de passe"}
+       
             onChange={handleChangeValue}
           />
 

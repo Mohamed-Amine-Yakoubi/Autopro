@@ -52,4 +52,7 @@ route.post(
 //Get_AllMatter
 route.get("/Get_AllMatter", ProductControllers.Get_AllMatter);
 
+//Get_matter by id
+route.get("/Get_MatterById/:id_mat", ProductControllers.Get_MatterByid);
+
 module.exports = route;

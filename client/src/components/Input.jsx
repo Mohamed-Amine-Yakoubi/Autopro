@@ -20,7 +20,7 @@ const Input = ({ type, name, placeholder, value, onChange }) => {
         value={value}  // Use value prop directly
         onChange={onChange}  // Pass onChange handler from parent component
         onFocus={handleFocus}
-        className="outline-none pl-3 w-full border-2 pt-4 border-gray-200 py-1   text-[12.5px] rounded-md"
+        className="outline-none pl-3 w-full border-2   border-gray-200 py-3   text-[12.5px] rounded-md"
       
         onBlur={handleBlur}
       />

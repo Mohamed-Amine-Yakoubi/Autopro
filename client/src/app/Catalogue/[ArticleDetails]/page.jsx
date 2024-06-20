@@ -8,9 +8,13 @@ import { Loading } from "@/components/Loading";
 import { getSubCategory } from "@/app/lib/SubCategory";
 import { getStoreByID } from "@/app/lib/Magasin";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { addItem } from "@/app/redux/slices/cartSlice";
+import { getMatterById } from "@/app/lib/Car";
 
 const ArticleDetails = (props) => {
   const [product, setProduct] = useState(null);
+  const [matiere, setMatiere] = useState(null);
   const [magasin, setMagasin] = useState(null);
   const [subcat, setSubcat] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -36,11 +40,13 @@ const ArticleDetails = (props) => {
         setProduct(productData);
         setActiveImage(productData.Image_thumbnail);
 
-        const subcategory = await getSubCategory(productData.id_cat);
+        const subcategory = await getSubCategory(productData.id_subcat);
         setSubcat(subcategory);
 
         const magasinData = await getStoreByID(productData.id_magasin);
         setMagasin(magasinData);
+        const matiereData = await getMatterById(productData.id_mat);
+        setMatiere(matiereData);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -58,7 +64,11 @@ const ArticleDetails = (props) => {
       </div>
     );
   }
+  const dispatch = useDispatch();
 
+  const handleAddToCart = (product) => {
+      dispatch(addItem(product));
+  };
   const imageProd = product ? product.Image_prod.split(",") : [];
 
   return (
@@ -69,9 +79,9 @@ const ArticleDetails = (props) => {
             <Image
               src={activeImage || product.Image_thumbnail}
               alt="Product Image"
-              width={750}
-              height={750}
-              className="w-[500px] aspect-square   rounded-md bg-grayLight"
+              width={650}
+              height={650}
+              className="w-[450px] aspect-square   rounded-md bg-grayLight"
             />
             <div className="flex flex-wrap gap-2 md:gap-4 justify-center md:justify-between  ">
               {imageProd.map((item, index) => (
@@ -79,7 +89,7 @@ const ArticleDetails = (props) => {
                   key={index}
                   src={item}
                   alt={`image product ${index + 1}`}
-                  className=" w-[85px]    rounded-md bg-grayLight cursor-pointer"
+                  className=" w-[75px]    rounded-md bg-grayLight cursor-pointer"
                   width={100}
                   height={100}
                   onClick={() => setActiveImage(item)}
@@ -94,7 +104,7 @@ const ArticleDetails = (props) => {
               <div >
                 {" "}
                 <p className="  text-gray-400 font-bold text-[13px]  ">
-                  {product.category.Libelle_cat} / {subcat[0].Libelle_subcat}
+                  {product.category.Libelle_cat} / {subcat.Libelle_subcat}
                 </p>
               </div>
               <div className="flex     flex-row items-center space-x-2">
@@ -125,14 +135,14 @@ const ArticleDetails = (props) => {
             <div className="flex md:flex-row flex-wrap   items-center space-x-5    mt-5">
               <div className="flex flex-row items-center ">
                 <button
-                  className="bg-grayLight py-1 px-4 rounded-md text-greenColor text-2xl"
+                  className="bg-grayLight py-1 px-4 rounded-md text-greenColor text-[23px]"
                   onClick={handleMinus}
                 >
                   -
                 </button>
-                <span className="py-3 px-5">{quantity}</span>
+                <span className="py-3 px-5 text-[13.5px]">{quantity}</span>
                 <button
-                  className="bg-grayLight py-1 px-4 rounded-md text-greenColor text-2xl"
+                  className="bg-grayLight py-1 px-4 rounded-md text-greenColor text-[23px]"
                   onClick={handlePlus}
                 >
                   +
@@ -140,7 +150,7 @@ const ArticleDetails = (props) => {
               </div>
 
               <div className="flex flex-row items-center ">
-                <button className="  py-2.5 px-4 rounded-full border-2 border-greenColor text-iconColor hover:bg-greenColor hover:text-white   text-[13px]">
+                <button  onClick={() => handleAddToCart(product)} className="  py-2.5 px-4 rounded-md border-2 border-greenColor text-iconColor hover:bg-greenColor hover:text-white   text-[12.5px]">
                   Ajouter au panier
                 </button>
               </div>
@@ -154,6 +164,9 @@ const ArticleDetails = (props) => {
                 </button>
               </div>
             </div>
+            <p className=" text-greenColor text-[25px] font-bold mt-5">
+              Matiére : {matiere.Libelle_mat} 
+            </p>
             <div className=" text-greenColor text-[25px] font-bold mt-5">
               {product.Stock_prod > 0 ? (
                 <p className="text-greenColor rounded-full font-bold text-[13px]">

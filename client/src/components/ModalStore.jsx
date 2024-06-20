@@ -75,7 +75,7 @@ const ModalStore = ({ isOpen, onClose, children }) => {
   };
 
   useEffect(() => {
-    getStoreByUserID(session.user.id).then((data) => {
+    getStoreByUserID(session.user.id_user).then((data) => {
       setStore(data);
     });
   }, [session.user.id]);
@@ -121,7 +121,7 @@ const ModalStore = ({ isOpen, onClose, children }) => {
                         {index < step ? <TiTick size={24} /> : index}
                       </div>
                       <p className="text-gray-500 text-[13px] mt-2">
-                        Step {index}
+                        Etape {index}
                       </p>
                     </div>
                   ))}
@@ -196,7 +196,7 @@ const Step1 = ({ formData, setFormData, nextStep }) => {
         <input
           type="text"
           name="Libelle_magasin"
-          className="bg-grayColor rounded-lg outline-none px-5   h-11  text-[14px]      "
+          className="bg-grayColor rounded-lg outline-none px-5   h-11  text-[13px]      "
           placeholder="Nom de la boutique"
           height={43}
           value={formData.Libelle_magasin}
@@ -207,7 +207,7 @@ const Step1 = ({ formData, setFormData, nextStep }) => {
           name="Description_magasin"
           rows="5"
           height={100}
-          className="bg-grayColor rounded-lg outline-none px-5  h-11   text-[14px]      "
+          className="bg-grayColor rounded-lg outline-none px-5  h-11   text-[13px]      "
           placeholder="Description"
           value={formData.Description_magasin}
           onChange={handleChange}
@@ -215,7 +215,7 @@ const Step1 = ({ formData, setFormData, nextStep }) => {
         <input
           type="text"
           name="Email_magasin"
-          className="bg-grayColor rounded-lg outline-none px-5   h-11  text-[14px]      "
+          className="bg-grayColor rounded-lg outline-none px-5   h-11  text-[13px]      "
           placeholder="Email"
           height={43}
           value={formData.Email_magasin}
@@ -224,7 +224,7 @@ const Step1 = ({ formData, setFormData, nextStep }) => {
         <input
           type="text"
           name="Adresse_magasin"
-          className="bg-grayColor rounded-lg outline-none px-5   h-11  text-[14px]      "
+          className="bg-grayColor rounded-lg outline-none px-5   h-11  text-[13px]      "
           placeholder="Adresse"
           height={43}
           value={formData.Adresse_magasin}
@@ -233,7 +233,7 @@ const Step1 = ({ formData, setFormData, nextStep }) => {
         <input
           type="text"
           name="Telephone_magasin"
-          className="bg-grayColor rounded-lg outline-none px-5  h-11  text-[14px]      "
+          className="bg-grayColor rounded-lg outline-none px-5  h-11  text-[13px]      "
           placeholder="Téléphone"
           value={formData.Telephone_magasin}
           onChange={handleChange}
@@ -272,7 +272,7 @@ const Step1 = ({ formData, setFormData, nextStep }) => {
       </div>
       <div className="flex justify-center">
         <button
-          className="btn bg-green-500 text-white rounded-full py-2  px-8 mt-8 mb-7 "
+          className="btn text-[13px] bg-green-500 text-white rounded-full py-2  px-8 mt-8 mb-7 "
           type="submit"
         >
           Suivant
@@ -305,7 +305,7 @@ const Step2 = ({ formData, setFormData, prevStep, nextStep }) => {
     <form onSubmit={HandleSubmit}>
       <div className="flex flex-col space-y-3 mt-8">
         <select
-          className="flex rounded-lg h-[43px] py-2 w-full max-w-lg bg-grayColor text-gray-400 outline-none px-5 text-[14px]"
+          className="flex rounded-lg h-[43px] py-2 w-full max-w-lg bg-grayColor text-gray-400 outline-none px-5 text-[13px]"
           value={formData.id_ville} // Bind the selected value to the formData
           onChange={handleChange}
           name="id_ville" // Handle change event here
@@ -321,7 +321,7 @@ const Step2 = ({ formData, setFormData, prevStep, nextStep }) => {
         <input
           type="text"
           name="Lien_facebook"
-          className="bg-grayColor rounded-lg outline-none px-5  h-11  text-[14px]      "
+          className="bg-grayColor rounded-lg outline-none px-5  h-11  text-[13px]      "
           placeholder="Lien de page facebook"
           value={formData.Lien_facebook}
           onChange={handleChange}
@@ -329,7 +329,7 @@ const Step2 = ({ formData, setFormData, prevStep, nextStep }) => {
         <input
           type="text"
           name="Lien_instagram"
-          className="bg-grayColor rounded-lg outline-none px-5  h-11  text-[14px]      "
+          className="bg-grayColor rounded-lg outline-none px-5  h-11  text-[13px]      "
           placeholder="Lien de page instagram"
           value={formData.Lien_instagram}
           onChange={handleChange}
@@ -337,7 +337,7 @@ const Step2 = ({ formData, setFormData, prevStep, nextStep }) => {
         <input
           type="text"
           name="Lien_linkedin"
-          className="bg-grayColor rounded-lg outline-none px-5  h-11  text-[14px]      "
+          className="bg-grayColor rounded-lg outline-none px-5  h-11  text-[13px]      "
           placeholder="Lien de page Linkedin"
           value={formData.Lien_linkedin}
           onChange={handleChange}
@@ -345,7 +345,7 @@ const Step2 = ({ formData, setFormData, prevStep, nextStep }) => {
         <input
           type="text"
           name="Lien_siteWeb"
-          className="bg-grayColor rounded-lg outline-none px-5  h-11  text-[14px]      "
+          className="bg-grayColor rounded-lg outline-none px-5  h-11  text-[13px]      "
           placeholder="Lien de page de site web"
           value={formData.Lien_siteWeb}
           onChange={handleChange}
@@ -354,14 +354,14 @@ const Step2 = ({ formData, setFormData, prevStep, nextStep }) => {
 
       <div className="flex justify-center space-x-4">
         <button
-          className="btn bg-gray-300 text-gray-600 rounded-full py-2 px-6 mt-8 mb-7 "
+          className="btn bg-gray-300 text-gray-600 rounded-full text-[13px] py-2 px-6 mt-8 mb-7 "
           type="button"
           onClick={prevStep}
         >
           Précédent
         </button>
         <button
-          className="btn bg-green-500 text-white rounded-full py-2  px-8 mt-8 mb-7 "
+          className="btn bg-green-500 text-white rounded-full py-2  text-[13px] px-8 mt-8 mb-7 "
           type="submit"
         >
           Suivant
@@ -388,14 +388,14 @@ const Step3 = ({ formData, setFormData, prevStep, HandleSubmit, session }) => {
 
       <div className="flex justify-center space-x-4">
         <button
-          className="btn bg-gray-300 text-gray-600 rounded-full py-2 px-6 mt-8 mb-7 "
+          className="btn bg-gray-300 text-[13px] text-gray-600 rounded-full py-2 px-6 mt-8 mb-7 "
           type="button"
           onClick={prevStep}
         >
           Précédent
         </button>
         <button
-          className="btn bg-green-500 text-white rounded-full py-2  px-8 mt-8 mb-7 "
+          className="btn bg-green-500 text-[13px] text-white rounded-full py-2  px-8 mt-8 mb-7 "
           type="submit"
         >
           Submit
