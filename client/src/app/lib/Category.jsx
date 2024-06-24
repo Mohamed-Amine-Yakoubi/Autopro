@@ -36,3 +36,15 @@ export async function getCategory(id_cat) {
  
     return data;
   }
+
+  export async function getOneVille(id_ville) {
+    const res = await fetch(
+        `http://localhost:4000/api/v1/Ville/Getville/${id_ville}`
+    );
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error("Failed to fetch data");
+    }
+ 
+    return data;
+  }

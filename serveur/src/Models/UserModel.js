@@ -32,11 +32,7 @@ const User = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    Adresse_user: {
-      type: DataTypes.STRING,
-      allowNull: false,
    
-    },
     Profil_user: {
       type: DataTypes.STRING,
       allowNull: false,

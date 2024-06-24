@@ -9,7 +9,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-const Header = ({ Title }) => {
+const Header = ({ Title ,subtitle}) => {
   const settings = {
     autoplay: true,
     speed: 1000,
@@ -51,8 +51,8 @@ const Header = ({ Title }) => {
         <div className="container absolute inset-0 flex    items-center    mx-auto   justify-center ">
           <div className="    flex flex-col   items-center justify-center md:flex-row      ">
             <div className="    text-white     ">
-              <h1 className="text-4xl font-bold text-center md:text-left md:mt-0 mt-5">
-                {Title}
+              <h1 className="text-[25px] font-bold text-center flex md:text-left md:mt-0 mt-5">
+                {Title} /  {subtitle}
               </h1>
             </div>
           </div>

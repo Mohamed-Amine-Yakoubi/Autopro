@@ -14,7 +14,7 @@ const SignupForm = ({ isAnimated, setIsAnimated }) => {
     Email_user: "",
     MotDePasse_user: "",
     Telephone_user: "",
-    Adresse_user: "",
+ 
   });
  
   const handleChangeValue = (e) => {
@@ -45,8 +45,8 @@ const SignupForm = ({ isAnimated, setIsAnimated }) => {
       !user.Prenom_user ||
       !user.Email_user ||
       !user.MotDePasse_user ||
-      !user.Telephone_user ||
-      !user.Adresse_user
+      !user.Telephone_user  
+ 
     ) {
       toast.error("Tous les champs sont nécessaires.");
     } else if (EmailExist.exists === true) {
@@ -126,14 +126,7 @@ const SignupForm = ({ isAnimated, setIsAnimated }) => {
 
               onChange={handleChangeValue}
             />
-            <Input
-              type={"text"}
-              name={"Adresse_user"}
-              placeholder={"Adresse"}
-              value={user.Adresse_user}
-
-              onChange={handleChangeValue}
-            />
+      
           </div>
 
           <div className="flex justify-center items-center mt-8">

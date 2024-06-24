@@ -8,7 +8,7 @@ export default function ({ children }) {
 
   if (status === "loading") return <div><Loading/></div>;
   return (
-    <div className="flex flex-col md:flex-row items-center  my-10 mt-28"> {/* flex container */}
+    <div className="flex flex-col md:flex-row items-center  my-10 mt-28  mx-12"> {/* flex container */}
       {/* Sidebar */}
       <SideBar />
       {/* Content Area */}

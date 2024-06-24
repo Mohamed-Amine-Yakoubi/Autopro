@@ -19,4 +19,18 @@ exports.Get_AllVille = asyncHandler(async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+ /**************Get all Store************* */
+exports.Get_ville = asyncHandler(async (req, res) => {
+  try {
+    const {id_ville}=req.params;
+    const get_ville = await Ville.findByPk(id_ville);
+    if (get_ville) {
+      res.status(201).json(  get_ville );
+    } else {
+      res.status(404).json({ message: "ville have not been found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
  

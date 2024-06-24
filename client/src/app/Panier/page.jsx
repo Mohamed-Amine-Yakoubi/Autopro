@@ -4,7 +4,7 @@ import { FaCircleCheck } from "react-icons/fa6";
 
 import { FaTrashAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { removeItem, updateQuantity } from "../redux/slices/cartSlice";
+import { removeAllItems, removeItem, updateQuantity } from "../redux/slices/cartSlice";
 import { Loading } from "@/components/Loading";
 import Image from "next/image";
 import "../../styles/table.scss";
@@ -13,18 +13,17 @@ import { getMatterById } from "../lib/Car";
 import { getSubCategory } from "../lib/SubCategory";
 import Header from "@/components/Header";
 import { useSession } from "next-auth/react";
-
+import { useRouter } from "next/navigation";
 import "../../styles/stepper.scss";
 import { TiTick } from "react-icons/ti";
 import { getAdrByIdUser, getUser } from "../lib/User";
 import Input from "@/components/Input";
 import { getVille } from "../lib/Category";
+import { getAllMainCommande } from "../lib/Commande";
 
 const Panier = () => {
-  const [matiere, setMatiere] = useState({});
-  const [subcategory, setSubcategory] = useState({});
   const { data: session } = useSession();
-  const dispatch = useDispatch();
+
   const [loading, setLoading] = useState(true);
 
   const cart = useSelector((state) => state.cart);
@@ -51,7 +50,7 @@ const Panier = () => {
 
       {session && cart.items.length > 0 ? (
         <div>
-          <div className="flex flex-row  my-5 text-center  justify-center   ">
+          <div className="flex flex-row my-5 text-center justify-center">
             {[1, 2, 3].map((index) => (
               <div
                 key={index}
@@ -62,13 +61,24 @@ const Panier = () => {
                 <div className="step">
                   {index < step ? <TiTick size={24} /> : index}
                 </div>
-                <p className="text-gray-500 text-[13px] mt-2">Etape {index}</p>
+                {index === 1 ? (
+                  <p className="text-gray-500 text-[13px] mt-2">Panier </p>
+                ) : index === 2 ? (
+                  <p className="text-gray-500 text-[13px] mt-2">
+                    Vérification{" "}
+                  </p>
+                ) : index === 3 ? (
+                  <p className="text-gray-500 text-[13px] mt-2">
+                    Confirmation{" "}
+                  </p>
+                ) : null}
               </div>
             ))}
           </div>
+
           {step === 1 && <Step1 nextStep={nextStep} />}
           {step === 2 && <Step2 prevStep={prevStep} nextStep={nextStep} />}
-          {step === 3 && <Setp3 prevStep={prevStep} nextStep={nextStep} />}
+          {step === 3 && <Setp3 />}
         </div>
       ) : (
         <div className="flex md:flex-row flex-col my-32 justify-center">
@@ -311,12 +321,13 @@ const Step1 = ({ formData, setFormData, nextStep }) => {
 };
 const Step2 = ({ nextStep }) => {
   const [loading, setLoading] = useState(true);
+  const [commande, setCommande] = useState(true);
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
 
   const { data: session, status } = useSession();
   const id_user = session?.user?.id_user || "";
-
+  const router = useRouter();
   const [user, setUser] = useState({
     Nom_user: "",
     Prenom_user: "",
@@ -331,6 +342,7 @@ const Step2 = ({ nextStep }) => {
     id_ville: "",
     id_user: session.user.id_user,
   });
+  const [ville, setVille] = useState([]);
   const [confirmMdp, setConfirmMdp] = useState("");
 
   useEffect(() => {
@@ -338,9 +350,16 @@ const Step2 = ({ nextStep }) => {
       getUser(id_user).then((item) => {
         setUser(item);
       });
+
+      getAdrByIdUser(id_user).then((item) => {
+        setAdresse(item);
+      });
     }
-    getAdrByIdUser(id_user).then((item) => {
-      setAdresse(item);
+    getVille().then((Ville) => {
+      setVille(Ville);
+    });
+    getAllMainCommande(id_user).then((item) => {
+      setCommande(item);
     });
   }, [id_user]);
 
@@ -371,22 +390,11 @@ const Step2 = ({ nextStep }) => {
     }));
   };
 
-  const [ville, setVille] = useState([]);
-  useEffect(() => {
-    getVille().then((Ville) => {
-      setVille(Ville);
-    });
-  }, []);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if there's already an entry for this id_magasin in commandData
-    const existingAdresseData = adresse.find(
-      (data) => data.id_user ===  id_user
-    );
-    if (!existingAdresseData) {
-      try {
+    try {
+      if (adresse.id_user != id_user) {
         const res1 = await fetch(
           `http://localhost:4000/api/v1/user/Add_Adresse`,
           {
@@ -403,99 +411,118 @@ const Step2 = ({ nextStep }) => {
         if (!res1.ok) {
           throw new Error("Failed to add address");
         }
-
-        const updatedUser = { ...user };
-        delete updatedUser.MotDePasse_user;
-
-        const res2 = await fetch(
-          `http://localhost:4000/api/v1/user/UpdateAccount/${id_user}`,
+      } else if (adresse.id_user === id_user) {
+        const res1 = await fetch(
+          `http://localhost:4000/api/v1/user/Update_Adresse/${id_user}`,
           {
-            method: "PUT",
+            method: "PATCH",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(updatedUser),
+            body: JSON.stringify({
+              ...adresse,
+            }),
           }
         );
 
-        if (!res2.ok) {
-          throw new Error("Failed to update user");
+        if (!res1.ok) {
+          throw new Error("Failed to update address");
         }
-
-        if (!session) {
-          throw new Error("User session is not available.");
-        }
-
-        // Initialize an array to collect all commandData objects
-        const commandData = [];
-
-        cart.items.forEach((item) => {
-          // Check if there's already an entry for this id_magasin in commandData
-          const existingCommandData = commandData.find(
-            (data) => data.id_magasin === item.id_magasin
-          );
-
-          if (existingCommandData) {
-            // If entry exists, push a new add_CommandeDetail to the existing entry
-            existingCommandData.add_CommandeDetail.push({
-              Qte_dtcmd: item.quantity,
-              prix_Total_dtcmd: item.prix_prod * item.quantity,
-              id_prod: item.id_prod,
-              id_magasin: item.id_magasin,
-            });
-
-            // Update the total price
-            existingCommandData.prix_total += item.prix_prod * item.quantity;
-          } else {
-            // If entry does not exist, create a new commandData entry
-            commandData.push({
-              id_user: session.user.id_user,
-              id_magasin: item.id_magasin,
-              prix_total: item.prix_prod * item.quantity,
-              add_CommandeDetail: [
-                {
-                  Qte_dtcmd: item.quantity,
-                  prix_Total_dtcmd: item.prix_prod * item.quantity,
-                  id_prod: item.id_prod,
-                  id_magasin: item.id_magasin,
-                },
-              ],
-            });
-          }
-        });
-        try {
-          // Iterate over each commandData object and send a POST request for each one
-          for (const data of commandData) {
-            const res = await fetch(
-              `http://localhost:4000/api/v1/commande/add_Commande`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-              }
-            );
-
-            if (!res.ok) {
-              const errorData = await res.json();
-              throw new Error(errorData.message || "Failed to add commande");
-            }
-
-            if (res && res1 && res2) {
-              nextStep();
-            }
-          }
-        } catch (error) {
-          console.error("Failed to add commande:", error);
-          alert("Failed to add commande: " + error.message);
-        }
-      } catch (error) {
-        console.error("Failed to update user:", error.message);
-        alert("Failed to update user");
       }
+
+      const updatedUser = { ...user };
+      delete updatedUser.MotDePasse_user;
+
+      const res2 = await fetch(
+        `http://localhost:4000/api/v1/user/UpdateAccount/${id_user}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedUser),
+        }
+      );
+
+      if (!res2.ok) {
+        throw new Error("Failed to update user");
+      }
+
+      if (!session) {
+        throw new Error("User session is not available.");
+      }
+
+      const commandData = [];
+      const maxIdMainCmdResult =
+        commande.length > 0
+          ? Math.max(...commande.map((cmd) => cmd.id_MainCmd))
+          : 0;
+      const id_MainCmd = maxIdMainCmdResult ? maxIdMainCmdResult + 1 : 1;
+      cart.items.forEach((item) => {
+        const existingCommandData = commandData.find(
+          (data) => data.id_magasin === item.id_magasin
+        );
+
+        if (existingCommandData) {
+          existingCommandData.add_CommandeDetail.push({
+            Qte_dtcmd: item.quantity,
+            prix_Total_dtcmd: item.prix_prod * item.quantity,
+            id_prod: item.id_prod,
+            id_magasin: item.id_magasin,
+          });
+          existingCommandData.prix_total += item.prix_prod * item.quantity;
+        } else {
+          commandData.push({
+            id_MainCmd: id_MainCmd,
+            id_user: session.user.id_user,
+            id_magasin: item.id_magasin,
+            prix_total: item.prix_prod * item.quantity,
+            Date_cmd: cart.Date,
+            add_CommandeDetail: [
+              {
+                id_MainCmd: id_MainCmd,
+                Qte_dtcmd: item.quantity,
+                prix_Total_dtcmd: item.prix_prod * item.quantity,
+                id_prod: item.id_prod,
+                id_magasin: item.id_magasin,
+              },
+            ],
+          });
+        }
+      });
+
+      for (const data of commandData) {
+        const res = await fetch(
+          `http://localhost:4000/api/v1/commande/add_Commande`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || "Failed to add commande");
+        }
+
+        // Assuming the API returns the ID of the new commande
+
+        const encodedId = Buffer.from(String(id_MainCmd)).toString("base64");
+        if (res && res2) {
+          router.push(`/Panier/${id_MainCmd}`);
+
+          dispatch(removeAllItems());
+        }
+      }
+    } catch (error) {
+      console.error("Failed to update user:", error.message);
+      alert("Failed to update user");
     }
   };
+
   const [selectedOption, setSelectedOption] = useState("");
 
   const handleToggle = (option) => {
@@ -691,102 +718,7 @@ const Step2 = ({ nextStep }) => {
 };
 
 const Setp3 = ({}) => {
-  const { data: session } = useSession();
-  const dispatch = useDispatch();
-  const [adresse, setAdresse] = useState([]);
-  const cart = useSelector((state) => state.cart);
-  const id_user = session?.user?.id_user || "";
-  useEffect(() => {
-    if (id_user) {
-      getAdrByIdUser(id_user).then((item) => {
-        setAdresse(item);
-      });
-    }
-  }, [id_user]);
-  return (
-    <div className=" my-10  mx-48 ">
-      <div className="flex items-center justify-center space-x-2 my-8">
-        <FaCircleCheck className="text-center text-greenColor" />
-        <p className="text-center text-greenColor font-semibold text-[18px]">
-          Merci {session.user.Nom_user} {session.user.Prenom_user}, Votre
-          commande a été recue
-        </p>
-      </div>
-      <div className="flex flex-col items-center">
-        <table className=" border py-5">
-          <tr className="text-center pt-5">
-            <td className="pt-5 w-1/5 text-[13px] text-gray-400">
-              Numero de commande
-            </td>
-            <td className="pt-5 w-1/5 text-[13px] text-gray-400">Date</td>
-            <td className="pt-5 w-1/5 text-[13px] text-gray-400">E-mail</td>
-            <td className="pt-5 w-1/5 text-[13px] text-gray-400">Total</td>
-            <td className="pt-5 w-1/5 text-[13px] text-gray-400">
-              Moyen de paiement
-            </td>
-          </tr>
-          <tr className="text-center  ">
-            <td className="pb-5 text-[14px]">Numero de commande</td>
-            <td className="pb-5 text-[14px]">Date</td>
-            <td className="pb-5 text-[14px]">{session.user.Email_user}</td>
-            <td className="pb-5 text-[14px]">{cart.totalPrice} TND</td>
-            <td className="pb-5 text-[14px]">Paiement a la livraison</td>
-          </tr>
-        </table>
-      </div>
-      <p className="text-start">
-        Payez en argent comptant à la livraison ou par chèque libellé au nom de
-        Autopro.
-      </p>
-      <p>Détails de la commande</p>
-      <table className="  py-5 w-full">
-        <tr className=" border-b pt-5">
-          <td className="pt-5   text-[13px] text-gray-400">Produit</td>
-          <td className="pt-5   text-[13px] text-gray-400">Total</td>
-        </tr>
-        {cart.items.map((item) => (
-          <tr className="  " key={item.id_prod}>
-            <td className="pb-5 text-[14px]">
-              {item.Libelle_prod} x {item.quantity}
-            </td>
-            <td className="pb-5 text-[14px]">
-              {item.prix_prod * item.quantity} TND
-            </td>
-          </tr>
-        ))}
-
-        <tr>
-          <td>Sous-total</td>
-          <td>{cart.prix_total} </td>
-        </tr>
-        <tr>
-          <td>Moyen de paiement</td>
-          <td>Paiement a la livraison</td>
-        </tr>
-        <tr className="border-b">
-          <td>Total</td>
-          <td>{cart.totalPrice} TND</td>
-        </tr>
-      </table>
-
-      <p>Adresse de facturation</p>
-      <p>
-        {session.user.Prenom_user} {session.user.Nom_user}{" "}
-      </p>
-      {adresse.length > 0 ? (
-        adresse.map((item) => (
-          <div key={item.id_adr}>
-            <p>{item.rue_adr}</p>
-            <p>{item.code_adr}</p>
-          </div>
-        ))
-      ) : (
-        <p>Aucune adresse trouvée.</p>
-      )}
-      <p>{session.user.Telephone_user} </p>
-      <p>{session.user.Email_user} </p>
-    </div>
-  );
+  return <div></div>;
 };
 
 export default Panier;

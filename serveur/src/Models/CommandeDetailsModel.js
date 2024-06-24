@@ -18,6 +18,10 @@ const CommandeDetails = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    id_MainCmd: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     prix_Total_dtcmd: {
       type: DataTypes.FLOAT,
       allowNull: false,
@@ -35,6 +39,7 @@ CommandeDetails.belongsTo(Commande, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
+ 
 CommandeDetails.belongsTo(Product, {
     foreignKey: "id_prod",
     onDelete: "CASCADE",

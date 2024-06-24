@@ -33,7 +33,7 @@ exports.Add_Adresse = asyncHandler(async (req, res) => {
 exports.GetAdrByIdUser = asyncHandler(async (req, res) => {
   try {
     const { id_user } = req.params;
-    const AdrByIdUser = await AdresseUser.findOne({ id_user: id_user });
+    const AdrByIdUser = await AdresseUser.findOne({where:{ id_user: id_user }});
     if (AdrByIdUser) {
       res.status(201).json(AdrByIdUser);
     } else {

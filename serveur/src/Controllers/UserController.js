@@ -17,7 +17,6 @@ exports.SignUp = asyncHandler(async (req, res) => {
       Email_user,
       MotDePasse_user,
       Telephone_user,
-      Adresse_user,
     } = req.body;
 
     // Hash the password
@@ -30,7 +29,6 @@ exports.SignUp = asyncHandler(async (req, res) => {
       Email_user,
       MotDePasse_user: hashedPassword,
       Telephone_user,
-      Adresse_user,
     });
 
     // Create JWT token
@@ -100,9 +98,7 @@ exports.GetUserById = asyncHandler(async (req, res) => {
   try {
     const getuserbyid = await UserModel.findByPk(id_user);
     if (getuserbyid) {
-      res
-        .status(201)
-        .json(  getuserbyid );
+      res.status(201).json(getuserbyid);
     } else {
       res.status(404).json({ message: " account have not been found" });
     }
@@ -149,7 +145,7 @@ exports.DeleteSpecificUser = asyncHandler(async (req, res) => {
 exports.Update_spec_User = asyncHandler(async (req, res) => {
   try {
     const { id_user } = req.params;
-    const { Nom_user, Prenom_user, Email_user, Telephone_user,Adresse_user, Profil_user } =
+    const { Nom_user, Prenom_user, Email_user, Telephone_user, Profil_user } =
       req.body;
 
     const updateFields = {
@@ -157,7 +153,7 @@ exports.Update_spec_User = asyncHandler(async (req, res) => {
       Prenom_user: Prenom_user,
       Email_user: Email_user,
       Telephone_user: Telephone_user,
-      Adresse_user : Adresse_user,
+
       Profil_user: Profil_user,
     };
     const [update_spec_user] = await UserModel.update(updateFields, {

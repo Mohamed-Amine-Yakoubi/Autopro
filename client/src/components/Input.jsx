@@ -13,24 +13,25 @@ const Input = ({ type, name, placeholder, value, onChange }) => {
   };
 
   return (
-    <div className="input  w-full">
-      <input
-        type={type}
-        name={name}
-        value={value}  // Use value prop directly
-        onChange={onChange}  // Pass onChange handler from parent component
-        onFocus={handleFocus}
-        className="outline-none pl-3 w-full border-2   border-gray-200 py-3   text-[12.5px] rounded-md"
-      
-        onBlur={handleBlur}
-      />
+    <div className={`  w-full   ${value  ? "pt-5" :isFocused?"pt-5": "pt-0"} `}>
+      <div className="input ">
+        <input
+          type={type}
+          name={name}
+          value={value} // Use value prop directly
+          onChange={onChange} // Pass onChange handler from parent component
+          onFocus={handleFocus}
+         className="outline-none pl-3 w-full border-2 pt-4 border-gray-200 py-1   text-[12.5px] rounded-md"
+          onBlur={handleBlur}
+        />
 
-      <label
-        htmlFor={name}
-        className={`label ${isFocused || value ? "filled" : ""}`}
-      >
-        {placeholder}
-      </label>
+        <label
+          htmlFor={name}
+          className={`label ${isFocused || value ? "filled " : ""}  `}
+        >
+          {placeholder}
+        </label>
+      </div>
     </div>
   );
 };

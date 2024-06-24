@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
-
+const now = new Date();
+const currentDate = now.toLocaleDateString('en-GB');
 const initialState = Cookies.get("cart")
   ? { ...JSON.parse(Cookies.get("cart")), loading: true }
   : {
@@ -9,8 +10,8 @@ const initialState = Cookies.get("cart")
       totalQuantity: 0,
       subTotalPrice: 0,
       TvaPourcentage: 0.19,
- 
-      TVA:0,
+      Date: currentDate,
+      TVA: 0,
       livraison: 7,
       totalPrice: 0,
     };
@@ -40,7 +41,8 @@ const cartSlice = createSlice({
         existingItem.quantity++;
         state.subTotalPrice += newItem.prix_prod;
       }
-      state.TVA =  state.subTotalPrice * state.TvaPourcentage ;
+    
+      state.TVA = state.subTotalPrice * state.TvaPourcentage;
       state.subTotalPrice = calculateTotalPrice(state.items);
       state.totalPrice = state.subTotalPrice + state.TVA + state.livraison;
       Cookies.set("cart", JSON.stringify(state));
@@ -48,12 +50,12 @@ const cartSlice = createSlice({
     removeItem(state, action) {
       const id_prod = action.payload;
       const existingItem = state.items.find((item) => item.id_prod === id_prod);
-    
-        state.items = state.items.filter((item) => item.id_prod !== id_prod);
-        state.totalQuantity--;
-        state.subTotalPrice -= existingItem.prix_prod;
-    
-        state.TVA =  state.subTotalPrice * state.TvaPourcentage ;
+
+      state.items = state.items.filter((item) => item.id_prod !== id_prod);
+      state.totalQuantity--;
+      state.subTotalPrice -= existingItem.prix_prod;
+
+      state.TVA = state.subTotalPrice * state.TvaPourcentage;
 
       state.subTotalPrice = calculateTotalPrice(state.items);
       state.totalPrice = state.subTotalPrice + state.TVA + state.livraison;
@@ -69,16 +71,24 @@ const cartSlice = createSlice({
         // Update the total price accordingly
         state.subTotalPrice += itemToUpdate.prix_prod * quantity;
       }
-      state.TVA =  state.subTotalPrice * state.TvaPourcentage ;
+      state.TVA = state.subTotalPrice * state.TvaPourcentage;
 
       state.subTotalPrice = calculateTotalPrice(state.items);
       state.totalPrice = state.subTotalPrice + state.TVA + state.livraison;
 
       Cookies.set("cart", JSON.stringify(state));
     },
+    removeAllItems(state,action){
+      state.items = [];
+      state.totalQuantity = 0;
+      state.subTotalPrice = 0;
+      state.TVA = 0;
+      state.totalPrice = 0;
+      Cookies.set("cart", JSON.stringify(state));
+    }
   },
 });
 
-export const { addItem, removeItem, updateQuantity } = cartSlice.actions;
+export const { addItem, removeItem, updateQuantity ,removeAllItems} = cartSlice.actions;
 
 export default cartSlice.reducer;

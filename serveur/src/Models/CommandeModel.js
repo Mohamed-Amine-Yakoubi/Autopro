@@ -12,6 +12,11 @@ const Commande = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
+
+    id_MainCmd: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     prix_total: {
       type: DataTypes.FLOAT,
       allowNull: false,
@@ -26,9 +31,13 @@ const Commande = sequelize.define(
       enum: ["en attente", "approuvé", "rejeté", "Annuler"],
       defaultValue: "en attente",
     },
+    Date_cmd: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   },
   {
-    updatedA: false,
+    updatedAt: false,
     createdAt: false,
     timestamps: false,
   }
