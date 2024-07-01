@@ -8,11 +8,13 @@ import { ImProfile } from "react-icons/im";
 import { FaShoppingBasket } from "react-icons/fa";
 import { FaBoxOpen } from "react-icons/fa";
 import { AiFillDashboard } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
 
 const SideBar = () => {
   const { data: session, status } = useSession();
   const [store, setStore] = useState([]);
-
+ 
+  const magasin = useSelector((state) => state.store);
   useEffect(() => {
     if (status === "authenticated") {
       getStoreByUserID(session.user.id_user).then((store) => {
@@ -20,11 +22,11 @@ const SideBar = () => {
       });
     }
   }, [status, session]); // Re-run the effect if status or session changes
-
+ 
   if (status === "authenticated") {
     return (
       <div className="h-[420px] w-64 md:mb-28  bg-gray-100 text-iconColor m-5 rounded-lg">
-        {store.map((item) => (
+        {magasin.items.map((item) => (
           <div key={item.id_magasin}>
             <div className="flex  py-10 px-4 flex-col items-center justify-center">
               <Image
@@ -67,7 +69,7 @@ const SideBar = () => {
               </li>
               <li className="p-4 hover:bg-greenColor hover:text-white flex items-center space-x-3 rounded-md">
                 <FaShoppingBasket className=" or text-[20px]" />
-                <Link href="/page3" className="font-poppins text-[14px]">
+                <Link href="/Dashboard/CommandeClient" className="font-poppins text-[14px]">
                   Commande Client
                 </Link>
               </li>

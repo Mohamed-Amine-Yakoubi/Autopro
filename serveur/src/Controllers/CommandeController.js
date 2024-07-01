@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const { Op } = require("sequelize");
 const Commande = require("../Models/CommandeModel");
 const CommandeDetails = require("../Models/commandeDetailsModel");
+const CommandeMail = require("../Utils/CommandeMail");
 require("dotenv").config();
 
 function generateRandomString(length) {
@@ -48,6 +49,7 @@ exports.add_Commande = asyncHandler(async (req, res) => {
     }
 
     // Create CommandeDetails
+
     const commandeDetailsPromises = add_CommandeDetail.map((detail) => {
       return CommandeDetails.create({
         id_cmd: add_Commande.id_cmd,
@@ -73,6 +75,20 @@ exports.add_Commande = asyncHandler(async (req, res) => {
     res
       .status(500)
       .json({ error: "Internal server error", details: error.message });
+  }
+});
+
+/**************Get all Commande************* */
+exports.Get_AllCommandeUsers = asyncHandler(async (req, res) => {
+  try {
+    const Get_AllCommande = await Commande.findAll();
+    if (Get_AllCommande) {
+      res.status(201).json(Get_AllCommande);
+    } else {
+      res.status(404).json({ message: "Commande have not been found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -112,8 +128,10 @@ exports.getOneCommandeByIdUser = asyncHandler(async (req, res) => {
 /**************Get all Commande************* */
 exports.Get_AllMainCommande = asyncHandler(async (req, res) => {
   try {
-    const {id_user}=req.params
-    const Get_AllCommande = await Commande.findAll({where:{id_user:id_user}});
+    const { id_user } = req.params;
+    const Get_AllCommande = await Commande.findAll({
+      where: { id_user: id_user },
+    });
     if (Get_AllCommande) {
       res.status(201).json(Get_AllCommande);
     } else {
@@ -143,11 +161,11 @@ exports.Get_MainCommande = asyncHandler(async (req, res) => {
 exports.getdetailsCommande = asyncHandler(async (req, res) => {
   try {
     const { id_MainCmd } = req.params;
-    const detailsCommande  = await CommandeDetails.findAll({
-      where: {  id_MainCmd:id_MainCmd  },
+    const detailsCommande = await CommandeDetails.findAll({
+      where: { id_MainCmd: id_MainCmd },
     });
-    if (detailsCommande ) {
-      res.status(201).json(detailsCommande );
+    if (detailsCommande) {
+      res.status(201).json(detailsCommande);
     } else {
       res.status(404).json({ message: `No favoris found this ${id_user}` });
     }
@@ -159,8 +177,10 @@ exports.getdetailsCommande = asyncHandler(async (req, res) => {
 /**************Get all CommandeMagasin************* */
 exports.Get_AllCommandebydiMagasin = asyncHandler(async (req, res) => {
   try {
-    const {id_MainCmd,id_magasin}=req.params
-    const Get_AllCommande = await CommandeDetails.findAll({where:{id_MainCmd:id_MainCmd ,id_magasin: id_magasin}});
+    const { id_MainCmd, id_magasin } = req.params;
+    const Get_AllCommande = await CommandeDetails.findAll({
+      where: { id_MainCmd: id_MainCmd, id_magasin: id_magasin },
+    });
     if (Get_AllCommande) {
       res.status(201).json(Get_AllCommande);
     } else {
@@ -168,5 +188,42 @@ exports.Get_AllCommandebydiMagasin = asyncHandler(async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+/*****************update etat commabde**************************** */
+exports.Update_commande = asyncHandler(async (req, res) => {
+  try {
+    const { id_cmd } = req.params;
+    const { etat_cmd } = req.body;
+    const updateFields = { etat_cmd };
+    const update_commande = await Commande.update(updateFields, {
+      where: { id_cmd: id_cmd },
+    });
+
+    if (update_commande) {
+      res.status(201).json(update_commande);
+    } else {
+      res.status(404).json({
+        message: "Store has not been added",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+/******************sen Mail commande****************** */
+exports.Mail_Commande = asyncHandler(async (req, res) => {
+  try {
+    const { to, subject, html } = req.body;
+
+    await CommandeMail(to, subject, html);
+    res.status(200).json({ message: "Email sent successfully" });
+  } catch (error) {
+    console.error("Error while adding Commande and CommandeDetails:", error);
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
   }
 });

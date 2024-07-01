@@ -20,7 +20,7 @@ export default function ({ children }) {
   return (
     <div>
       <div>
-        <Header Title="Compte"   />
+        <Header Title={`Compte`}  pageTitle={"commande"}  />
       </div>
 
       <div className="flex flex-col md:flex-row lg:space-x-8  my-10   lg:mx-52  ">

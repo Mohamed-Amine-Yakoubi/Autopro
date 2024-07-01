@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ImProfile } from "react-icons/im";
 
-import { FaBoxOpen } from "react-icons/fa";
+import { FaBoxOpen, FaUserCircle } from "react-icons/fa";
 
 import { FaShop } from "react-icons/fa6";
 import { HiOutlineLogout } from "react-icons/hi";
@@ -27,8 +27,10 @@ const SideBarCompte = () => {
       <div className="h-[420px] w-64 md:mb-28  bg-gray-100 text-iconColor m-5 rounded-lg">
         <div>
           <div className="flex  py-10 px-4 flex-col items-center justify-center">
+          <FaUserCircle className=" text-iconColor text-[70px]" />
+
             <p className="mt-3 text-[13px]   font-semibold ">
-              {session.user.Nom_user}
+            {session.user.Prenom_user} {session.user.Nom_user}
             </p>
           </div>
           <ul className="px-5   ">

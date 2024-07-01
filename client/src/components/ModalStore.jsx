@@ -13,12 +13,14 @@ import { TiTick } from "react-icons/ti";
 import { getStoreByUserID } from "@/app/lib/Magasin";
 import Input from "./Input";
 import Textarea from "./Textarea";
+import { useDispatch } from "react-redux";
+import { addItem } from "@/app/redux/slices/storeSlice";
 
 const ModalStore = ({ isOpen, onClose, children }) => {
   const { data: session } = useSession();
   const [step, setStep] = useState(1);
   const [store, setStore] = useState([]);
-
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     Libelle_magasin: "",
     Adresse_magasin: "",
@@ -69,6 +71,7 @@ const ModalStore = ({ isOpen, onClose, children }) => {
       const result = await res.json();
 
       if (result) {
+        dispatch(addItem(result));
         window.location.reload();
       }
     } catch (error) {

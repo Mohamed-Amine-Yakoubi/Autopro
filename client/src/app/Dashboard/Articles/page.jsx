@@ -82,13 +82,10 @@ const Article = () => {
     });
   };
 
-  const filteredData = product.filter(
-    (product) =>
-      (product.Libelle_prod?.toLowerCase().includes(filter.toLowerCase()) ??
-        false) &&
-      (product.Reference_prod?.toLowerCase().includes(filter.toLowerCase()) ??
-        false) &&
-      (selectedOption ? product.id_cat === selectedOption : true)
+  const filteredData = product.filter((item) =>
+    (item.Libelle_prod?.toLowerCase().includes(filter.toLowerCase()) ?? false) ||
+    (item.Reference_prod?.toLowerCase().includes(filter.toLowerCase()) ?? false)||
+    (selectedOption ? item.id_cat === parseInt(selectedOption) : true)
   );
 
   const handleSearch = (e) => {
@@ -120,7 +117,7 @@ const Article = () => {
   const reloadPage = () => {
     location.reload();
   };
-
+ 
   return (
     <div className="mx-4 md:mx-10 mb-10">
       <div className="  flex md:flex-row flex-col flex-wrap md:justify-between md:items-center  ">

@@ -39,7 +39,7 @@ const DropDown = ({ openMenu }) => {
         </DropdownTrigger>
         <DropdownMenu aria-label="Static Actions">
           <DropdownItem className="mb-5">
-            <div className="flex flex-row items-center mb-5">
+            <div className="flex flex-row items-center mb-3">
               <div>
                 <FaUserCircle className="mr-2 text-[30px]" />
               </div>
@@ -56,24 +56,24 @@ const DropDown = ({ openMenu }) => {
 
           <DropdownItem>
             <Link href="/Compte">
-              <div className="flex items-center">
-                <FaBoxOpen className="text-iconColor mr-2 text-[19px]" />
+              <div className="flex items-center  text-[15px] ">
+                <FaBoxOpen className="text-iconColor mr-2 text-[15px]" />
                 Commandes
               </div>
             </Link>
           </DropdownItem>
           {session.user.Profil_user === "client" ? (
             <DropdownItem onClick={openModal}>
-              <div className="flex items-center mt-4">
-                <FaShop className="text-iconColor mr-2 text-[17px]" />
+              <div className="flex items-center text-[15px]  mt-2">
+                <FaShop className="text-iconColor mr-2 text-[15px]" />
                 Demande boutique
               </div>
             </DropdownItem>
           ) : session.user.Profil_user === "Fournisseur" ? (
             <DropdownItem>
               <Link href="/Dashboard">
-                <div className="flex items-center mt-4">
-                  <FaShop className="text-iconColor mr-2 text-[17px]" />
+                <div className="flex items-center  text-[15px] mt-2">
+                  <FaShop className="text-iconColor mr-2 text-[15px]" />
                   Votre Boutique
                 </div>
               </Link>
@@ -81,8 +81,8 @@ const DropDown = ({ openMenu }) => {
           ) : null}
           <DropdownItem>
             <Link href="/Compte/DetailCompte">
-              <div className="flex items-center mt-4">
-                <ImProfile className="text-iconColor mr-2 text-[17px]" />
+              <div className="flex items-center  text-[15px] mt-2">
+                <ImProfile className="text-iconColor mr-2 text-[15px]" />
                 Details du compte
               </div>
             </Link>
@@ -98,8 +98,8 @@ const DropDown = ({ openMenu }) => {
             }}
           >
             <hr className="w-72 h-px my-2 mb-4 mt-4 dark:bg-gray-300" />
-            <div className="flex items-center">
-              <HiOutlineLogout className="text-iconColor mr-2 text-[17px]" />
+            <div className="flex items-center text-[15px] ">
+              <HiOutlineLogout className="text-iconColor mr-2 text-[15px]" />
               Se déconnecter
             </div>
           </DropdownItem>

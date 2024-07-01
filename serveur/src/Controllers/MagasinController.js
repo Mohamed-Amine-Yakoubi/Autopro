@@ -48,10 +48,7 @@ exports.CreateStore = asyncHandler(async (req, res) => {
     });
 
     if (Magasin) {
-      res.status(201).json({
-        message: "Store has been added successfully",
-        data: Magasin,
-      });
+      res.status(201).json(Magasin);
     } else {
       res.status(404).json({
         message: "Store has not been added",

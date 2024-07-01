@@ -7,6 +7,7 @@ import {
 } from "@/app/lib/Commande";
 import { getSpecProduct } from "@/app/lib/Product";
 import { getAdrByIdUser } from "@/app/lib/User";
+import Header from "@/components/Header";
 import { Loading } from "@/components/Loading";
 import {
   Button,
@@ -49,21 +50,27 @@ const Commande = () => {
   if (loading) return <Loading />;
   return (
     <div>
+  
+      
+      
+
+      <h1 className="text-[23px] font-semibold text-greenColor mb-3">Vos Commandes</h1>
+
       <table className="  py-5 w-full">
         <tr className=" border-b pb-5">
-          <td className="pt-5   text-[15px] font-semibold text-darkColor">
+          <td className="pt-5  w-1/5  text-[14px] font-semibold text-darkColor">
             Commande
           </td>
-          <td className="pt-5   text-[15px] font-semibold text-darkColor">
+          <td className="pt-5  w-1/3 text-[14px] font-semibold text-darkColor">
             Date
           </td>
-          <td className="pt-5   text-[15px] font-semibold text-darkColor">
+          <td className="pt-5 w-1/3  text-[14px] font-semibold text-darkColor">
             État
           </td>
-          <td className="pt-5   text-[15px] font-semibold text-darkColor">
+          <td className="pt-5 w-1/3  text-[14px] font-semibold text-darkColor">
             Total
           </td>
-          <td className="pt-5   text-[15px] font-semibold text-darkColor"></td>
+          <td className="pt-5 w-1/4  text-[14px] font-semibold text-darkColor"></td>
         </tr>
         {commande.map((item) => {
           if (!renderedCommandeIds.has(item.id_MainCmd)) {
@@ -78,7 +85,7 @@ const Commande = () => {
                 key={item.id_cmd}
                 className="text-[13px] text-darkColor border-t"
               >
-                <td className="pt-1 text-blue-500">N°{item.id_MainCmd}</td>
+                <td className="pt-1 text-greenColor">N°{item.id_MainCmd}</td>
                 <td className="pt-1">{item.Date_cmd}</td>
                 <td className="pt-1">{item.Date_cmd}</td>
                 

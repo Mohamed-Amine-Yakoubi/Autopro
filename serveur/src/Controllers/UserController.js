@@ -84,7 +84,7 @@ exports.GetAllUsers = asyncHandler(async (req, res) => {
   try {
     const getalluser = await UserModel.findAll({});
     if (getalluser) {
-      res.status(200).json({ message: "all users ", data: getalluser });
+      res.status(200).json( getalluser );
     } else {
       res.status(404).json({ message: " accounts were not found" });
     }

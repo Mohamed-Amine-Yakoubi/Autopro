@@ -4,7 +4,11 @@ import { FaCircleCheck } from "react-icons/fa6";
 
 import { FaTrashAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { removeAllItems, removeItem, updateQuantity } from "../redux/slices/cartSlice";
+import {
+  removeAllItems,
+  removeItem,
+  updateQuantity,
+} from "../redux/slices/cartSlice";
 import { Loading } from "@/components/Loading";
 import Image from "next/image";
 import "../../styles/table.scss";
@@ -19,7 +23,7 @@ import { TiTick } from "react-icons/ti";
 import { getAdrByIdUser, getUser } from "../lib/User";
 import Input from "@/components/Input";
 import { getVille } from "../lib/Category";
-import { getAllMainCommande } from "../lib/Commande";
+import { Get_AllCommandeUsers, getAllMainCommande } from "../lib/Commande";
 
 const Panier = () => {
   const { data: session } = useSession();
@@ -322,6 +326,7 @@ const Step1 = ({ formData, setFormData, nextStep }) => {
 const Step2 = ({ nextStep }) => {
   const [loading, setLoading] = useState(true);
   const [commande, setCommande] = useState(true);
+  const [commandeUsers, setCommandeUsers] = useState(true);
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
 
@@ -358,6 +363,10 @@ const Step2 = ({ nextStep }) => {
     getVille().then((Ville) => {
       setVille(Ville);
     });
+    Get_AllCommandeUsers().then((item)=>{
+      setCommandeUsers(item)
+    }
+  )
     getAllMainCommande(id_user).then((item) => {
       setCommande(item);
     });
@@ -451,11 +460,21 @@ const Step2 = ({ nextStep }) => {
       if (!session) {
         throw new Error("User session is not available.");
       }
-
+      const productDetails = await Promise.all(
+        cart.items.map(async (item) => {
+          const res = await fetch(`http://localhost:4000/api/v1/product/get_specProduct/${item.id_prod}`);
+          if (!res.ok) {
+            throw new Error("Failed to fetch product details");
+          }
+          return await res.json();
+        })
+      );
+  
+    
       const commandData = [];
       const maxIdMainCmdResult =
-        commande.length > 0
-          ? Math.max(...commande.map((cmd) => cmd.id_MainCmd))
+      commandeUsers.length > 0
+          ? Math.max(...commandeUsers.map((cmd) => cmd.id_MainCmd))
           : 0;
       const id_MainCmd = maxIdMainCmdResult ? maxIdMainCmdResult + 1 : 1;
       cart.items.forEach((item) => {
@@ -490,7 +509,149 @@ const Step2 = ({ nextStep }) => {
           });
         }
       });
+      const mailContent = `
+      <html>
+        <head>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              display: flex; justify-content: center;
+              margin: 0;
+              padding: 0;
+          
+              
+        
+         
+            }
+            .container {
+              max-width: 600px;
+              margin: 0 auto;
+              padding: 20px;
+              border-radius: 5px;
+              background-color:white;
+            }
+            h1 {
+              color: #333;
+              flex:center;
+              padding-bottom:10px;
+            }
+            p {
+              color: #666;
+            }
+            .button {
+              display: inline-block;
+              padding: 10px 20px;
+              background-color: #007bff;
+              color:white;
+              flex:center;
+              text-decoration: none;
+              border-radius: 5px;
+            }
+            table {
+              width: 600px;
+              margin-top:25px;
+              border: 1px solid #fafafa ;
+              border-collapse: collapse;
+            }
+          </style>
+        </head>
+        <body class="container">
+          <h1 style="color:#4BAF4F">En Cours De Traitement</h1>
+          <h4> Bonjour ${session.user.Prenom_user} ${session.user.Nom_user}, </h4>
+          <p>Pour information – nous avons reçu votre commande n°${id_MainCmd}, elle est maintenant en cours de traitement :</p>
+          <p>Payer en argent comptant à la livraison ou par chèque libellé au nom de Autopro.</p>
+          <div style="display:flex;justify-content: center; align-items:center;">
+            <table>
+              <thead style="border: 1px solid #e0e0e0; text-align: start; background-color: #F5F5F7;">
+                <tr>
+                  <th style="border: 1px solid #e0e0e0; font-size: 14px; color: #666; padding: 10px;">Produit</th>
+                  <th style="border: 1px solid #e0e0e0; font-size: 14px; color: #666; padding: 10px;">Quantité</th>
+                  <th style="border: 1px solid #e0e0e0; font-size: 14px; color: #666; padding: 10px;" colspan="4">Prix</th>
+                </tr>
+              </thead>
+              <tbody style="border: 1px solid #e0e0e0;">
+                ${productDetails.map((product, index) => `
+                  <tr>
+                  
+                    <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;">
+                    <div style="display:flex;justify-content:space-between">
+                    <image src={${product.Image_thumbnail}}   alt="image" />
+                    ${product.Libelle_prod}</div></td>
+                    <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;">${cart.items[index].quantity}</td>
+                    <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;" colspan="4">${product.prix_prod} TND</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+              <tfoot style="border: 1px solid #e0e0e0;">
+                <tr style="border: 1px solid #e0e0e0;">
+                  <td style="border: 1px solid #e0e0e0; font-size: 14px; color: #666; font-weight: bold; padding: 10px;" colspan="5">Sous-total :</td>
+                  <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;">${cart.subTotalPrice} TND</td>
+                </tr>
+                <tr style="border: 1px solid #e0e0e0;">
+                  <td style="border: 1px solid #e0e0e0; font-size: 14px; color: #666; font-weight: bold; padding: 10px;" colspan="5">Moyen de paiement :</td>
+                  <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;">Paiement à la livraison</td>
+                </tr>
+                <tr style="border: 1px solid #e0e0e0;">
+                  <td style="border: 1px solid #e0e0e0; font-size: 14px; color: #666; font-weight: bold; padding: 10px;" colspan="5">Total :</td>
+                  <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;">${cart.totalPrice} TND</td>
+                </tr>
+              </tfoot>
+            </table>
 
+         </div>
+   <div  style="margin-top:30px;border:1px solid #e0e0e0 ;padding:10px">
+        <p>
+          <span style="font-weight: 600;color:#4BAF4F">
+            Nom et Prénom :
+          </span>
+          ${session.user.Prenom_user} ${session.user.Nom_user}
+        </p>
+
+        <p>
+          <span style="font-weight: 600;color:#4BAF4F">Numéro et nom de rue :</span>${adresse.rue_adr}
+        </p>
+        ${ville
+          .filter((item) => item.id_ville === adresse.id_ville)
+          .map((filtereditem) => `
+            <p key={filtereditem.id_ville}>
+              <span style="font-weight: 600;color:#4BAF4F">Region : </span>
+              ${filtereditem.Libelle_ville}
+            </p>
+        `).join('')}
+        <p>
+          <span style="font-weight: 600;color:#4BAF4F">Code postal : </span>${adresse.code_adr}
+        </p>
+
+        <p>
+          <span style="font-weight: 600;color:#4BAF4F">
+            Numéro de télephone :</span>${session.user.Telephone_user}
+        </p>
+            <p className="mt-3 text-[13.5px]">
+        <span  style="font-weight: 600;color:#4BAF4F">E-mail : </span>
+        ${session.user.Email_user}
+      </p>
+      </div>
+  
+    
+        
+        </body>
+      </html>
+    `;
+
+    const MailCommande = await fetch(
+      `http://localhost:4000/api/v1/commande/MailCommande`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: session.user.Email_user,
+          subject: "Votre commande est en cours de traitement",
+          html: mailContent,
+        }),
+      }
+    );
       for (const data of commandData) {
         const res = await fetch(
           `http://localhost:4000/api/v1/commande/add_Commande`,
@@ -511,7 +672,7 @@ const Step2 = ({ nextStep }) => {
         // Assuming the API returns the ID of the new commande
 
         const encodedId = Buffer.from(String(id_MainCmd)).toString("base64");
-        if (res && res2) {
+        if (res && res2 && MailCommande) {
           router.push(`/Panier/${id_MainCmd}`);
 
           dispatch(removeAllItems());

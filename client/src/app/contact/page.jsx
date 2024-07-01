@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-"use client"
+"use client";
 import Header from "@/components/Header";
 import "../globals.scss";
 import InputFields from "@/components/InputFields";
@@ -9,7 +9,6 @@ import Image from "next/image";
 import { FaLocationDot } from "react-icons/fa6";
 import { IoIosMail } from "react-icons/io";
 const Contact = () => {
-
   return (
     <div className="mb-28">
       {/* section 1 */}
@@ -17,7 +16,7 @@ const Contact = () => {
         <Header Title={"Contactez-nous"} />
       </div>
       {/* section 2 */}
-  
+
       <div className="  md:w-1/1 flex md:flex-row flex-col  mt-8   md:justify-center items-center mx-auto md:space-x-20">
         <div className=" md:w-1/3     ">
           <h1 className="title md:text-start text-center text-[16px]  ">
@@ -62,12 +61,17 @@ const Contact = () => {
         </div>
       </div>
       {/* section 3 */}
+
+   
+
       <div className="mx-auto w-1/2 mt-16 mb-16">
         <hr className=" " />
       </div>
       <div className="  md:w-1/1 flex md:flex-row flex-col     md:justify-center   mx-auto md:space-x-20 ">
         <div className=" md:w-1/3     mx-8  ">
-          <h1 className="title md:text-start text-center text-[16px]">Contactez-nous</h1>
+          <h1 className="title md:text-start text-center text-[16px]">
+            Contactez-nous
+          </h1>
           <div className="   mx-auto  mt-4 ">
             <p className="text md:text-start text-center font-poppins">
               Toute l'equipe de Autopro est a votre écoute , une question ? Vous
@@ -76,7 +80,8 @@ const Contact = () => {
             </p>
           </div>
           <div className="flex justify-center">
-          <Image src={piece} alt="piece" className="w-auto mt-8"/></div>
+            <Image src={piece} alt="piece" className="w-auto mt-8" />
+          </div>
         </div>
         <div className=" md:w-1/3     md:mx-0 mx-5 ">
           <div className=" mt-3 space-y-1">
@@ -105,9 +110,15 @@ const Contact = () => {
             <label className="mx-4 font-poppins text-[14px]  " htmlFor="">
               Message
             </label>
-            <InputFields type={"textarea"} className=" mt-3   "   rows="15" textarea height="200px"     />
+            <InputFields
+              type={"textarea"}
+              className=" mt-3   "
+              rows="15"
+              textarea
+              height="200px"
+            />
           </div>
-          
+
           <div className="flex justify-end ">
             <button className="bg-greenColor text-white hover:bg-darkColor rounded-full p-2 px-7 text-[14px] mt-5 ">
               Envoyer
@@ -115,7 +126,6 @@ const Contact = () => {
           </div>
         </div>
       </div>
- 
     </div>
   );
 };
