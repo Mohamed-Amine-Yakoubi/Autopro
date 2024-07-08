@@ -9,4 +9,6 @@ route.get("/getStoreByUserID/:id_proprietaire", MagasinControllers.Get_spec_Stor
 route.put("/updateStore/:id_magasin", upload.single("Logo_magasin"),  MagasinControllers.Update_spec_Store);
 route.delete("/deleteStore/:id_magasin", MagasinControllers.Delete_spec_Store);
 route.post("/SearchStore", MagasinControllers.Search_Store);
+route.post("/MailStore", MagasinControllers.User_Mail);
+
 module.exports = route;

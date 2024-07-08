@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./../styles/Input.scss";
 
-const Textarea = ({ type, name, placeholder, value, onChange }) => {
+const Textarea = ({ type, name, placeholder,rows, value, onChange }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleFocus = () => {
@@ -24,7 +24,9 @@ const Textarea = ({ type, name, placeholder, value, onChange }) => {
           onChange={onChange} // Pass onChange handler from parent component
           onFocus={handleFocus}
           className="outline-none pl-3 w-full border-2 pt-4 border-gray-200 py-1   text-[12.5px] rounded-md"
-          rows={3}
+          rows={rows}
+ 
+        
           onBlur={handleBlur}
         />
 

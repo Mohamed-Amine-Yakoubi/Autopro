@@ -17,11 +17,20 @@ import { IoIosMail, IoLogoLinkedin } from "react-icons/io";
 import { getStoreByID } from "@/app/lib/Magasin";
 import Image from "next/image";
 import { TbWorldWww } from "react-icons/tb";
+import ReclamationModal from "@/components/ReclamtionModal";
 
 const Magasin = (props) => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const Libelle_magasin = props.params.Magasin;
+
+  const [isModalProductOpen, setisModalProductOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const [selectedProduct, setSelectedProduct] = useState(null); // State to hold the selected product
 
   const [product, setProduct] = useState([]);
   const [magasin, setMagasin] = useState("");
@@ -72,7 +81,7 @@ const Magasin = (props) => {
         <Header Title={`Bienvenue chez ${Libelle_magasin}`} />
       </div>
       {/* section 2 */}
-  
+
       <div className="    flex lg:flex-row flex-col  mt-8  mx-16 lg:justify-center items-center   lg:space-x-20">
         <div className=" lg:w-1/1     flex lg:flex-row flex-col    lg:justify-center items-center lg:space-x-8 lg:space-y-0    space-y-4">
           <div className="w-[130px]    ">
@@ -91,15 +100,10 @@ const Magasin = (props) => {
             <p className=" mt-1  font-bold lg:text-start text-center text-greenColor text-[12px]">
               Boutique
             </p>
-         
-              <p className="text    mx-auto     mt-1 text-[12px] lg:text-start text-center font-poppins lg:w-[550px]  ">
-                vous pouvez nous contacter en utilisant le formulaire de contact
-                ci-dessous, si vous avez quelque chose à nous dire sur un
-                problème ou quelque chose que vous n'aimez pas sur notre site
-                Web, faites-le nous savoir et nous le réglerons dès que possible
-                {magasin.Description_magasin}
-              </p>
-     
+
+            <p className="text    mx-auto     mt-1 text-[12px] lg:text-start text-center font-poppins lg:w-[550px]  ">
+              {magasin.Description_magasin}
+            </p>
           </div>
         </div>
         <div className=" md:w-1/2   lg:mt-0 mt-5  flex lg:justify-end	justify-center ">
@@ -133,7 +137,11 @@ const Magasin = (props) => {
               </div>
               <div className="flex flex-row mt-3">
                 <div>
-                  <Link href={`${magasin.Lien_instagram}`} target="_blank" rel="noopener noreferrer">
+                  <Link
+                    href={`${magasin.Lien_instagram}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {" "}
                     <FaSquareInstagram className="text-[20px] mx-2 text-blueDark" />
                   </Link>
@@ -154,6 +162,15 @@ const Magasin = (props) => {
                   </Link>
                 </div>
               </div>
+              <div>
+                <button
+                  onClick={openModal}
+                  className="bg-greenColor text-white p-2 mt-5 rounded-md text-[13px]"
+                >
+                  {" "}
+                  Passer une reclamation
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -172,21 +189,20 @@ const Magasin = (props) => {
           <div className="flex   flex-wrap  justify-center ">
             {product.map((product) => (
               <div key={product.id_prod} className="mt-5     ">
-              
-                  <CardsProduit
-                    image={product.Image_thumbnail}
-                    libelle={product.Libelle_prod}
-                    categorie={product.category.Libelle_cat}
-                    prix={product.prix_prod}
-                    stock={product.Stock_prod}
-                    link={`../Catalogue/${product.id_prod}`}
-                  />
-              
+                <CardsProduit
+                  image={product.Image_thumbnail}
+                  libelle={product.Libelle_prod}
+                  categorie={product.category.Libelle_cat}
+                  prix={product.prix_prod}
+                  stock={product.Stock_prod}
+                  link={`../Catalogue/${product.id_prod}`}
+                />
               </div>
             ))}
           </div>
         </div>
       </div>
+      <ReclamationModal props={id} isOpen={isModalOpen} onClose={closeModal} />
     </div>
   );
 };

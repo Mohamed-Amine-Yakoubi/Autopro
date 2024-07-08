@@ -20,6 +20,8 @@ import {
 import { HiDotsHorizontal } from "react-icons/hi";
 import Link from "next/link";
 import { MdDelete } from "react-icons/md";
+import { FaCheckCircle } from "react-icons/fa";
+import { FaClock } from "react-icons/fa6";
 
 const CommandeClient = () => {
   const [store, setStore] = useState(null);
@@ -30,7 +32,7 @@ const CommandeClient = () => {
   const id_user = session?.user?.id_user || "";
   const [filter, setFilter] = useState("");
   const [combinedData, setCombinedData] = useState([]);
-  const [etat, setEtat] = useState("");
+
   useEffect(() => {
     if (session) {
       getStoreByUserID(id_user)
@@ -52,11 +54,13 @@ const CommandeClient = () => {
           const User = item.map((itemUser) => getUser(itemUser.id_user));
           Promise.all(User).then((getUserItem) => {
             setUser(getUserItem);
-            const combinateData= item.map((combinateItem)=>{
-              const userItem=getUserItem.find(user=>user.id_user===combinateItem.id_user);
-              return {...combinateItem,...userItem}
+            const combinateData = item.map((combinateItem) => {
+              const userItem = getUserItem.find(
+                (user) => user.id_user === combinateItem.id_user
+              );
+              return { ...combinateItem, ...userItem };
             });
-            setCombinedData(combinateData)
+            setCombinedData(combinateData);
           });
         });
       });
@@ -65,14 +69,16 @@ const CommandeClient = () => {
   const handleSearch = (e) => {
     setFilter(e.target.value);
   };
-console.log("comibnate",combinedData)
+  console.log("comibnate", combinedData);
   const filteredData = combinedData.filter(
     (item) =>
       (item.Nom_user?.toLowerCase().includes(filter.toLowerCase()) ?? false) ||
-    (item.Prenom_user?.toLowerCase().includes(filter.toLowerCase()) ?? false) ||
+      (item.Prenom_user?.toLowerCase().includes(filter.toLowerCase()) ??
+        false) ||
       (item.Reference_cmd?.toLowerCase().includes(filter.toLowerCase()) ??
         false) ||
-      (item.Date_cmd?.toLowerCase().includes(filter.toLowerCase()) ?? false)
+      (item.Date_cmd?.toLowerCase().includes(filter.toLowerCase()) ?? false) ||
+      (String(item.etat_cmd)?.includes(filter) ?? false)
   );
 
   // Pagination calculations
@@ -138,16 +144,34 @@ console.log("comibnate",combinedData)
   };
 
   return (
-    <div className="mx-4 md:mx-10 mb-10">
-      <div className="mb-3 relative  ">
-        <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-          <IoSearch />
-        </span>
-        <input
-          type="text"
-          className="outline-none md:w-96 text-[13px] w-full bg-grayLight border-2 border-gray-200 py-2 pl-10 pr-3 rounded-md"
-          onChange={handleSearch}
-        />
+    <div className="  mb-10">
+      <div className="  flex md:flex-row flex-col flex-wrap md:justify-between md:items-center  space-x-4 ">
+        <div className="mb-3 relative  ">
+          <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
+            <IoSearch />
+          </span>
+          <input
+            type="text"
+            className="outline-none md:w-96 text-[13px] w-full bg-grayLight border-2 border-gray-200 py-2 pl-8 pr-3 rounded-md"
+            onChange={handleSearch}
+            placeholder="Chercher"
+          />
+        </div>
+
+        <div className="flex md:flex-row flex-wrap     items-center  mb-2    ">
+          <select
+            className="  rounded-md  text-[13px]  px-4 py-2   outline-none border-2 border-gray-200 bg-grayLight text-textColor  "
+            defaultValue="" // Set defaultValue here
+            placeholder="Choisir la marque"
+            onChange={handleSearch}
+          >
+            <option value="">Etat</option>
+            <option value="Approuvé">Approuvé</option>
+            <option value="rejeté">Rejeté</option>
+            <option value="en attente">En attente</option>
+            <option value="Annuler">Annuler</option>
+          </select>
+        </div>
       </div>
       <div className="shadow-lg rounded-lg overflow-hidden ">
         <table className="w-full table-fixed">
@@ -205,17 +229,33 @@ console.log("comibnate",combinedData)
                   <td className="   text-[13px]">{item.prix_total},00 TND </td>
                   <td className="   text-[13px]">{item.Reference_cmd} </td>
                   <td className="   text-[13px]  ">{item.Date_cmd}</td>
-                  <td className="pt-1">
-                    {item.etat_cmd === "en attente" ? (
-                      <p className="bg-yellow-400 w-[80px] text-center py-2  rounded-full text-[12px]">
-                        en attente
+                  <td className="   text-[13px]  ">
+                    {item.etat_cmd === "Approuvé" ? (
+                      <p className="flex items-center ">
+                        <span className="text-greenColor mr-1">
+                          <FaCheckCircle />
+                        </span>
+                        Approuvé
                       </p>
-                    ) : item.etat_cmd === "Approuvé" ? (
-                      <p className="bg-green-400 w-[80px] text-center py-2  rounded-full text-[12px]">
-                        Terminée
+                    ) : item.etat_cmd === "en attente" ? (
+                      <p className="flex items-center ">
+                        <span className="text-orange-300 mr-1">
+                          <FaClock />
+                        </span>
+                        En attente
+                      </p>
+                    ) : item.etat_cmd === "rejeté" ? (
+                      <p className="flex items-center ">
+                        <span className="text-orange-300 mr-1">
+                          <FcCancel className="text-[18px]" />
+                        </span>
+                        Rejeté
                       </p>
                     ) : item.etat_cmd === "Annuler" ? (
-                      <p className="bg-red-400  text-white w-[80px] text-center py-2  rounded-full text-[12px]">
+                      <p className="flex items-center ">
+                        <span className="text-orange-300 mr-1">
+                          <FcCancel className="text-[18px]" />
+                        </span>
                         Annuler
                       </p>
                     ) : null}

@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { getStoreByUserID } from "../lib/Magasin";
 import { useEffect } from "react";
 import { initializeStore } from "../redux/slices/storeSlice";
+import DefaultLayout from "@/components/DefaultLayout";
 
 export default function ({ children }) {
   const { data: session, status } = useSession();
@@ -25,13 +26,8 @@ export default function ({ children }) {
       </div>
     );
   return (
-    <div className="flex flex-col md:flex-row   my-10 mt-28  mx-12">
-      {" "}
-      {/* flex container */}
-      {/* Sidebar */}
-      <SideBar />
-      {/* Content Area */}
-      <div className="flex-1 p-4">{children}</div>
-    </div>
+    <div>
+    <DefaultLayout>{children}</DefaultLayout>
+  </div>
   );
 }

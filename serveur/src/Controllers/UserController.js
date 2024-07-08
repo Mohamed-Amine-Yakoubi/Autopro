@@ -4,9 +4,11 @@ const Adresse_User = require("../Models/AdresseUser");
 const asyncHandler = require("express-async-handler");
 const { Op } = require("sequelize");
 const { createToken, verifyToken } = require("../Utils/Athentification");
+const cloudinary = require("../Utils/Cloudinary");
 
 const VerificationEmail = require("../Utils/VerificationEmail");
 const AdresseUser = require("../Models/AdresseUser");
+const Reclamtion = require("../Models/ClaimModel");
 //Sign Up
 
 exports.SignUp = asyncHandler(async (req, res) => {
@@ -84,7 +86,7 @@ exports.GetAllUsers = asyncHandler(async (req, res) => {
   try {
     const getalluser = await UserModel.findAll({});
     if (getalluser) {
-      res.status(200).json( getalluser );
+      res.status(200).json(getalluser);
     } else {
       res.status(404).json({ message: " accounts were not found" });
     }
@@ -272,6 +274,80 @@ exports.FindUserByEmail = asyncHandler(async (req, res) => {
       return res.status(200).json({ exists: true });
     } else {
       return res.status(200).json({ exists: false });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+//Reclamation
+exports.AddClaim = asyncHandler(async (req, res) => {
+  try {
+    const {
+      NomPrenom_rec,
+      Email_rec,
+      Telephone_rec,
+      description_rec,
+
+      id_magasin,
+    } = req.body;
+    let file_rec = null;
+    // Check if a file is uploaded
+    if (req.file) {
+      const image = req.file;
+      // Upload the image to Cloudinary
+      const result = await cloudinary.uploader.upload(image.path, {
+        resource_type: "auto",
+      });
+      file_rec = result.secure_url;
+    }
+    const addclaim = await Reclamtion.create({
+      NomPrenom_rec,
+      Email_rec,
+      Telephone_rec,
+      description_rec,
+      file_rec,
+
+      id_magasin,
+    });
+    if (addclaim) {
+      res.status(201).json({
+        message: " claim has been added successfully",
+        data: addclaim,
+      });
+    } else {
+      res.status(404).json({
+        message: "The  Favrois has not been added",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+//get all users claim
+exports.GetAllUsersClaim = asyncHandler(async (req, res) => {
+  try {
+    const allusersclaim = await Reclamtion.findAll({});
+    if (allusersclaim) {
+      res.status(200).json(allusersclaim);
+    } else {
+      res.status(404).json({ message: " accounts were not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+//get user by id
+exports.GetClaimStoreId = asyncHandler(async (req, res) => {
+  const { id_magasin } = req.params;
+  try {
+    const ClaimByStoreId = await Reclamtion.findAll({
+      where: { id_magasin: id_magasin },
+    });
+    if (ClaimByStoreId) {
+      res.status(201).json(ClaimByStoreId);
+    } else {
+      res.status(404).json({ message: " account have not been found" });
     }
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });

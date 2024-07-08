@@ -52,8 +52,8 @@ const Header = ({ Title ,pageTitle}) => {
           <div className="    flex flex-col   items-center justify-center md:flex-row      ">
             <div className="    text-white     ">
               <h1 className="text-[25px] font-bold text-center flex md:text-left md:mt-0 mt-5">
-             {`${Title} / ${pageTitle}`} 
-              </h1>
+            {Title}
+              </h1> 
             </div>
           </div>
         </div>

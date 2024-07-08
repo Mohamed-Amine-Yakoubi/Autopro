@@ -100,7 +100,8 @@ const CommandeClientDetails = (props) => {
         été passée le {firstDate}.
       </p>
 
-      <table className="border  rounded-md p-10 w-full">
+      <div className="shadow-lg rounded-lg overflow-hidden ">
+      <table className="w-full overflow-x-scroll">
         <caption className="bg-grayLight text-start    rounded-t-md text-[20px] px-5 py-3 font-bold text-greenColor  border">
           {" "}
           Détails de la commande
@@ -196,8 +197,8 @@ const CommandeClientDetails = (props) => {
           </tr>
         </tfoot>
       </table>
-
-      <p className="text-start text-[20px] font-semibold text-darkColor my-5">
+</div>
+      <p className="text-start text-[20px] font-semibold text-darkColor mt-10 my-5">
         Adresse de facturation
       </p>
 

@@ -5,6 +5,8 @@ const { Op } = require("sequelize");
 require("dotenv").config();
 const privatekey = process.env.PRIVATE_KEY;
 const cloudinary = require("../Utils/Cloudinary");
+ 
+const UserMail = require("../Utils/UserMail");
 
 exports.CreateStore = asyncHandler(async (req, res) => {
   try {
@@ -116,6 +118,7 @@ exports.Update_spec_Store = asyncHandler(async (req, res) => {
       Lien_facebook,
       Lien_instagram,
       Lien_linkedin,
+      etat_magasin,
       Lien_siteWeb,
       id_ville,
     } = req.body;
@@ -139,6 +142,8 @@ exports.Update_spec_Store = asyncHandler(async (req, res) => {
       Lien_facebook,
       Lien_instagram,
       Lien_linkedin,
+      etat_magasin,
+
       Lien_siteWeb,
       id_ville,
     };
@@ -211,5 +216,19 @@ exports.Search_Store = asyncHandler(async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+/******************sen Mail Store****************** */
+exports.User_Mail = asyncHandler(async (req, res) => {
+  try {
+    const { to, subject, html } = req.body;
+
+    await UserMail(to, subject, html);
+    res.status(200).json({ message: "Email sent successfully" });
+  } catch (error) {
+    console.error("Error while adding Commande and CommandeDetails:", error);
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
   }
 });

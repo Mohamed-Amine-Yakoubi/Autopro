@@ -1,0 +1,60 @@
+.input {
+  position: relative;
+  
+  input {
+    background: #f5f5f7;
+
+    outline: none;
+    transition: all 0.3s;
+    border: none; // Remove default border
+    border: 2px solid #ebebeb;
+    &:focus {
+      border: 2px solid #4baf4f; // Change border color when focused
+      
+    }
+ 
+  }
+  textarea {
+    background: #f5f5f7;
+
+    outline: none;
+    transition: all 0.3s;
+    border: none; // Remove default border
+    border: 2px solid #ebebeb;
+    &:focus {
+      border: 2px solid #4baf4f; // Change border color when focused
+      
+    }
+ 
+  }
+
+  .label {
+    position: absolute;
+    left: 1px;
+    top: 14px;
+    transition: all 0.2s;
+    padding-left: 12px;
+
+    z-index: 1;
+    color: #aaa; // Default label color
+    font-size: 12.5px; // Default label font size
+    // &::before {
+    //   content: "";
+    //   height: 5px;
+    //   background-color: red;
+    //   position: absolute;
+    //   left: 2px;
+    //   top: 24px;
+    //   width: 100%;
+    //   z-index: -1;
+    // }
+
+    &.filled {
+      top: -23px;
+      padding-left: 0px;
+      color: #344155; // Change label color when filled
+      font-size: 13px; // Change label font size when filled
+      font-weight: 600;
+    }
+  }
+}

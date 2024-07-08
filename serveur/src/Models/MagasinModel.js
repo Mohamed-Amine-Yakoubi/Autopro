@@ -52,10 +52,11 @@ const Magasin = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    isActive: {
-      type: DataTypes.BOOLEAN,
+    etat_magasin: {
+      type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: "false",
+      enum: ["Approuvé", "Rejeté", "En attente"],
+      defaultValue: "En attente",
     },
     createdAt: {
       type: DataTypes.DATE,

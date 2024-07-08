@@ -2,7 +2,8 @@ const asyncHandler = require("express-async-handler");
 const { Op } = require("sequelize");
 const Commande = require("../Models/CommandeModel");
 const CommandeDetails = require("../Models/commandeDetailsModel");
-const CommandeMail = require("../Utils/CommandeMail");
+ 
+const UserMail = require("../Utils/UserMail");
 require("dotenv").config();
 
 function generateRandomString(length) {
@@ -214,11 +215,11 @@ exports.Update_commande = asyncHandler(async (req, res) => {
   }
 });
 /******************sen Mail commande****************** */
-exports.Mail_Commande = asyncHandler(async (req, res) => {
+exports.User_Mail= asyncHandler(async (req, res) => {
   try {
     const { to, subject, html } = req.body;
 
-    await CommandeMail(to, subject, html);
+    await UserMail(to, subject, html);
     res.status(200).json({ message: "Email sent successfully" });
   } catch (error) {
     console.error("Error while adding Commande and CommandeDetails:", error);

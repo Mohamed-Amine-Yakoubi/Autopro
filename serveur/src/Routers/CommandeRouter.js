@@ -11,7 +11,7 @@ route.get("/Get_MainCommande/:id_MainCmd", CommandeController.Get_MainCommande);
 route.get("/getdetailsCommande/:id_MainCmd", CommandeController.getdetailsCommande);
 route.get("/Get_AllCommandebydiMagasin/:id_MainCmd/:id_magasin", CommandeController.Get_AllCommandebydiMagasin);
 route.put("/Update_commande/:id_cmd", CommandeController.Update_commande);
-route.post("/MailCommande", CommandeController.Mail_Commande);
+route.post("/MailCommande", CommandeController.User_Mail);
 
 
 module.exports = route;

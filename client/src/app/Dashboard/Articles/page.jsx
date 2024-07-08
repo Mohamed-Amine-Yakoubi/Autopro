@@ -19,7 +19,7 @@ import { MdDelete } from "react-icons/md";
 import { RiEdit2Fill } from "react-icons/ri";
 import Image from "next/image";
 import { getAllCategories } from "@/app/lib/Category";
-import { getSubCategory } from "@/app/lib/SubCategory";
+import { getSubCategory, getSubCategoryByIdCat } from "@/app/lib/SubCategory";
 import ModalAddProd from "@/components/ModalAddProd";
 import Link from "next/link";
 import ModalUpdateProduct from "@/components/ModalUpdateProduct";
@@ -69,7 +69,7 @@ const Article = () => {
 
   useEffect(() => {
     if (selectedOption) {
-      getSubCategory(selectedOption).then((SubCat) => {
+      getSubCategoryByIdCat(selectedOption).then((SubCat) => {
         setSubCategory(SubCat);
       });
     }
@@ -81,16 +81,19 @@ const Article = () => {
       setProduct((prevProd) => prevProd.filter((e) => e.id_prod !== id_prod));
     });
   };
-
-  const filteredData = product.filter((item) =>
-    (item.Libelle_prod?.toLowerCase().includes(filter.toLowerCase()) ?? false) ||
-    (item.Reference_prod?.toLowerCase().includes(filter.toLowerCase()) ?? false)||
-    (selectedOption ? item.id_cat === parseInt(selectedOption) : true)
-  );
-
   const handleSearch = (e) => {
     setFilter(e.target.value);
   };
+
+  const filteredData = product.filter(
+    (item) =>
+      (item.Libelle_prod?.toLowerCase().includes(filter.toLowerCase()) ??
+        false) ||
+      (item.Reference_prod?.toLowerCase().includes(filter.toLowerCase()) ??
+        false) ||
+      
+      (String(item.id_subcat)?.includes(filter) ?? false)
+  );
 
   // Pagination calculations
 
@@ -117,9 +120,10 @@ const Article = () => {
   const reloadPage = () => {
     location.reload();
   };
- 
+  console.log("id_subcat", filter);
+  console.log("id_cat", selectedOption);
   return (
-    <div className="mx-4 md:mx-10 mb-10">
+    <div className="  mb-10">
       <div className="  flex md:flex-row flex-col flex-wrap md:justify-between md:items-center  ">
         <div className="mb-3 relative  ">
           <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
@@ -138,6 +142,8 @@ const Article = () => {
               className="  rounded-lg  text-[13px]  p-3   outline-none border-2 border-gray-200 bg-grayLight text-textColor  "
               defaultValue="" // Set defaultValue here
               placeholder="Choisir la marque"
+              onChange={handleSearch}
+          
             >
               <option value="">sous-Catégories</option>
               {subcategory.map((item) => (
@@ -154,7 +160,7 @@ const Article = () => {
               placeholder="Choisir la marque"
               onChange={handleSelectChange}
             >
-              <option value="" disabled>
+              <option value=""  >
                 Catégories
               </option>
 
@@ -271,23 +277,20 @@ const Article = () => {
                             <p className="text-[14px]"> Supprimer</p>
                           </button>
                         </DropdownItem>
-                        <DropdownItem onClick={() => openModalProduct(item.id_prod)}>
+                        <DropdownItem
+                          onClick={() => openModalProduct(item.id_prod)}
+                        >
                           <div className=" hover:bg-greenColor rounded-md  hover:text-white p-2 flex items-center mt-3 mb-1">
                             <RiEdit2Fill className="text-[20px] mr-2" />
 
                             <button className="text-[14px]">Modifier</button>
                           </div>
-        
                         </DropdownItem>
                       </DropdownMenu>
                     </Dropdown>
-          
                   </div>
-                 
                 </td>
-      
               </tr>
-              
             ))}
           </tbody>
         </table>
@@ -308,11 +311,10 @@ const Article = () => {
         </div>
       </div>
       <ModalUpdateProduct
-        productData={selectedProduct} 
-               isOpen={isModalProductOpen}
-               onClose={closeModalProduct}
-               
-             />
+        productData={selectedProduct}
+        isOpen={isModalProductOpen}
+        onClose={closeModalProduct}
+      />
     </div>
   );
 };
