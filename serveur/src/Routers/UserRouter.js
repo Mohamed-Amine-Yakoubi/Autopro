@@ -51,6 +51,7 @@ route.get(
 route.get(
   "/GetClaimStoreId/:id_magasin",UserControllers.GetClaimStoreId
 );
+route.patch("/Update_etat_Rec/:id_rec", UserControllers.Update_etat_Rec);
 
 route.post("/Add_Adresse", AdresseUserController.Add_Adresse);
 route.get("/GetAdrByIdUser/:id_user", AdresseUserController.GetAdrByIdUser);

@@ -2,6 +2,7 @@ const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/Database");
 const User = require("./UserModel");
 const Ville = require("./VilleModel");
+const ChatModel = require("./ChatModel");
 
 const Magasin = sequelize.define(
   "Magasins",
@@ -78,6 +79,8 @@ Magasin.belongsTo(User, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
+
+ 
 Magasin.belongsTo(Ville, {
   foreignKey: "id_ville",
   onDelete: "CASCADE",

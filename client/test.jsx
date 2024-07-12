@@ -1,266 +1,214 @@
 "use client";
-import { getVille } from "@/app/lib/Category";
-import {
-  Get_AllCommandebydiMagasin,
-  getAllMainCommande,
-  getCommandeDetails,
-  getMainCommande,
-} from "@/app/lib/Commande";
-import { getStoreByID } from "@/app/lib/Magasin";
-import { getSpecProduct } from "@/app/lib/Product";
-import { getAdrByIdUser, getUser } from "@/app/lib/User";
-import { Loading } from "@/components/Loading";
+import { GetDestination, GetMsgByIdUser } from "@/app/lib/Chat";
+import { getAllStore, getStoreByID } from "@/app/lib/Magasin";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { FaCircleCheck } from "react-icons/fa6";
-import { AiOutlineClose } from "react-icons/ai";
-import { useSelector } from "react-redux";
-import { useRouter, useSearchParams } from 'next/navigation';
-const CommandeClientDetails = (props) => {
-  const { data: session } = useSession();
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-  const [ville, setVille] = useState([]);
-  const [commande, setCommande] = useState([]);
-  const [Detailscommande, setDetailscommande] = useState([]);
+import { io } from "socket.io-client";
 
-  const [product, setProduct] = useState([]);
-  const [adresse, setAdresse] = useState([]);
-  const [selected, setSelected] = useState(null);
-  const [user, setUser] = useState([]);
-  const [deselected, setDeselected] = useState(null);
- 
- 
-  const store = useSelector((state) => state.store);
- 
-  const searchParams = useSearchParams();
-  const id_MainCmd = searchParams.get('id_MainCmd');
-  const id_user = searchParams.get('id_user');
+const Chat = () => {
+  const { data: session, status } = useSession();
+  const id_user = session?.user?.id_user || "";
 
+  const [socket, setSocket] = useState(null);
+  const [inbox, setInbox] = useState([]);
+  const [userMsg, setUserMsg] = useState([]);
+  const [store, setStore] = useState([]);
+  const [message, setMessage] = useState("");
+  const [recipientId, setRecipientId] = useState("");
+  const [activeUsers, setActiveUsers] = useState([]);
+  const [conversations, setConversations] = useState([]);
 
+  useEffect(() => {
+    if (status === "authenticated") {
+      const newSocket = io("http://localhost:4000");
+      setSocket(newSocket);
 
-  console.log("viid_MainCmdlle", id_MainCmd);
-  console.log("id_user", id_user);
+      newSocket.emit("userLoggedIn", session.user.id_user);
 
+      newSocket.on("message", (message) => {
+        setInbox((prevMessages) => [
+          ...prevMessages,
+          { Expediteur: message.Expediteur, Contenu: message.Contenu },
+        ]);
+      });
 
+      newSocket.on("activeUsers", (users) => {
+        setActiveUsers(users);
+      });
 
+      newSocket.on("conversationsList", (users) => {
+        setConversations(users);
+      });
 
+      return () => {
+        newSocket.disconnect();
+        newSocket.off("activeUsers");
+        newSocket.off("conversationsList");
+      };
+    }
+  }, [session, status]);
 
-
-
-
-  const handleCommande = (id_prod) => {
-    if (id_prod) {
-      setSelected(id_prod);
-    } else if (id_prod === null) {
-      setSelected(id_prod);
+  const handleSendMessage = () => {
+    if (message && recipientId && session?.user?.id_user) {
+      const newMessage = {
+        contenu: message,
+        Expediteur: session.user.id_user,
+        recipientId,
+      };
+      socket.emit(
+        "message",
+        newMessage.contenu,
+        newMessage.Expediteur,
+        newMessage.recipientId
+      );
+      setInbox((prevMessages) => [
+        ...prevMessages,
+        { Expediteur: "You", Contenu: message },
+      ]);
+      setMessage("");
+    } else {
+      console.log("Please enter a message and select a recipient.");
     }
   };
 
   useEffect(() => {
-    if (session) {
-      setLoading(false); // Assuming this is correctly used to indicate session loaded
+    if (id_user) {
+      console.log("Fetching messages for user:", id_user);
+      GetMsgByIdUser(id_user)
+        .then((itemMsg) => {
+          setUserMsg(itemMsg);
+        })
+        .catch((error) => {
+          console.error("Failed to fetch user messages:", error);
+        });
     }
+    getAllStore().then((item) => {
+      setStore(item);
+    });
+  }, [id_user]);
 
-    getVille()
-      .then((Ville) => {
-        setVille(Ville);
-      })
-      .catch((error) => {
-        console.error("Error fetching Ville:", error);
-        // Handle error state if needed
-      });
-
-    if (store) {
-      store.items.map((itemStore) => {
-        Get_AllCommandebydiMagasin(id_MainCmd, itemStore.id_magasin).then(
-          (itemsCommandeDetails) => {
-            setDetailscommande(itemsCommandeDetails);
-            const productDetails = itemsCommandeDetails.map((itemProduct) =>
-              getSpecProduct(itemProduct.id_prod)
-            );
-
-            const AdresseUser = itemsCommandeDetails.map((itemAdresse) =>(
-              getAdrByIdUser(itemAdresse.id_user))
-            );
-            const User = itemsCommandeDetails.map((itemUser) =>
-              getUser(itemUser.id_user)
-            );
-            Promise.all(productDetails).then((item) => setProduct(item));
-            Promise.all(AdresseUser).then((item) => setAdresse(item));
-            Promise.all(User).then((item) => setUser(item));
-          }
-        );
-      });
-    }
-  }, [id_user, id_MainCmd]);
-
-  const totalPrix = Detailscommande.reduce(
-    (sum, item) => sum + item.prix_Total_dtcmd,
-    0
-  );
-  const Date_cmd = Detailscommande.map((item) => item.Date_cmd);
-  const firstDate = Date_cmd[0];
-  if (loading) return <Loading />;
-
-
-  console.log("ville", ville);
-  console.log("commande", commande);
-
-  console.log("Detailscommande", Detailscommande);
-  console.log("product", product);
-  console.log("adresse", adresse);
-  console.log("user", user);
-
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
+console.log(recipientId)
   return (
-    <div className="  ">
-      <p className="text-start text-[15px] mb-8">
-        La commande <span className="text-greenColor">n°{id_MainCmd}</span> a
-        été passée le {firstDate}.
-      </p>
-
-      <table className="border  rounded-md p-10 w-full">
-        <caption className="bg-grayLight text-start    rounded-t-md text-[20px] px-5 py-3 font-bold text-greenColor  border">
-          {" "}
-          Détails de la commande
-        </caption>
-        <thead>
-          <tr className="    pt-5">
-            <td className="py-4      px-5 text-[14px]    border-b text-center  font-semibold text-darkColor">
-              n°
-            </td>
-            <td className="py-4    w-1/4 text-[14px] border-b font-semibold text-darkColor">
-              Produit
-            </td>
-            <td className="py-4    w-1/4  text-[14px] border-b font-semibold text-darkColor">
-              Référence
-            </td>
-            <td className="py-4    text-center w-1/5 text-[14px] border-b font-semibold text-darkColor">
-              Quantité
-            </td>
-            <td className="py-4    w-1/5  text-center text-[14px] border-b font-semibold text-darkColor">
-              Total
-            </td>
-            <td className="py-4   w-1/3  text-[14px] border-b font-semibold text-darkColor"></td>
-          </tr>
-        </thead>
-        <tbody className="mb-5 " colSpan="4">
-          {Detailscommande.map((items, index) => {
-            const productItem = product.find(
-              (itemsProduct) => itemsProduct.id_prod === items.id_prod
-            );
-            return productItem ? (
-              <tr key={index} className=" ">
-                <td className="text-center py-1.5  w-10  text-[13px]">
-                  {items.id_dtcmd}
-                </td>
-                <td className=" py-2 text-[13.5px] flex items-center">
-                  <Image
-                    className="bg-grayLight rounded-md  "
-                    src={productItem.Image_thumbnail}
-                    width={50}
-                    height={50}
-                    alt="Image_thumbnail"
-                  />
-                  <Link
-                    href={`/Catalogue/${productItem.id_prod}`}
-                    className="text-greenColor mx-2 "
+    <div className="overflow-hidden flex items-center justify-center">
+      <div className="flex antialiased text-gray-800">
+        <div className="flex flex-row h-full w-full overflow-x-hidden">
+          <div className="flex flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
+            <div className="flex flex-row items-center justify-center h-12 w-full">
+              <div className="flex items-center justify-center rounded-2xl text-indigo-700 bg-indigo-100 h-10 w-10">
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                  ></path>
+                </svg>
+              </div>
+              <div className="ml-2 font-bold text-2xl">QuickChat</div>
+            </div>
+            <div className="flex flex-col items-center bg-indigo-100 border border-gray-200 mt-4 w-full py-6 px-4 rounded-lg">
+              <div className="h-20 w-20 rounded-full border overflow-hidden">
+                <img
+                  src="https://avatars3.githubusercontent.com/u/2763884?s=128"
+                  alt="Avatar"
+                  className="h-full w-full"
+                />
+              </div>
+              <div className="text-sm font-semibold mt-2">Aminos Co.</div>
+              <div className="text-xs text-gray-500">Lead UI/UX Designer</div>
+            </div>
+            <div className="flex flex-col mt-8">
+              <div className="flex flex-row items-center justify-between text-xs">
+                <span className="font-bold">Active Conversations</span>
+                <span className="flex items-center justify-center bg-gray-300 h-4 w-4 rounded-full">
+                  {conversations.length}
+                </span>
+              </div>
+              <div className="flex flex-col space-y-1 mt-4 -mx-2 h-48 overflow-y-auto">
+                <ul>
+                  {conversations.map((user, index) => {
+                    const storeRes = store.filter(
+                      (Item) => Item.id_magasin === user
+                    );
+                    return storeRes.map((StoreItem) => (
+                      <li key={index}>
+                      <button className="flex items-center space-x-3 space--3">
+                        <Image 
+                        className="bg-grayLight border border-greenColor rounded-full"
+                          src={StoreItem.Logo_magasin}
+                          height={40}
+                          width={40}
+                          alt="logo"
+                        />
+                        <span>{StoreItem.Libelle_magasin}</span>
+                      </button>
+                      </li>
+                    ));
+                  })}
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col flex-auto h-full p-6">
+            <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4">
+              <div className="flex flex-col">
+                {inbox.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`border rounded px-4 py-2 ${
+                      msg.Expediteur === session.user.id_user ||
+                      msg.Expediteur === "You"
+                        ? "self-end relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl"
+                        : "self-start relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl"
+                    }`}
                   >
-                    {productItem.Libelle_prod}
-                  </Link>{" "}
-                </td>
-                <td className="py-2 text-[13px]">
-                  {productItem.Reference_prod}
-                </td>
-                <td className="py-1.5 text-center text-[13px]">
-                  {items.Qte_dtcmd}
-                </td>
-                <td className="py-1.5 text-center   text-[13px]">
-                  {items.prix_Total_dtcmd} TND
-                </td>
-
-                <td className="py-1 5 text-center text-[13px]">
-                  <button onClick={() => handleCommande(items.id_magasin)}>
-                    Voir...
+                    {msg.Expediteur}: {msg.Contenu}
+                  </div>
+                ))}
+              </div>
+              <div className="mt-10 flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
+                <div className="flex-grow ml-4">
+                  <input
+                    type="text"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Enter message"
+                    className="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
+                  />
+                  <input
+                    className="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
+                    type="text"
+                    value={recipientId}
+                    onChange={(e) => setRecipientId(e.target.value)}
+                    placeholder="Recipient's ID"
+                  />
+                </div>
+                <div className="ml-4">
+                  <button
+                    onClick={handleSendMessage}
+                    className="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0"
+                  >
+                    <span>Send</span>
+                    <span className="ml-2"></span>
                   </button>
-                </td>
-              </tr>
-            ) : null;
-          })}
-        </tbody>
-        <tfoot className=" ">
-          <tr className="text-[13.5px] font-semibold text-darkColor  border-t">
-            <td className="pt-5 px-5" colSpan="2">
-              Sous-total :
-            </td>
-            <td className="pt-5" colSpan="2">
-              {totalPrix} TND
-            </td>
-          </tr>
-          <tr className="text-[13.5px] font-semibold text-darkColor">
-            <td className="pt-2 px-5" colSpan="2">
-              Moyen de paiement :
-            </td>
-            <td className="pt-2" colSpan="2">
-              Paiement à la livraison
-            </td>
-          </tr>
-          <tr className="text-[16px]   font-bold text-darkColor border-b">
-            <td className="pt-2 px-5 pb-5" colSpan="2">
-              Total :
-            </td>
-            <td className="pt-2 pb-5" colSpan="2">
-              {totalPrix + 7} TND
-            </td>
-          </tr>
-        </tfoot>
-      </table>
-
-      <p className="text-start text-[20px] font-semibold text-darkColor my-5">
-        Adresse de facturation
-      </p>
-      <div className="space-y-2 text-start text-[13.5px] text-darkColor ">
-        <p>
-          <span className="font-semibold text-greenColor">
-            Nom et Prénom :{" "}
-          </span>
-          {session.user.Prenom_user} {session.user.Nom_user}{" "}
-        </p>
-
-        <p>
-          <span className="font-semibold text-greenColor">
-            Numéro et nom de rue :{" "}
-          </span>
-          {adresse?.rue_adr}
-        </p>
-        {ville
-          .filter((item) => item.id_ville === adresse?.id_ville)
-          .map((filtereditem) => (
-            <p key={filtereditem.id_ville}>
-              <span className="font-semibold text-greenColor">Region : </span>
-              {filtereditem.Libelle_ville}
-            </p>
-          ))}
-        <p>
-          <span className="font-semibold text-greenColor">Code postal : </span>
-          {adresse?.code_adr}
-        </p>
-
-        <p>
-          <span className="font-semibold text-greenColor">
-            Numéro de télephone :{" "}
-          </span>
-          {session.user.Telephone_user}{" "}
-        </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <p className="mt-3 text-[13.5px]">
-        <span className="font-semibold text-greenColor">E-mail : </span>
-        {session.user.Email_user}{" "}
-      </p>
     </div>
   );
 };
 
-export default CommandeClientDetails;
+export default Chat;

@@ -8,9 +8,12 @@ import { FaCartShopping } from "react-icons/fa6";
 import "../styles/Navbar.scss";
 import ModalComponent from "./ModalLogin";
 import { useSession } from "next-auth/react";
+import { BsFillChatDotsFill } from "react-icons/bs";
 
 import DropDown from "./DropDown";
 import { useSelector } from "react-redux";
+import { Chat } from "./Chat";
+import ChatModel from "./ChatModel";
 
 const Navbar = () => {
   const { data: session, status } = useSession();
@@ -80,22 +83,26 @@ const Navbar = () => {
             } md:block items-center justify-between w-full md:flex md:w-auto  lg:mx-28 flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse`}
           >
             {session && session.user ? (
-              <div className=" placeholder: text-2xl      text-center text-greenColor  hover:bg-iconColor rounded-lg hover:text-white ">
+              <div className=" placeholder: text-[22px]      text-center text-greenColor  hover:bg-iconColor rounded-lg hover:text-white ">
                 <DropDown openMenu={<FaUser />} />
               </div>
             ) : (
-              <div className="text-iconColor text-2xl      text-center   hover:bg-greenColor rounded-lg hover:text-white ">
+              <div className="text-iconColor text-[22px]      text-center   hover:bg-greenColor rounded-lg hover:text-white ">
                 <ModalComponent icon={<FaUser />} />
               </div>
             )}
-
+            {session && session.user ? (
+              <button   className="text-iconColor text-[22px]      text-center  hover:bg-greenColor rounded-lg hover:text-white">
+ 
+                <ChatModel icon={<BsFillChatDotsFill />} />
+              </button>
+            ) : null}
             <Link
-                href="/Panier"
-                className="  text-iconColor text-2xl    px-4 py-2 text-center  hover:bg-greenColor rounded-lg hover:text-white"
-              >
-                <FaCartShopping />
-          
-              </Link>
+              href="/Panier"
+              className="  text-iconColor text-[22px]    px-4 py-2 text-center  hover:bg-greenColor rounded-lg hover:text-white"
+            >
+              <FaCartShopping />
+            </Link>
 
             {/* <div className="relative text-iconColor text-2xl    px-4 py-2 text-center  hover:bg-greenColor rounded-lg hover:text-white">
               <Link href="/Panier">
@@ -113,7 +120,7 @@ const Navbar = () => {
 
             <Link
               href="/Favoris"
-              className="text-iconColor text-2xl     px-4 py-2 text-center  hover:bg-greenColor rounded-lg hover:text-white"
+              className="text-iconColor text-[22px]     px-4 py-2 text-center  hover:bg-greenColor rounded-lg hover:text-white"
             >
               <FaRegHeart />
             </Link>

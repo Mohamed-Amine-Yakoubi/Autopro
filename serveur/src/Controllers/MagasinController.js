@@ -176,7 +176,7 @@ exports.Delete_spec_Store = asyncHandler(async (req, res) => {
     if (delete_spec_store) {
       res.status(201).json({
         message: "store have been successfully deleted",
-        data: delete_spec_magasin,
+        data: delete_spec_store,
       });
     } else {
       res.status(400).json({ message: "store have not been found" });

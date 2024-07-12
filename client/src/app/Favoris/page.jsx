@@ -66,10 +66,9 @@ const Favoris = () => {
 
   const handleFavoris = async (id_prod, id_user) => {
     try {
-       await deleteFavoris(id_prod, id_user);
-  
-        location.reload();
-      
+      await deleteFavoris(id_prod, id_user);
+
+      location.reload();
     } catch (error) {
       alert("Failed to add to favorites");
     }
@@ -89,38 +88,38 @@ const Favoris = () => {
         <Header Title={"Favoris"} />
       </div>
       {session ? (
-        <div className="   my-28">
+        <div className="   my-32">
           <div className=" ">
-          <div className="font-poppins text-center text-[20px] mb-8   font-extrabold	 text-greenColor">
-                    Vos article préférés
+          {products && products.length > 0 ? (
+            <div className="font-poppins text-center text-[20px] mb-8   font-extrabold	 text-greenColor">
+              Vos article préférés
+            </div>
+             ) :null}
+            <div className="flex md:flex-row flex-col   justify-center">
+              {products && products.length > 0 ? (
+                products.map((product) => (
+                  <div key={product.id_prod}>
+                    <div className="flex justify-center">
+                      <CardsProduit
+                        image={product.Image_thumbnail}
+                        libelle={product.Libelle_prod}
+                        categorie={product.category.Libelle_cat}
+                        prix={product.prix_prod}
+                        stock={product.Stock_prod}
+                        link={`./Catalogue/${product.id_prod}`}
+                        handleFavoris={() =>
+                          handleFavoris(product.id_prod, session.user.id_user)
+                        }
+                      />
+                    </div>
                   </div>
-          <div className="flex md:flex-row flex-col   justify-center">
-
-            {products && products.length > 0 ? (
-              products.map((product) => (
-                <div key={product.id_prod}>
-              
-                  <div className="flex justify-center">
-                    <CardsProduit
-                      image={product.Image_thumbnail}
-                      libelle={product.Libelle_prod}
-                      categorie={product.category.Libelle_cat}
-                      prix={product.prix_prod}
-                      stock={product.Stock_prod}
-                      link={`./Catalogue/${product.id_prod}`}
-                      handleFavoris={() =>
-                        handleFavoris(product.id_prod, session.user.id_user)
-                      }
-                    />
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="font-poppins text-[20px] text-gray-400">
-                Aucun article ajouté à la liste de souhaits
-              </p>
-            )}
-          </div>
+                ))
+              ) : (
+                <p className="font-poppins text-[20px] text-gray-400">
+                  Aucun article ajouté à la liste de souhaits
+                </p>
+              )}
+            </div>
           </div>
         </div>
       ) : (

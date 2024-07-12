@@ -327,7 +327,7 @@ exports.AddClaim = asyncHandler(async (req, res) => {
 //get all users claim
 exports.GetAllUsersClaim = asyncHandler(async (req, res) => {
   try {
-    const allusersclaim = await Reclamtion.findAll({});
+    const allusersclaim = await Reclamtion.findAll({where:{id_magasin:null}});
     if (allusersclaim) {
       res.status(200).json(allusersclaim);
     } else {
@@ -350,6 +350,28 @@ exports.GetClaimStoreId = asyncHandler(async (req, res) => {
       res.status(404).json({ message: " account have not been found" });
     }
   } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+/*****************update etat commabde**************************** */
+exports.Update_etat_Rec = asyncHandler(async (req, res) => {
+  try {
+    const { id_rec } = req.params;
+    const { etat_rec } = req.body;
+    const updateFields = { etat_rec };
+    const update_Rec = await Reclamtion.update(updateFields, {
+      where: { id_rec: id_rec },
+    });
+
+    if (update_Rec) {
+      res.status(201).json(update_Rec);
+    } else {
+      res.status(404).json({
+        message: "Store has not been added",
+      });
+    }
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 });

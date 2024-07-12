@@ -1,30 +1,43 @@
 "use client";
 import { GetDestination, GetMsgByIdUser } from "@/app/lib/Chat";
-import { getAllStore, getStoreByID } from "@/app/lib/Magasin";
+// components/Chat.js
+
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { io } from "socket.io-client";
 
-const Chat = () => {
+const Messages = () => {
+    const magasin = useSelector((state) => state.store);
   const { data: session, status } = useSession();
   const id_user = session?.user?.id_user || "";
 
   const [socket, setSocket] = useState(null);
   const [inbox, setInbox] = useState([]);
   const [userMsg, setUserMsg] = useState([]);
-  const [store, setStore] = useState([]);
+  const [destMsg, setDestMsg] = useState([]);
   const [message, setMessage] = useState("");
-  const [recipientId, setRecipientId] = useState("");
-  const [activeUsers, setActiveUsers] = useState([]);
-  const [conversations, setConversations] = useState([]);
+  const [recipientId, setRecipientId] = useState(""); // State to store recipient's ID
 
   useEffect(() => {
     if (status === "authenticated") {
       const newSocket = io("http://localhost:4000");
       setSocket(newSocket);
 
-      newSocket.emit("userLoggedIn", session.user.id_user);
+      newSocket.emit("userLoggedIn", magasin.items[0].id_magasin);
+
+      newSocket.on("message", (messages) => {
+        if (Array.isArray(messages)) {
+          setInbox(
+            messages.map((msg) => ({
+              Expediteur: msg.Expediteur,
+              Contenu: msg.Contenu,
+            }))
+          );
+        } else {
+          console.error("Received invalid messages data:", messages);
+        }
+      });
 
       newSocket.on("message", (message) => {
         setInbox((prevMessages) => [
@@ -33,68 +46,54 @@ const Chat = () => {
         ]);
       });
 
-      newSocket.on("activeUsers", (users) => {
-        setActiveUsers(users);
-      });
-
-      newSocket.on("conversationsList", (users) => {
-        setConversations(users);
-      });
-
       return () => {
         newSocket.disconnect();
-        newSocket.off("activeUsers");
-        newSocket.off("conversationsList");
       };
     }
   }, [session, status]);
 
   const handleSendMessage = () => {
-    if (message && recipientId && session?.user?.id_user) {
+    if (message && recipientId && magasin.items[0].id_magasin) {
       const newMessage = {
         contenu: message,
-        Expediteur: session.user.id_user,
+        Expediteur: magasin.items[0].id_magasin,
         recipientId,
-      };
+      }; // Message object
       socket.emit(
         "message",
         newMessage.contenu,
         newMessage.Expediteur,
         newMessage.recipientId
-      );
+      ); // Send message object
       setInbox((prevMessages) => [
         ...prevMessages,
         { Expediteur: "You", Contenu: message },
-      ]);
+      ]); // Update inbox with the new message
       setMessage("");
     } else {
       console.log("Please enter a message and select a recipient.");
     }
   };
-
   useEffect(() => {
-    if (id_user) {
-      console.log("Fetching messages for user:", id_user);
-      GetMsgByIdUser(id_user)
-        .then((itemMsg) => {
-          setUserMsg(itemMsg);
-        })
-        .catch((error) => {
-          console.error("Failed to fetch user messages:", error);
-        });
-    }
-    getAllStore().then((item) => {
-      setStore(item);
+    GetMsgByIdUser(id_user).then((itemMsg) => {
+      setUserMsg(itemMsg);
+      const GetDest = itemMsg.map((itemDest) => {
+        GetDestination(itemDest.destinataire, magasin.items[0].id_magasin);
+      });
+      Promise.all(GetDest).then((getDestItem) => {
+        setDestMsg(getDestItem);
+      });
     });
   }, [id_user]);
-
+  console.log("dest",destMsg);
+  console.log("user",magasin.items[0].id_magasin);
   if (status === "loading") {
     return <p>Loading...</p>;
   }
 
   return (
-    <div className="overflow-hidden flex items-center justify-center">
-      <div className="flex antialiased text-gray-800">
+    <div className=" overflow-hidden flex items-center justify-center">
+      <div className="flex  antialiased text-gray-800">
         <div className="flex flex-row h-full w-full overflow-x-hidden">
           <div className="flex flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
             <div className="flex flex-row items-center justify-center h-12 w-full">
@@ -107,9 +106,9 @@ const Chat = () => {
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
                     d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
                   ></path>
                 </svg>
@@ -126,45 +125,33 @@ const Chat = () => {
               </div>
               <div className="text-sm font-semibold mt-2">Aminos Co.</div>
               <div className="text-xs text-gray-500">Lead UI/UX Designer</div>
+              <div className="flex flex-row items-center mt-3">
+                <div className="flex flex-col justify-center h-4 w-8 bg-indigo-500 rounded-full">
+                  <div className="h-3 w-3 bg-white rounded-full self-end mr-1"></div>
+                </div>
+                <div className="leading-none ml-1 text-xs">Active</div>
+              </div>
             </div>
             <div className="flex flex-col mt-8">
               <div className="flex flex-row items-center justify-between text-xs">
                 <span className="font-bold">Active Conversations</span>
                 <span className="flex items-center justify-center bg-gray-300 h-4 w-4 rounded-full">
-                  {conversations.length}
+                  4
                 </span>
               </div>
               <div className="flex flex-col space-y-1 mt-4 -mx-2 h-48 overflow-y-auto">
-                <ul>
-                  {conversations.map((user, index) => {
-                    const storeRes = store.filter(
-                      (Item) => Item.id_magasin === user
-                    );
-                    return storeRes.map((StoreItem) => (
-                      <button
-                        value={recipientId}
-                        onClick={() => setRecipientId(StoreItem.id_magasin)}
-                        key={index}
-                        className="flex items-center space-x-3 space--3"
-                      >
-                        <Image
-                          className="bg-grayLight border border-greenColor rounded-full"
-                          src={StoreItem.Logo_magasin}
-                          height={40}
-                          width={40}
-                          alt="logo"
-                        />
-                        <span>{StoreItem.Libelle_magasin}</span>
-                      </button>
-                    ));
-                  })}
-                </ul>
+                <button className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
+                  <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
+                    H
+                  </div>
+                  <div className="ml-2 text-sm font-semibold">Henry Boyd</div>
+                </button>
               </div>
             </div>
           </div>
           <div className="flex flex-col flex-auto h-full p-6">
             <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4">
-              <div className="flex flex-col">
+              <div className="flex flex-col    ">
                 {inbox.map((msg, index) => (
                   <div
                     key={index}
@@ -172,7 +159,7 @@ const Chat = () => {
                       msg.Expediteur === session.user.id_user ||
                       msg.Expediteur === "You"
                         ? "self-end relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl"
-                        : "self-start relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl"
+                        : "self-start relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl "
                     }`}
                   >
                     {msg.Expediteur}: {msg.Contenu}
@@ -187,6 +174,13 @@ const Chat = () => {
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Enter message"
                     className="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
+                  />
+                  <input
+                    className="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
+                    type="text"
+                    value={recipientId}
+                    onChange={(e) => setRecipientId(e.target.value)}
+                    placeholder="Recipient's ID"
                   />
                 </div>
                 <div className="ml-4">
@@ -206,5 +200,4 @@ const Chat = () => {
     </div>
   );
 };
-
-export default Chat;
+export default Messages;

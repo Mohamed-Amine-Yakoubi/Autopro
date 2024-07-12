@@ -9,7 +9,7 @@ import { FaShoppingBasket } from "react-icons/fa";
 import { FaBoxOpen } from "react-icons/fa";
 import { AiFillDashboard } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { BsFillSendExclamationFill } from "react-icons/bs";
+import { BsFillChatDotsFill, BsFillSendExclamationFill } from "react-icons/bs";
 
 const SideBar = () => {
   const { data: session, status } = useSession();
@@ -26,7 +26,7 @@ const SideBar = () => {
 
   if (status === "authenticated") {
     return (
-      <div className="h-[490px] w-64 md:mb-28  bg-gray-100 text-iconColor   rounded-lg">
+      <div className="h-[520px] w-64 md:mb-28  bg-gray-100 text-iconColor   rounded-lg">
         {magasin.items.map((item) => (
           <div key={item.id_magasin}>
             <div className="flex  py-10 px-4 flex-col items-center justify-center">
@@ -84,6 +84,15 @@ const SideBar = () => {
                   className="font-poppins text-[14px]"
                 >
                   Reclamations
+                </Link>
+              </li>
+              <li className="p-4 hover:bg-greenColor hover:text-white flex items-center space-x-3 rounded-md">
+                <BsFillChatDotsFill className=" or text-[20px]" />
+                <Link
+                  href="/Dashboard/Messages"
+                  className="font-poppins text-[14px]"
+                >
+                  Messages
                 </Link>
               </li>
             </ul>

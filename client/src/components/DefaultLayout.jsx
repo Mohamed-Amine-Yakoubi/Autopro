@@ -10,8 +10,8 @@ export default function DefaultLayout({ children }) {
   return (
     <>
       {/* <!-- ===== Page Wrapper Start ===== --> */}
-      <div className="  my-24">
-      <div className="flex h-screen  justify-center  ">
+      <div className=" mx-8 my-24">
+      <div className="flex h-screen  justify-center space-x-6 ">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
         <div className="relative flex flex-1 flex-col   overflow-x-hidden">

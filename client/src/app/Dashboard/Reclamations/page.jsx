@@ -102,47 +102,38 @@ const Reclamations = () => {
     pageNumbers.push(i);
   }
 
-  // const handleEtat = async (e, id_magasin, id_MainCmd) => {
-  //   e.preventDefault();
-  //   const newEtat = e.target.name; // Get the new state from the button name
+  const handleEtat = async (  id_rec) => {
+   
+ const newEtat="Approuvé"
+    try {
+      const res = await fetch(
+        `http://localhost:4000/api/v1/user/Update_etat_Rec/${id_rec}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ etat_rec: newEtat }),
+        }
+      );
 
-  //   console.log(
-  //     "Etat:",
-  //     newEtat,
-  //     "MainCmd:",
-  //     id_MainCmd,
-  //     "Magasin:",
-  //     id_magasin
-  //   );
-  //   try {
-  //     const res = await fetch(
-  //       `http://localhost:4000/api/v1/commande/Update_commande/${id_MainCmd}/${id_magasin}`,
-  //       {
-  //         method: "PUT",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({ etat_cmd: newEtat }),
-  //       }
-  //     );
+      if (!res.ok) {
+        throw new Error("Failed to update store");
+      }
 
-  //     if (!res.ok) {
-  //       throw new Error("Failed to update store");
-  //     }
+      const result = await res.json();
 
-  //     const result = await res.json();
-
-  //     if (result) {
-  //       const updatedCommandes = commande.map((cmd) =>
-  //         cmd.id_MainCmd === id_MainCmd ? { ...cmd, etat_cmd: newEtat } : cmd
-  //       );
-  //       setCommande(updatedCommandes);
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to update store:", error.message);
-  //     alert("Failed to update store");
-  //   }
-  // };
+      if (result) {
+        const updatedClaim = claim.map((item) =>
+          item.id_rec === id_rec ? { ...item, etat_rec: newEtat } : item
+        );
+        setClaim(updatedClaim);
+      }
+    } catch (error) {
+      console.error("Failed to update store:", error.message);
+      alert("Failed to update store");
+    }
+  };
 
   return (
     <div className="  mb-10">
@@ -258,7 +249,10 @@ const Reclamations = () => {
                               <IoEyeSharp className="text-[20px] mr-2" />
                               <button
                                 className="text-[13px]"
-                                onClick={() => openModalRec(item)}
+                                onClick={() => {
+                                  openModalRec(item);
+                                  handleEtat(item.id_rec);
+                                }}
                               >
                                 Consulter
                               </button>
@@ -311,8 +305,13 @@ const Reclamations = () => {
               <ModalBody className="custom-modal-body">
                 {selectedRec && (
                   <div>
-                    <h1 className="text-[15px] mt-4 font-semibold">Description:</h1>
-                    <p className="mb-4 text-[13px]"> {selectedRec.description_rec}</p>
+                    <h1 className="text-[15px] mt-4 font-semibold">
+                      Description:
+                    </h1>
+                    <p className="mb-4 text-[13px]">
+                      {" "}
+                      {selectedRec.description_rec}
+                    </p>
                     <div className="flex justify-center my-8">
                       <Image
                         src={selectedRec.file_rec}

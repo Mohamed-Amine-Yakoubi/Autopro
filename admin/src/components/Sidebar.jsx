@@ -5,6 +5,7 @@ import { ImProfile } from "react-icons/im";
 import Autopro_logo from "../../public/img/Autopro_logo.png";
 import { IoHome } from "react-icons/io5";
 import { PiUsersFill } from "react-icons/pi";
+import { BsFillSendExclamationFill } from "react-icons/bs";
 
  
 
@@ -48,7 +49,7 @@ const Sidebar = () => {
             </Link>
           </li>
           <li className="p-4 hover:bg-greenColor hover:text-white flex items-center space-x-3 rounded-md">
-            <ImProfile className="text-[20px]" />
+            <BsFillSendExclamationFill className="text-[20px]" />
             <Link
               href="/Dashboard/Reclamations"
               className="font-poppins text-[14px]"

@@ -17,7 +17,7 @@ import { FaClock } from "react-icons/fa6";
 import { IoEyeSharp, IoSearch } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
 import Link from "next/link";
-import { getAllStore } from "@/app/lib/boutique";
+import { DeleteStoreByID, getAllStore } from "@/app/lib/boutique";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -32,7 +32,7 @@ const DemandeBoutique = () => {
     });
   }, []);
 
-  const handleEtat = async (e, id_magasin, Email_magasin, Libelle_magasin) => {
+  const handleEtat = async (e, id_magasin, Email_magasin,id_proprietaire, Libelle_magasin) => {
     e.preventDefault();
     const newEtat = e.currentTarget.name;
     console.log("Button clicked with newEtat:", newEtat);
@@ -133,7 +133,22 @@ const DemandeBoutique = () => {
           body: JSON.stringify({ etat_magasin: newEtat }),
         }
       );
+      if (newEtat === "Approuvé") {
+        const res2 = await fetch(
+          `http://localhost:4000/api/v1/user/UpdateAccount/${id_proprietaire}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({Profil_user:"Fournisseur"}),
+          }
+        );
 
+        if (!res2.ok) {
+          throw new Error("Failed to update user");
+        }
+      }
       if (!res.ok) {
         throw new Error("Failed to update store");
       }
@@ -153,9 +168,9 @@ const DemandeBoutique = () => {
       alert("Failed to update store");
     }
   };
-  const handleDelete = async (id_user) => {
-    DeleteUser(id_user).then(() => {
-      setUser((prevUser) => prevUser.filter((e) => e.id_user !== id_user));
+  const handleDelete = async (id_magasin) => {
+    DeleteStoreByID(id_magasin).then(() => {
+      setBoutique((prevStore) => prevStore.filter((e) => e.id_magasin !== id_magasin));
     });
   };
   const handleSearch = (e) => {
@@ -172,7 +187,25 @@ const DemandeBoutique = () => {
       (item.Email_magasin?.toLowerCase().includes(filter.toLowerCase()) ??
         false)
   );
+  // Pagination calculations
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [StorePerPage] = useState(6);
+  const indexOfLastcommande = currentPage * StorePerPage;
+  const indexOfFirstcommande = indexOfLastcommande - StorePerPage;
+  const currentStore = FilterStore.slice(
+    indexOfFirstcommande,
+    indexOfLastcommande
+  );
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Render page numbers
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(boutique.length / StorePerPage); i++) {
+    pageNumbers.push(i);
+  }
   return (
     <div>
       <Cards className={"w-full h-full p-4 sm:overflow-x-auto     "}>
@@ -213,36 +246,37 @@ const DemandeBoutique = () => {
         <div className="mt-8 h-full overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr>
-                <th className="border-b border-gray-200  pb-[10px]  w-1/12 mx-10  text-greenColor  text-start dark:!border-navy-700">
+            <tr className="bg-gray-100  ">
+
+                <th className="border-b border-gray-200  py-[12px]  w-1/12 mx-10  text-greenColor  text-center dark:!border-navy-700">
                   <p className="text-xs    tracking-wide text-gray-600">N°</p>
                 </th>
-                <th className="border-b w-1/2 border-gray-200 pr-28 pb-[10px] text-start dark:!border-navy-700">
+                <th className="border-b w-1/2 border-gray-200 pr-28 py-[12px] text-start dark:!border-navy-700">
                   <p className="text-xs tracking-wide text-gray-600">
                     Nom de la boutique
                   </p>
                 </th>
-                <th className="border-b w-1/3 border-gray-200 pr-28 pb-[10px] text-start dark:!border-navy-700">
+                <th className="border-b w-1/3 border-gray-200 pr-28 py-[12px] text-start dark:!border-navy-700">
                   <p className="text-xs tracking-wide text-gray-600">E-mail</p>
                 </th>
-                <th className="border-b w-1/3 border-gray-200 pr-28 pb-[10px] text-start dark:!border-navy-700">
+                <th className="border-b w-1/3 border-gray-200 pr-28 py-[12px] text-start dark:!border-navy-700">
                   <p className="text-xs tracking-wide text-gray-600">
                     Téléphone
                   </p>
                 </th>
-                <th className="border-b w-1/3 border-gray-200 pr-28 pb-[10px] text-start dark:!border-navy-700">
+                <th className="border-b w-1/3 border-gray-200 pr-28 py-[12px] text-start dark:!border-navy-700">
                   <p className="text-xs tracking-wide text-gray-600">Date</p>
                 </th>
-                <th className="border-b w-1/3 border-gray-200 pr-28 pb-[10px] text-start dark:!border-navy-700">
+                <th className="border-b w-1/3 border-gray-200 pr-28 py-[12px] text-start dark:!border-navy-700">
                   <p className="text-xs tracking-wide text-gray-600">Etat</p>
                 </th>
-                <th className="border-b w-20 border-gray-200 pr-28 pb-[10px] text-start dark:!border-navy-700"></th>
+                <th className="border-b w-20 border-gray-200 pr-28 py-[12px] text-start dark:!border-navy-700"></th>
               </tr>
             </thead>
             <tbody>
-              {FilterStore.map((item, index) => (
-                <tr key={index} className="text-[13px] font-semibold">
-                  <td className="py-4  w-2 text-greenColor">
+              {currentStore.map((item, index) => (
+                <tr key={index} className="text-[13px] border-b border-gray-200  ">
+                  <td className="   text-center   py-3.5 text-greenColor  text-[13px]">
                     {item.id_magasin}
                   </td>
 
@@ -322,6 +356,7 @@ const DemandeBoutique = () => {
                                 e,
                                 item.id_magasin,
                                 item.Email_magasin,
+                                item.id_proprietaire,
                                 item.Libelle_magasin
                               )
                             }
@@ -355,6 +390,21 @@ const DemandeBoutique = () => {
               ))}
             </tbody>
           </table>
+          <div className="flex justify-center py-4">
+            {pageNumbers.map((number) => (
+              <button
+                key={number}
+                onClick={() => paginate(number)}
+                className={`px-3 py-1 rounded-full text-[13px] ${
+                  number === currentPage
+                    ? "bg-greenColor text-white"
+                    : "bg-gray-200"
+                } mx-1`}
+              >
+                {number}
+              </button>
+            ))}
+          </div>
         </div>
       </Cards>
     </div>
