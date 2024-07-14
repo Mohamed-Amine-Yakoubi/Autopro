@@ -31,10 +31,13 @@ const storeSlice = createSlice({
 
       Cookies.set("store", JSON.stringify(state));
     },
-  
+    updateIdMagasin(state, action) {
+      state.id_magasin = action.payload;
+      Cookies.set("store", JSON.stringify({ ...state })); // Ensure deep copy
+    },
   },
 });
 
-export const {initializeStore, addItem  } = storeSlice.actions;
+export const {initializeStore, addItem ,updateIdMagasin } = storeSlice.actions;
 
 export default storeSlice.reducer;

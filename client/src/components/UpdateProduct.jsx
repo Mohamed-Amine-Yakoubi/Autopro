@@ -15,7 +15,7 @@ import {
 import { useSession } from "next-auth/react";
 import { getSpecProduct } from "@/app/lib/Product";
 import { useRouter } from "next/navigation";
-import Input from "./InputWhite";
+import Input from "./Input";
 import Textarea from "./Textarea";
 
 export const UpdateProduct = ({idprod}) => {
@@ -31,7 +31,12 @@ export const UpdateProduct = ({idprod}) => {
   const [matiere, setMatiere] = useState([]);
   const [OptionYear, setOptionYear] = useState("");
   const [imageFile, setImageFile] = useState(null);
+  const [selectedbutton, setSelectedbutton] = useState(null);
 
+  const HandleButton = (event) => {
+    const value = event.target.value;
+    setSelectedbutton(value); // Always update selectedbutton with the new value
+  };
   const router = useRouter();
   const handleImageChange = (e) => {
     setImageFile(e.target.files[0]);
@@ -139,7 +144,7 @@ export const UpdateProduct = ({idprod}) => {
     }
   };
   return (
-    <div className="  p-5 shadow-lg rounded-lg overflow-hidden bg-grayLight ">
+    <div className="  p-5  rounded-lg overflow-hidden   ">
       <form onSubmit={handleSubmit}>
         <div className=" flex md:flex-row flex-col md:items-center md:space-y-0 space-y-4 md:space-x-10 space-x-0 md:justify-around">
           <div className="md:w-1/2 w-full space-y-8 flex flex-col justify-center items-center">
@@ -177,7 +182,7 @@ export const UpdateProduct = ({idprod}) => {
 
             <div className=" space-y-2  w-full">
               <select
-                className="rounded-lg text-[13px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-white text-textColor"
+                className="rounded-lg text-[13px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-grayLight text-textColor"
                 value={product.id_mat}
                 name="id_mat"
                 onChange={handleChange}
@@ -193,7 +198,7 @@ export const UpdateProduct = ({idprod}) => {
               </select>
               <div className="flex md:flex-row w-full items-center mb-2 space-x-2">
                 <select
-                  className="rounded-lg text-[13px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-white text-textColor"
+                  className="rounded-lg text-[13px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-grayLight text-textColor"
                   value={product.id_marque}
                   onChange={handleChange}
                   name="id_marque"
@@ -209,7 +214,7 @@ export const UpdateProduct = ({idprod}) => {
                 </select>
 
                 <select
-                  className="rounded-lg text-[13px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-white text-textColor"
+                  className="rounded-lg text-[13px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-grayLight text-textColor"
                   onChange={(e) => {
                     handleYear(e);
                   }}
@@ -224,7 +229,7 @@ export const UpdateProduct = ({idprod}) => {
               </div>
               <div className="flex md:flex-row w-full items-center space-x-2">
                 <select
-                  className="rounded-lg text-[13px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-white text-textColor"
+                  className="rounded-lg text-[13px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-grayLight text-textColor"
                   value={product.id_modele}
                   name="id_modele"
                   onChange={handleChange}
@@ -238,7 +243,7 @@ export const UpdateProduct = ({idprod}) => {
                 </select>
 
                 <select
-                  className="rounded-lg text-[13px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-white text-textColor"
+                  className="rounded-lg text-[13px] w-full py-3 px-2 outline-none border-2 border-gray-200 bg-grayLight text-textColor"
                   value={product.id_motor}
                   name="id_motor"
                   onChange={handleChange}
@@ -330,6 +335,114 @@ export const UpdateProduct = ({idprod}) => {
                 onChange={handleChange}
               />
             </div>
+            <div className="flex items-center justify-around  space-x-2">
+              <button
+                className={`bg-grayLight rounded-md border p-2 text-[13px] ${
+                  selectedbutton === "Hauteur"
+                    ? "bg-greenColor text-white"
+                    : ""
+                }`}
+                type="button"
+                onClick={HandleButton}
+                value="Hauteur"
+              >
+                Hauteur{" "}
+              </button>
+              <button
+                className={`bg-grayLight rounded-md border p-2 text-[13px] ${
+                  selectedbutton === "Largeur"
+                    ? "bg-greenColor text-white"
+                    : ""
+                }`}
+                type="button"
+                onClick={HandleButton}
+                value="Largeur"
+              >
+                Largeur
+              </button>
+              <button
+                className={`bg-grayLight rounded-md border p-2 text-[13px] ${
+                  selectedbutton === "Diametre"
+                    ? "bg-greenColor text-white"
+                    : ""
+                }`}
+                type="button"
+                onClick={HandleButton}
+                value="Diametre"
+              >
+                Diamétre{" "}
+              </button>
+              <button
+                className={`bg-grayLight rounded-md border p-2 text-[13px] ${
+                  selectedbutton === "Longueur"
+                    ? "bg-greenColor text-white"
+                    : ""
+                }`}
+                type="button"
+                onClick={HandleButton}
+                value="Longueur"
+              >
+                Longueur{" "}
+              </button>
+              <button
+                className={`bg-grayLight rounded-md border p-2 text-[13px] ${
+                  selectedbutton === "Epaisseur"
+                    ? "bg-greenColor text-white"
+                    : ""
+                }`}
+                type="button"
+                onClick={HandleButton}
+                value="Epaisseur"
+              >
+                Épaisseur{" "}
+              </button>
+            </div>
+
+            {selectedbutton === "Largeur" && (
+              <Input
+                type={"text"}
+                name={"Largeur"}
+                placeholder={"Largeur"}
+                value={product.Largeur}
+                onChange={handleChange}
+              />
+            )}
+            {selectedbutton === "Hauteur" && (
+              <Input
+                type={"text"}
+                name={"Hauteur"}
+                placeholder={"Hauteur"}
+                value={product.Hauteur}
+                onChange={handleChange}
+              />
+            )}
+            {selectedbutton === "Diametre" && (
+              <Input
+                type={"text"}
+                name={"Diametre"}
+                placeholder={"Diametre"}
+                value={product.Diametre}
+                onChange={handleChange}
+              />
+            )}
+            {selectedbutton === "Longueur" && (
+              <Input
+                type={"text"}
+                name={"Longueur"}
+                placeholder={"Longueur"}
+                value={product.Longueur}
+                onChange={handleChange}
+              />
+            )}
+            {selectedbutton === "Epaisseur" && (
+              <Input
+                type={"text"}
+                name={"Epaisseur"}
+                placeholder={"Epaisseur"}
+                value={product.Epaisseur}
+                onChange={handleChange}
+              />
+            )}
           </div>
         </div>
 

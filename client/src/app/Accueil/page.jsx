@@ -132,7 +132,7 @@ const Accueil = () => {
             </h1>
           </div>
           <div className="hidden md:block">
-            <Link href={`./Catalogue`} className=" text-sm xl:mx-24  lg:mx-24 border-greenColor border-[2px] rounded-full p-2 px-4 hover:bg-greenColor hover:text-white">
+            <Link href={`./Catalogue`} className=" text-[14px] xl:mx-24  lg:mx-24 border-greenColor border-[2px] rounded-full p-2 px-4 hover:bg-greenColor hover:text-white">
               Voir plus...
             </Link>
           </div>
@@ -160,7 +160,7 @@ const Accueil = () => {
         </div>
         <div className="flex justify-center  mt-12">
           <div className="block md:hidden  ">
-            <button className=" text-sm xl:mx-30  lg:mx-28 border-greenColor border-[2px] rounded-full p-2 px-4 hover:bg-greenColor hover:text-white">
+            <button className=" text-[14px] xl:mx-30  lg:mx-28 border-greenColor border-[2px] rounded-full p-2 px-4 hover:bg-greenColor hover:text-white">
               Voir plus...
             </button>
           </div>

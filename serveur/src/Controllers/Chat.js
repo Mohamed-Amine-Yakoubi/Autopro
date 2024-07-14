@@ -59,3 +59,28 @@ exports.GetDestination = asyncHandler(async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+/******************************* */
+
+
+exports.conversation = asyncHandler(async (req, res) => {
+  try {
+    const { Expediteur, destinataire } = req.params;
+    console.log(`Fetching conversation between ${Expediteur} and ${destinataire}`);
+
+    const messages = await ChatModel.findAll({
+      where: {
+        [Op.or]: [
+          { Expediteur: Expediteur, destinataire: destinataire },
+          { Expediteur: destinataire, destinataire: Expediteur },
+        ],
+      },
+      order: [[  'timestamp']],
+    });
+
+    console.log('Fetched messages:', messages);
+    res.status(200).json(messages);
+  } catch (error) {
+    console.error('Error fetching conversation:', error);
+    res.status(500).json({ error: 'Failed to fetch conversation' });
+  }
+})

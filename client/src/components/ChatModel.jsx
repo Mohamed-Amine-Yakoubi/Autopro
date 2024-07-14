@@ -12,7 +12,7 @@ import AddProduct from "./AddProduct";
 import Chat from "./Chat";
  
 
-const ChatModel = ({ icon }) => {
+const ChatModel = ({ icon ,props}) => {
   const {
     isOpen: isModalOpen,
     onOpen: openModal,
@@ -31,7 +31,7 @@ const ChatModel = ({ icon }) => {
               Votre messagerie{" "}
             </ModalHeader>
             <ModalBody className="custom-modal-body  ">
-              <Chat />
+              <Chat props={props}/>
             </ModalBody>
           </ModalContent>
         </div>

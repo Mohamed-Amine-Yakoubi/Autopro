@@ -23,7 +23,11 @@ exports.Create_Product = asyncHandler(async (req, res) => {
       Stock_prod,
       Reference_prod,
       id_mat,
-
+      Hauteur,
+      Largeur,
+      Epaisseur,
+      Diametre,
+      Longueur,
       id_magasin,
       id_marque,
       id_modele,
@@ -64,6 +68,11 @@ exports.Create_Product = asyncHandler(async (req, res) => {
       id_motor,
       id_cat,
       id_mat,
+      Hauteur,
+      Largeur,
+      Epaisseur,
+      Diametre,
+      Longueur,
       id_subcat,
       createdBy,
       Image_thumbnail: thumbnailUrl,
@@ -149,7 +158,7 @@ exports.Get_spec_Product = asyncHandler(async (req, res) => {
 // /**************Get specific product by id store************* */
 exports.Get_spec_ProductByIdStore = asyncHandler(async (req, res) => {
   try {
-    const {id_magasin } = req.params;
+    const { id_magasin } = req.params;
     const productbyidstore = await ProductModel.findAll({
       where: { id_magasin: id_magasin },
     });
@@ -175,13 +184,17 @@ exports.Update_spec_Product = asyncHandler(async (req, res) => {
       id_cat,
       createdBy,
       id_magasin,
-      
+      Hauteur,
+      Largeur,
+      Epaisseur,
+      Diametre,
+      Longueur,
       id_marque,
       id_modele,
       id_motor,
       Reference_prod,
       id_mat,
-      id_subcat
+      id_subcat,
     } = req.body;
     const images = req.files;
     const imagesUrls = [];
@@ -210,14 +223,19 @@ exports.Update_spec_Product = asyncHandler(async (req, res) => {
       id_cat,
       createdBy,
       id_magasin,
+      Hauteur,
+      Largeur,
+      Epaisseur,
+      Diametre,
+      Longueur,
       Image_thumbnail: thumbnailUrl,
-      Image_prod: imageUrlsString  ,
+      Image_prod: imageUrlsString,
       id_marque,
       id_modele,
       id_motor,
       Reference_prod,
       id_mat,
-      id_subcat
+      id_subcat,
     };
 
     const updatedProduct = await ProductModel.update(updateFields, {
@@ -341,7 +359,7 @@ exports.Get_AllMatter = asyncHandler(async (req, res) => {
 /**************Get all matter************* */
 exports.Get_MatterByid = asyncHandler(async (req, res) => {
   try {
-    const {id_mat}=req.params;
+    const { id_mat } = req.params;
     const AllMatter = await Matiere.findByPk(id_mat);
     if (AllMatter) {
       res.status(201).json(AllMatter);

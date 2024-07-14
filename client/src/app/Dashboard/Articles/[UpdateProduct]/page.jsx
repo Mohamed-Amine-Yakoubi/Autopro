@@ -16,6 +16,7 @@ import {
 import { useSession } from "next-auth/react";
 import { getSpecProduct } from "@/app/lib/Product";
 import { useRouter } from 'next/navigation';
+import Textarea from "@/components/Textarea";
 
 const UpdateProduct = (props) => {
   const { data: session } = useSession();
@@ -329,13 +330,13 @@ const UpdateProduct = (props) => {
               </select>
             </div>
             <div className=" w-full">
-              <textarea
-                type="textarea"
-                className="outline-none  pl-3 w-full h-40  border-2 border-gray-200 py-2  bg-white text-[13px] rounded-md"
-                name="Caracteristiques_prod"
+              <Textarea
+                type={"textarea"}
+             
+                name={"Caracteristiques_prod"}
                 rows="6"
                 value={product.Caracteristiques_prod}
-                placeholder="Caractéristiques de produit"
+                placeholder={"Caractéristiques de produit"}
                 onChange={handleChange}
               />
             </div>

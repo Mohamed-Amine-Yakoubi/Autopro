@@ -8,5 +8,6 @@ const route = express.Router();
     "/GetMsgByIdUser/:Expediteur",Chat.GetMsgByIdUser
   );
   route.get('/GetDestination/:destinataire/:Expediteur', Chat.GetDestination);
+  route.get('/conversation/:Expediteur/:destinataire', Chat.conversation);
  
 module.exports = route;

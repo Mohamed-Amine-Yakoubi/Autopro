@@ -33,10 +33,16 @@ const AddProduct = () => {
   const [OptionMotor, setOptionMotor] = useState("");
   const [OptionMatiere, setOptionMatiere] = useState("");
   const [selectedImage, setSelectedImage] = useState([]);
+
+  const [selectedbutton, setSelectedbutton] = useState(null);
+
+  const HandleButton = (event) => {
+    const value = event.target.value;
+    setSelectedbutton(value); // Always update selectedbutton with the new value
+  };
   const HandleMatiere = (event) => {
     setOptionMatiere(event.target.value);
   };
-
   const HandleCategory = (event) => {
     setOptionCategory(event.target.value);
   };
@@ -122,6 +128,14 @@ const AddProduct = () => {
     Image_prod: null,
     id_subcat: 0,
     id_magasin: 28,
+
+    Diametre: null,
+
+    Hauteur: null,
+    Largeur: null,
+
+    Longueur: null,
+    Epaisseur: null,
     id_cat: OptionCategory,
     id_marque: OptionMarque,
     id_modele: OptionModele,
@@ -185,14 +199,14 @@ const AddProduct = () => {
 
       if (!res.ok) {
         throw new Error("Failed to add store");
-      }else {
+      } else {
         location.reload();
       }
     } catch (error) {
       alert("Failed to add store");
     }
   };
-
+  console.log(selectedbutton);
   return (
     <div className="py-5 px-4   ">
       <form onSubmit={HandleSubmit}>
@@ -400,10 +414,118 @@ const AddProduct = () => {
                 onChange={handleChange}
               />
             </div>
+            <div className="flex items-center justify-around  space-x-2">
+              <button
+                className={`bg-grayLight rounded-md border p-2 text-[13px] ${
+                  selectedbutton === "Hauteur"
+                    ? "bg-greenColor text-white"
+                    : ""
+                }`}
+                type="button"
+                onClick={HandleButton}
+                value="Hauteur"
+              >
+                Hauteur{" "}
+              </button>
+              <button
+                className={`bg-grayLight rounded-md border p-2 text-[13px] ${
+                  selectedbutton === "Largeur"
+                    ? "bg-greenColor text-white"
+                    : ""
+                }`}
+                type="button"
+                onClick={HandleButton}
+                value="Largeur"
+              >
+                Largeur
+              </button>
+              <button
+                className={`bg-grayLight rounded-md border p-2 text-[13px] ${
+                  selectedbutton === "Diametre"
+                    ? "bg-greenColor text-white"
+                    : ""
+                }`}
+                type="button"
+                onClick={HandleButton}
+                value="Diametre"
+              >
+                Diamétre{" "}
+              </button>
+              <button
+                className={`bg-grayLight rounded-md border p-2 text-[13px] ${
+                  selectedbutton === "Longueur"
+                    ? "bg-greenColor text-white"
+                    : ""
+                }`}
+                type="button"
+                onClick={HandleButton}
+                value="Longueur"
+              >
+                Longueur{" "}
+              </button>
+              <button
+                className={`bg-grayLight rounded-md border p-2 text-[13px] ${
+                  selectedbutton === "Epaisseur"
+                    ? "bg-greenColor text-white"
+                    : ""
+                }`}
+                type="button"
+                onClick={HandleButton}
+                value="Epaisseur"
+              >
+                Épaisseur{" "}
+              </button>
+            </div>
+
+            {selectedbutton === "Largeur" && (
+              <Input
+                type={"text"}
+                name={"Largeur"}
+                placeholder={"Largeur"}
+                value={formData.Largeur}
+                onChange={handleChange}
+              />
+            )}
+            {selectedbutton === "Hauteur" && (
+              <Input
+                type={"text"}
+                name={"Hauteur"}
+                placeholder={"Hauteur"}
+                value={formData.Hauteur}
+                onChange={handleChange}
+              />
+            )}
+            {selectedbutton === "Diametre" && (
+              <Input
+                type={"text"}
+                name={"Diametre"}
+                placeholder={"Diametre"}
+                value={formData.Diametre}
+                onChange={handleChange}
+              />
+            )}
+            {selectedbutton === "Longueur" && (
+              <Input
+                type={"text"}
+                name={"Longueur"}
+                placeholder={"Longueur"}
+                value={formData.Longueur}
+                onChange={handleChange}
+              />
+            )}
+            {selectedbutton === "Epaisseur" && (
+              <Input
+                type={"text"}
+                name={"Epaisseur"}
+                placeholder={"Epaisseur"}
+                value={formData.Epaisseur}
+                onChange={handleChange}
+              />
+            )}
           </div>
         </div>
         <div className="flex justify-center my-5">
-          <button className="bg-greenColor hover:bg-darkColor text-white p-3 rounded-md text-sm">
+          <button className="bg-greenColor hover:bg-darkColor text-white p-3 rounded-md text-[13.5px]">
             Enregistrer
           </button>
         </div>

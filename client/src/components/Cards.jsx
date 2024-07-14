@@ -6,7 +6,7 @@ const Cards = (props) => {
     <div className="shadow-lg rounded-[20px]">
       {" "}
       <div
-        className={`!z-5 relative border flex flex-col rounded-[20px] bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:!bg-navy-800   dark:shadow-none ${className}`}
+        className={`!z-5 relative border flex flex-col rounded-[20px] bg-white bg-clip-border shadow-md shadow-shadow-500 dark:!bg-navy-800   dark:shadow-none ${className}`}
       >
         {children}
       </div>

@@ -120,8 +120,7 @@ const Article = () => {
   const reloadPage = () => {
     location.reload();
   };
-  console.log("id_subcat", filter);
-  console.log("id_cat", selectedOption);
+  
   return (
     <div className="  mb-10">
       <div className="  flex md:flex-row flex-col flex-wrap md:justify-between md:items-center  ">
@@ -222,6 +221,7 @@ const Article = () => {
                       src={item.Image_thumbnail}
                       width={50}
                       height={50}
+                      className="w-[50px] h-[50px] object-scale-down	"
                       alt="image thumbnail"
                     />
                     <p className="px-4 text-[13px]">{item.Libelle_prod}</p>

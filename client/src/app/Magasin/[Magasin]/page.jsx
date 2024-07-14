@@ -13,13 +13,18 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Filter } from "@/app/Catalogue/Filter";
 import { FaLocationDot, FaSquareInstagram } from "react-icons/fa6";
-import { IoIosMail, IoLogoLinkedin } from "react-icons/io";
+import { IoIosMail, IoIosSend, IoLogoLinkedin } from "react-icons/io";
 import { getStoreByID } from "@/app/lib/Magasin";
 import Image from "next/image";
 import { TbWorldWww } from "react-icons/tb";
 import ReclamationModal from "@/components/ReclamtionModal";
+import ChatModel from "@/components/ChatModel";
+import { BsFillChatDotsFill } from "react-icons/bs";
+import { useSession } from "next-auth/react";
 
 const Magasin = (props) => {
+  const { data: session, status } = useSession();
+  const id_user = session?.user?.id_user || "";
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const Libelle_magasin = props.params.Magasin;
@@ -112,14 +117,14 @@ const Magasin = (props) => {
               Informations de Contact
             </h1>
             <div className="mt-4 flex flex-col lg:items-start items-center">
-              <div className="text md:text-start text-center mt-3 flex  font-poppins">
+              <div className="text-[12px]  md:text-start text-center mt-3 flex  font-poppins">
                 <span>
                   <FaLocationDot className="text-greenColor text-lg   mx-2 " />
                 </span>
                 <span className="font-bold text-darkColor mr-2">Adresse :</span>{" "}
                 {magasin.Adresse_magasin}
               </div>
-              <div className="text md:text-start text-center mt-3 flex font-poppins">
+              <div className="text-[12px] md:text-start text-center mt-3 flex font-poppins">
                 <span>
                   <FaPhoneAlt className="text-greenColor text-lg    mx-2 " />
                 </span>
@@ -128,7 +133,7 @@ const Magasin = (props) => {
                 </span>
                 +216 {magasin.Telephone_magasin}
               </div>
-              <div className="text md:text-start text-center mt-3 flex font-poppins">
+              <div className="text-[12px]  md:text-start text-center mt-3 flex font-poppins">
                 <span>
                   <IoIosMail className="text-greenColor text-lg    mx-2 " />
                 </span>
@@ -170,6 +175,13 @@ const Magasin = (props) => {
                   {" "}
                   Passer une reclamation
                 </button>
+              </div>
+              <div>
+                {session && session.user ? (
+                  <button className="text-iconColor text-[22px]      text-center  hover:bg-greenColor rounded-lg hover:text-white">
+                    <ChatModel icon={<BsFillChatDotsFill /> } props={id}/>
+                  </button>
+                ) : null}
               </div>
             </div>
           </div>

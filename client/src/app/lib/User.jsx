@@ -1,7 +1,7 @@
 "use server"
 export async function getAllUsers() {
     const res = await fetch(
-        `http://localhost:4000/api/v1/Marque/GetAllMarque`
+        `http://localhost:4000/api/v1/user/GetAllUsers`
     );
     const data = await res.json();
     if (!res.ok) {

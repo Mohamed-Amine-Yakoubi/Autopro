@@ -30,7 +30,7 @@ const Product = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
- 
+
     prix_prod: {
       type: DataTypes.FLOAT,
       allowNull: false,
@@ -47,7 +47,26 @@ const Product = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-
+    Hauteur: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    Largeur: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    Epaisseur: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    Diametre: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    Longueur: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
