@@ -41,7 +41,7 @@ const Accueil = () => {
       })
       .then((productsWithCategory) => {
         // Set the state with products containing category information
-        setProduct(productsWithCategory);
+        setProduct(productsWithCategory.slice(0,5));
         setLoading(false);
 
       });
@@ -124,15 +124,15 @@ const Accueil = () => {
         </div>
       </div>
       {/* section 3 */}
-      <div className=" container  mt-32  mb-16 mx-auto ">
+      <div className="  container  mt-32  mb-16 mx-auto ">
         <div className="flex flex-row md:justify-between justify-center  ">
-          <div className="    xl:mx-24  lg:mx-24 md:text-center   lg:text-start mx-0 text-center  ">
-            <h1 className="font-bukra font-bukrabold mx-auto mb-8 text-xl sm:justify-center ">
+          <div className="      md:text-center   lg:text-start mx-0 text-center  ">
+            <h1 className="font-bukra text-textColor font-bukrabold mx-auto mb-8 text-xl sm:justify-center ">
               Nouveaux produits
             </h1>
           </div>
           <div className="hidden md:block">
-            <Link href={`./Catalogue`} className=" text-[14px] xl:mx-24  lg:mx-24 border-greenColor border-[2px] rounded-full p-2 px-4 hover:bg-greenColor hover:text-white">
+            <Link href={`./Catalogue`} className=" text-[13px]   border-greenColor border-[2px] rounded-full p-2 px-4 hover:bg-greenColor hover:text-white">
               Voir plus...
             </Link>
           </div>

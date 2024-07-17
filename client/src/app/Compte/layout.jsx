@@ -1,4 +1,5 @@
 "use client";
+import DefaultLayoutCompte from "@/components/DefaultLayoutCompte";
 import Header from "@/components/Header";
 import { Loading } from "@/components/Loading";
 
@@ -22,15 +23,8 @@ export default function ({ children }) {
       <div>
         <Header Title={`Compte`}  pageTitle={"commande"}  />
       </div>
-
-      <div className="flex flex-col md:flex-row lg:space-x-8  my-10   lg:mx-52  ">
-        {" "}
-        {/* flex container */}
-        {/* Sidebar */}
-        <SideBarCompte />
-        {/* Content Area */}
-        <div className="flex-1 p-4">{children}</div>
-      </div>
+ 
+      <DefaultLayoutCompte>{children}</DefaultLayoutCompte>
     </div>
   );
 }

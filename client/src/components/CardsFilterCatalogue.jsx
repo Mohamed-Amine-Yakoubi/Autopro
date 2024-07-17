@@ -5,9 +5,9 @@ import {
   MotoreByIdModele,
   getAllMarque,
 } from "@/app/lib/Car";
-const CardsFilterCatalogue = () => {
+const CardsFilterCatalogue = ({ filter, onFilterChange }) => {
   const [marque, setMarque] = useState([]);
-  const [filter, setFilter] = useState([]);
+ 
   const [modele, setModele] = useState([]);
   const [motor, setMotor] = useState([]);
 
@@ -21,10 +21,7 @@ const CardsFilterCatalogue = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFilter((prevFilter) => ({
-      ...prevFilter,
-      [name]: value,
-    }));
+    onFilterChange(name, value);
   };
 
 
@@ -59,14 +56,14 @@ const CardsFilterCatalogue = () => {
       setMotor([]);
     }
   },[filter.id_modele, OptionYear])
- 
+ console.log("filterrrrrrrrrrr",filter)
   return (
     <div className="max-w-md mx-auto">
       <div className="  mx-auto my-2 shadow-sm rounded-lg">
         <div className="bg-greenColor text-center text-white px-3 py-3 text-[14px] font-semibold rounded-t-lg">
           Sélectionnez votre véhicule
         </div>
-        <div className="bg-gray-200 bg-opacity-40 text-white  p-3 rounded-b-lg flex flex-col justify-center">
+        <div className="bg-gray-200 bg-opacity-40 text-white  p-3 pb-5 rounded-b-lg flex flex-col justify-center">
           <Select
             placeholder="Choisir la marque"
             name="id_marque"
@@ -101,9 +98,7 @@ const CardsFilterCatalogue = () => {
               label: item.Libelle_motor,
             }))}
           />
-          <button className="bg-buttonColor text-white p-3 rounded-lg mt-5 w-32  mx-auto mb-5 text-[13px] ">
-            Rechercher
-          </button>
+ 
         </div>
       </div>
     </div>

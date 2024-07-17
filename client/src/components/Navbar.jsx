@@ -14,6 +14,7 @@ import DropDown from "./DropDown";
 import { useSelector } from "react-redux";
 import { Chat } from "./Chat";
 import ChatModel from "./ChatModel";
+import ModalLogin from "./ModalLogin";
 
 const Navbar = () => {
   const { data: session, status } = useSession();
@@ -66,8 +67,8 @@ const Navbar = () => {
                 </Link>
               </li>
               <li>
-                <Link href="#" className=" block py-2 px-3 NavbarTitle">
-                  A propos
+                <Link href="/Magasin" className=" block py-2 px-3 NavbarTitle">
+                 Magasin
                 </Link>
               </li>
               <li>
@@ -88,7 +89,7 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="text-iconColor text-[22px]      text-center   hover:bg-greenColor rounded-lg hover:text-white ">
-                <ModalComponent icon={<FaUser />} />
+                <ModalLogin icon={<FaUser />} />
               </div>
             )}
             {session && session.user ? (

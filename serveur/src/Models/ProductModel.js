@@ -3,7 +3,7 @@ const { sequelize } = require("../config/Database");
 const Category = require("./CategoryModel");
 const User = require("./UserModel");
 const Magasin = require("./MagasinModel");
-const Ville = require("./VilleModel");
+ 
 const Marque = require("./MarqueModel");
 const Modele = require("./ModeleCarModel");
 const Motor = require("./MotorisationModel");

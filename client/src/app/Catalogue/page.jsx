@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 "use client";
 import Header from "@/components/Header";
 import "../globals.scss";
@@ -8,16 +7,32 @@ import { getCategory } from "../lib/Category";
 import CardsProduit from "@/components/CardsProduit";
 import { FaSearch } from "react-icons/fa";
 import { Loading } from "@/components/Loading";
-
 import { Filter } from "./Filter";
-import Link from "next/link";
-import { useDispatch } from "react-redux";
+import CardsFilterCatalogue from "@/components/CardsFilterCatalogue";
 
 const Catalogue = () => {
-  const [product, setProduct] = useState([]);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState({
+    search: "",
+    id_cat: null,
+    id_subcat: null,
+    id_marque: null,
+    id_modele: null,
+    id_motor: null,
+    id_ville: null,
+    id_mat: null,
+    price: 5000,
+  });
 
-  // product
+  const handleSearch = (e) => {
+    setFilter({ ...filter, search: e.target.value });
+  };
+
+  const handleFilterChange = (name, value) => {
+    setFilter({ ...filter, [name]: value });
+  };
+
   useEffect(() => {
     getAllProducts()
       .then((products) => {
@@ -34,33 +49,66 @@ const Catalogue = () => {
         return Promise.all(promises);
       })
       .then((productsWithCategory) => {
-        setProduct(productsWithCategory);
+        setProducts(productsWithCategory);
         setLoading(false);
       });
   }, []);
 
-  if (loading) return <div><Loading/></div>;
+  const filteredProducts = products.filter((product) => {
+    return (
+      (filter.search === "" ||
+        product.Libelle_prod?.toLowerCase().includes(
+          filter.search.toLowerCase()
+        )) &&
+      (filter.id_cat === null || product.id_cat === parseInt(filter.id_cat)) &&
+      (filter.id_subcat === null ||
+        product.id_subcat === parseInt(filter.id_subcat)) &&
+      (filter.id_ville === null ||
+        product.id_ville === parseInt(filter.id_ville)) &&
+      (filter.id_mat === null || product.id_mat === parseInt(filter.id_mat)) &&
+      product.prix_prod <= filter.price &&
+      (filter.id_marque === null ||
+        product.id_marque === parseInt(filter.id_marque)) &&
+      (filter.id_modele === null ||
+        product.id_modele === parseInt(filter.id_modele)) &&
+      (filter.id_motor === null ||
+        product.id_motor === parseInt(filter.id_motor))
+    );
+  });
+
+  if (loading)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+
   return (
     <div className="mb-28">
-      {/* section 1 */}
-      <div>
-        <Header Title={"Catalogue"} />
-      </div>
-      {/* section 2 */}
+      <Header Title={"Catalogue"} />
+      <div className="flex md:flex-row flex-col mx-12 mt-12 md:space-x-12">
+        <div className="md:w-1/3 w-full">
+          <CardsFilterCatalogue
+            filter={filter}
+            onFilterChange={handleFilterChange}
+          />
 
-      <div className="    flex md:flex-row flex-col    mx-12  mt-12  md:space-x-12   ">
-        <div className=" md:w-1/3  w-full   ">
-          <Filter />
+          <Filter filter={filter} onFilterChange={handleFilterChange} />
         </div>
-
-        <div className=" md:w-1/1    w-full  ">
-          <div className="flex   items-center   bg-grayLight h-14 rounded-md   ">
+        <div className="md:w-1/1 w-full">
+          <div className="flex items-center bg-grayLight h-12 rounded-md">
             <FaSearch className="mx-5" />
+            <input
+              type="text"
+              placeholder="Trouver votre article"
+              className="outline-none bg-transparent"
+              onChange={handleSearch}
+            />
           </div>
-          <div className="flex   flex-wrap  justify-center ">
-            {product.map((product) => (
-              <div key={product.id_prod} className="mt-5     ">
-               
+          <div className="flex flex-wrap justify-center">
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
+                <div key={product.id_prod} className="mt-5">
                   <CardsProduit
                     image={product.Image_thumbnail}
                     libelle={product.Libelle_prod}
@@ -70,13 +118,20 @@ const Catalogue = () => {
                     product={product}
                     link={`./Catalogue/${product.id_prod}`}
                   />
-      
+                </div>
+              ))
+            ) : (
+              <div className="flex md:flex-row flex-col my-28 justify-center">
+                <p className="font-poppins text-[17px] text-gray-400">
+                  Ce produit est actuellement indisponible
+                </p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>
     </div>
   );
 };
+
 export default Catalogue;

@@ -11,7 +11,7 @@ import { AiFillDashboard } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { BsFillChatDotsFill, BsFillSendExclamationFill } from "react-icons/bs";
 
-const SideBar = () => {
+const SideBar = ({openSideBar}) => {
   const { data: session, status } = useSession();
   const [store, setStore] = useState([]);
 
@@ -26,7 +26,12 @@ const SideBar = () => {
 
   if (status === "authenticated") {
     return (
-      <div className="h-[520px] w-64 md:mb-28  bg-gray-100 text-iconColor   rounded-lg">
+      <div className="absolute  top-20  left-38  h-screen z-50">
+      <div
+        className={`w-64 md:mb-28 bg-gray-100 text-iconColor m-5 rounded-lg ${
+          openSideBar ? "translate-x-0" : "-translate-x-full opacity-0"
+        } transition-all duration-300 ease-in-out`}
+      >
         {magasin.items.map((item) => (
           <div key={item.id_magasin}>
             <div className="flex  py-10 px-4 flex-col items-center justify-center">
@@ -98,6 +103,7 @@ const SideBar = () => {
             </ul>
           </div>
         ))}
+      </div>
       </div>
     );
   }

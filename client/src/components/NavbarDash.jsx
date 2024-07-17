@@ -2,11 +2,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
- 
-
- 
 import { useRouter } from "next/navigation";
-const NavbarDash = () => {
+ 
+import { AiOutlineMenu } from "react-icons/ai";
+
+const NavbarDash = ({ setOpenSideBar, openSideBar }) => {
   const router = useRouter();
 
   const [currentRoute, setCurrentRoute] = useState("Dashboard");
@@ -17,7 +17,7 @@ const NavbarDash = () => {
     setCurrentRoute(route ? route : "Dashboard");
   }, [pathname]);
   return (
-    <div className="flex flex-row items-center justify-between">
+    <div className="flex flex-row   justify-between">
       <div className="ml-[6px]">
         <div className="h-6 w-[224px]  ">
           <Link
@@ -44,6 +44,11 @@ const NavbarDash = () => {
         </p>
       </div>
     
+      <div className="lg:hidden mx-8">
+    <button type="button" className=" bg-grayLight rounded-md p-3 text-gray-600" onClick={()=>setOpenSideBar(!openSideBar)}>
+          <AiOutlineMenu/>
+        </button>
+     </div>
     </div>
   );
 };

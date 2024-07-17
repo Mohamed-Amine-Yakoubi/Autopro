@@ -2,21 +2,20 @@
 import React, { useState } from "react";
 
 import NavbarDash from "./NavbarDash";
-
-import SideBar from "./SideBar";
+import SideBarCompte from "./SideBarCompte";
 
 export default function DefaultLayoutCompte({ children }) {
   const [openSideBar, setOpenSideBar] = useState(true);
 
   return (
     <div className=" ">
-      <div className="flex    justify-center  flex-row lg:space-x-8  my-24 mx-8 ">
+      <div className="flex    justify-center   flex-row lg:space-x-8  my-10   lg:mx-52 ">
         <div
-          className={`lg:w-64 mb-[500px] lg:flex-shrink-0 ${
+          className={`lg:w-64 lg:flex-shrink-0 ${
             openSideBar ? "block" : "hidden"
           }`}
         >
-          <SideBar openSideBar={openSideBar} />
+          <SideBarCompte openSideBar={openSideBar} />
         </div>
         <div className={`flex flex-1 ${openSideBar ? "ml-64" : "ml-0"}`}>
           <main className="w-full">

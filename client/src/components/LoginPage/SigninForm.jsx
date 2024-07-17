@@ -47,7 +47,7 @@ const SigninForm = ({ isAnimated, setIsAnimated }) => {
   };
   return (
     <div className="    w-full h-full  flex flex-col justify-center   ">
-      <div className="  xl:mx-28  mx-10 mt-10 ">
+      <div className="     mx-10 mt-10 ">
         <div className="flex justify-center mx-auto items-center">
           <Image src={Autopro_logo} alt="logo" className="w-56" />
         </div>
@@ -84,7 +84,7 @@ const SigninForm = ({ isAnimated, setIsAnimated }) => {
           <div className="flex justify-center items-center mt-4">
             <Button
               type="submit"
-              className="bg-darkColor"
+              className="bg-darkColor text-[13.5px]"
               value={"Connexion"}
             ></Button>{" "}
           </div>

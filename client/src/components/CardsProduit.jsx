@@ -28,7 +28,7 @@ const CardsProduit = ({
   };
   return (
     <div
-      className="relative max-w-sm rounded overflow-hidden border border-zinc-200 mx-3 w-56 h-70 group"
+      className="relative max-w-sm rounded overflow-hidden bg-grayLight border border-zinc-200 mx-3 w-56 h-70 group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -40,7 +40,8 @@ const CardsProduit = ({
       <Link href={link}>
         <div className=" flex justify-center">
           <Image
-            className="  p-2"
+            className=" w-[180px] h-[180px] object-contain p-2"
+            
             src={image}
             width={180}
             height={180}
@@ -68,19 +69,19 @@ const CardsProduit = ({
       <Link href={link}>
         <div className="px-6 py-4 mt-5 ">
           <div className="font-bold text-[14px] mb-1">{libelle}</div>
-          <p className="text-gray-700 text-[12px] ">{categorie}</p>
+          <p className="text-gray-500 text-[11.5px] ">{categorie}</p>
           <div className="flex justify-between mt-3">
-            <p className="text-gray-700 text-[13px] font-bold ">{prix} TND</p>
+            <p className="text-gray-700 text-[12.5px] font-bold ">{prix} TND</p>
             {stock > 0 ? (
-              <p className="text-greenColor rounded-full font-bold text-[13px] flex items-center ">
-                <span className="mr-1 text-[16px]">
+              <p className="text-greenColor rounded-full font-bold text-[11.5px] flex items-center ">
+                <span className="mr-1 text-[14px]">
                   <FaRegCheckCircle />
                 </span>{" "}
                 En stock
               </p>
             ) : (
-              <p className="text-red-600 rounded-full font-bold text-[13px] flex items-center">
-                <span className="mr-1 text-[16px]">
+              <p className="text-red-600 rounded-full font-bold text-[11.5px] flex items-center">
+                <span className="mr-1 text-[15px]">
                   <FcCancel />
                 </span>{" "}
                 Epuisé

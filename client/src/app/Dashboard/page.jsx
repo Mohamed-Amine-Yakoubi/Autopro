@@ -142,11 +142,11 @@ const Dashboard = () => {
                     <th className="w-1/4 py-4  text-left text-textColor font-bold text-[13px]">
                       Email
                     </th>
-                    <th className="w-1/6 py-4  text-left text-textColor font-bold text-[13px]">
+                    <th className="w-1/4 py-4  text-left text-textColor font-bold text-[13px]">
                       Telephone
                     </th>
 
-                    <th className="w-1/3 py-4  text-left text-textColor font-bold text-[13px]">
+                    <th className="w-1/2 py-4  text-left text-textColor font-bold text-[13px]">
                       Date
                     </th>
                     <th className="w-1/4 py-4  text-left text-textColor font-bold text-[13px]">
@@ -166,7 +166,7 @@ const Dashboard = () => {
                         </td>
 
                         <td className="   text-[13px]">
-                          {item.Email_rec.slice(0, 20)}...{" "}
+                          {item.Email_rec.slice(0, 10)}...{" "}
                         </td>
                         <td className="   text-[13px]  ">
                           {item.Telephone_rec}

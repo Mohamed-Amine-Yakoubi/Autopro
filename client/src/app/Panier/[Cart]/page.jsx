@@ -76,7 +76,7 @@ const Cart = (props) => {
 
   const totalPrix = commande.reduce((sum, item) => sum + item.prix_total, 0);
   if (loading) return <Loading />;
-
+ 
  
   return (
     <div className=" my-36  mx-48 ">
@@ -100,9 +100,9 @@ const Cart = (props) => {
               Moyen de paiement
             </td>
           </tr>
-          <tr className="text-center  font-semibold">
+          <tr className="text-center text-textColor font-semibold">
             <td className="pb-5 text-[14px]">{id_Maincmd}</td>
-            <td className="pb-5 text-[14px]">{commande.Date_cmd}</td>
+            <td className="pb-5 text-[14px]">{commande[0].Date_cmd}</td>
             <td className="pb-5 text-[14px]">{session.user.Email_user}</td>
 
             <td className="pb-5 text-[14px]">{totalPrix} TND</td>
@@ -111,19 +111,19 @@ const Cart = (props) => {
           </tr>
         </table>
       </div>
-      <p className="text-start text-[15px] my-8">
+      <p className="text-textColor text-start text-[15px] my-8">
         Payez en argent comptant à la livraison ou par chèque libellé au nom de
         Autopro.
       </p>
-      <p className="text-start text-[22px] font-semibold text-darkColor ">
+      <p className=" text-start text-[22px] font-semibold text-darkColor ">
         Détails de la commande
       </p>
       <table className="  py-5 w-full">
         <tr className=" border-b pt-5">
-          <td className="pt-5   text-[17px] font-semibold text-darkColor">
+          <td className="pt-5  text-[16px] font-semibold text-darkColor">
             Produit
           </td>
-          <td className="pt-5   text-[17px] font-semibold text-darkColor">
+          <td className="pt-5  text-[16px] font-semibold text-darkColor">
             Total
           </td>
         </tr>
