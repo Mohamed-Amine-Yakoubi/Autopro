@@ -11,25 +11,43 @@ const transporter = nodemailer.createTransport({
     pass: process.env.PASS_AUTH,
   },
 });
+
 transporter.verify((error, success) => {
   if (error) {
-    console.log(error);
+    console.error("Error verifying transporter:", error);
   } else {
-    console.log("ready for messages", success);
+    console.log("Transporter ready for messages:", success);
   }
 });
 
-const UserMail = async (email, subject, html ) => {
+const UserMail = async (email, subject, html) => {
   try {
     await transporter.sendMail({
       from: process.env.EMAIL_AUTH,
       to: email,
-      subject: subject ,
-      html:html  ,
+      subject: subject,
+      html: html,
     });
   } catch (error) {
-    res.status(500).json({ error: "Internal server " });
+    console.error('Error sending email:', error);
+    throw error;
   }
 };
 
-module.exports = UserMail;
+const sendNewPasswordEmail = async (email, newPassword) => {
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_AUTH,
+      to: email,
+      subject: "Réinitialisation du mot de passe",
+      text: `Votre nouveau mot de passe est : ${newPassword}\n\nVeuillez utiliser ce mot de passe pour vous connecter. Nous vous recommandons de modifier votre mot de passe après vous être connecté.\n`,
+    });
+  } catch (error) {
+    console.error('Error sending email:', error);
+  }
+};
+
+module.exports = {
+  UserMail,
+  sendNewPasswordEmail,
+};

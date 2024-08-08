@@ -11,7 +11,7 @@ export default function DefaultLayoutCompte({ children }) {
     <div className=" ">
       <div className="flex    justify-center   flex-row lg:space-x-8  my-10   lg:mx-52 ">
         <div
-          className={`lg:w-64 lg:flex-shrink-0 ${
+          className={`lg:w-64 mb-[500px] lg:flex-shrink-0 ${
             openSideBar ? "block" : "hidden"
           }`}
         >

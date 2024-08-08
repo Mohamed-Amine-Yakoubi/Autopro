@@ -38,6 +38,23 @@ exports.CreatesubCategory = asyncHandler(async (req, res) => {
       res.status(500).json({ error: "Internal server error" });
     }
   });
+
+
+
+  
+/****************get all subcategories*************** */
+exports.GetAllsubCategories = asyncHandler(async (req, res) => {
+  try {
+    const categories = await SubCategory.findAll({});
+    if (categories) {
+      res.status(201).json(categories);
+    } else {
+      res.status(404).json({ message: "Your categories have not been found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 //get sub category
   exports.GetSubCategory = asyncHandler(async (req, res) => {
     try {

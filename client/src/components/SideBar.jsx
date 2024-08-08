@@ -10,6 +10,7 @@ import { FaBoxOpen } from "react-icons/fa";
 import { AiFillDashboard } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { BsFillChatDotsFill, BsFillSendExclamationFill } from "react-icons/bs";
+import { LiaFileInvoiceSolid } from "react-icons/lia";
 
 const SideBar = ({openSideBar}) => {
   const { data: session, status } = useSession();
@@ -28,7 +29,7 @@ const SideBar = ({openSideBar}) => {
     return (
       <div className="absolute  top-20  left-38  h-screen z-50">
       <div
-        className={`w-64 md:mb-28 bg-gray-100 text-iconColor m-5 rounded-lg ${
+        className={`w-64 pb-8 md:mb-28 bg-gray-100 text-iconColor m-5 rounded-lg ${
           openSideBar ? "translate-x-0" : "-translate-x-full opacity-0"
         } transition-all duration-300 ease-in-out`}
       >
@@ -89,6 +90,15 @@ const SideBar = ({openSideBar}) => {
                   className="font-poppins text-[14px]"
                 >
                   Reclamations
+                </Link>
+              </li>
+              <li className="p-4 hover:bg-greenColor hover:text-white flex items-center space-x-3 rounded-md">
+                <LiaFileInvoiceSolid className=" or text-[20px]" />
+                <Link
+                  href="/Dashboard/Factures"
+                  className="font-poppins text-[14px]"
+                >
+                  Factures Client
                 </Link>
               </li>
               <li className="p-4 hover:bg-greenColor hover:text-white flex items-center space-x-3 rounded-md">

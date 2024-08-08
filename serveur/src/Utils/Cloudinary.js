@@ -5,5 +5,15 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_SECRET_KEY
 });
-
-module.exports = cloudinary;
+async function uploadPDF(pdfBuffer,fileName) {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload_stream(
+      { resource_type: 'raw', folder: 'pdfs',public_id: fileName, format: 'pdf'  },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result.secure_url);
+      }
+    ).end(pdfBuffer);
+  });
+}
+module.exports = {cloudinary,uploadPDF};

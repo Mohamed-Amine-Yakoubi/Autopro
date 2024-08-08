@@ -1,16 +1,25 @@
 const UserModel = require("../Models/UserModel");
 const bcrypt = require("bcrypt");
-const Adresse_User = require("../Models/AdresseUser");
+ 
 const asyncHandler = require("express-async-handler");
 const { Op } = require("sequelize");
 const { createToken, verifyToken } = require("../Utils/Athentification");
 const cloudinary = require("../Utils/Cloudinary");
 
 const VerificationEmail = require("../Utils/VerificationEmail");
-const AdresseUser = require("../Models/AdresseUser");
+ 
 const Reclamtion = require("../Models/ClaimModel");
+const {  sendNewPasswordEmail } = require("../Utils/UserMail");
 //Sign Up
-
+const generateRandomPassword = (length = 15) => {
+  const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset[randomIndex];
+  }
+  return password;
+};
 exports.SignUp = asyncHandler(async (req, res) => {
   try {
     const {
@@ -375,3 +384,28 @@ exports.Update_etat_Rec = asyncHandler(async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+// ************************forgotpassword******************
+exports.forgotPassword = async (req, res) => {
+  const { Email_user } = req.body;
+  try {
+    const user = await UserModel.findOne({ where: { Email_user } });
+    if (!user) {
+      return res.status(404).send({ message: 'Utilisateur non trouvé' });
+    }
+
+    // Generate a new alphanumeric password with 15 characters
+    const newPassword = generateRandomPassword();
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    // Hash the new password (make sure hashPassword is correctly defined)
+    user.MotDePasse_user = hashedPassword;
+    await user.save();
+
+    // Send the new password via email
+    await sendNewPasswordEmail(Email_user, newPassword);
+
+    res.send({ message: 'Un nouveau mot de passe a été envoyé à votre adresse e-mail' });
+  } catch (error) {
+    console.error('Error in forgotPassword function:', error); // Log the error for debugging
+    res.status(500).send({ message: 'Internal server error' });
+  }
+};

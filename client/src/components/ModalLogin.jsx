@@ -16,23 +16,25 @@ const ModalLogin = ({  icon }) => {
     onClose: onClose,
   } = useDisclosure();
   return (
-    <div>
+    <div  >
       <Button onClick={openModal} className="">
         {icon}
       </Button>
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        className="custom-modal"
+        className="custom-modal   "
         icon={icon}
       >
-        <div className="modal-overlay  ">
-          <ModalContent className="custom-modal-content">
-            <ModalBody className="custom-modal-body  ">
+     
+        <div className="modal-overlay  "  >
+          <ModalContent className="custom-modal-content "  >
+            <ModalBody className="custom-modal-body ">
               <Login />
             </ModalBody>
           </ModalContent>
         </div>
+       
       </Modal>
     </div>
   );

@@ -2,8 +2,9 @@ const asyncHandler = require("express-async-handler");
 const { Op } = require("sequelize");
 const Commande = require("../Models/CommandeModel");
 const CommandeDetails = require("../Models/commandeDetailsModel");
+const { UserMail } = require("../Utils/UserMail");
  
-const UserMail = require("../Utils/UserMail");
+ 
 require("dotenv").config();
 
 function generateRandomString(length) {
@@ -215,16 +216,13 @@ exports.Update_commande = asyncHandler(async (req, res) => {
   }
 });
 /******************sen Mail commande****************** */
-exports.User_Mail= asyncHandler(async (req, res) => {
+exports.User_Mail = asyncHandler(async (req, res) => {
   try {
     const { to, subject, html } = req.body;
-
     await UserMail(to, subject, html);
     res.status(200).json({ message: "Email sent successfully" });
   } catch (error) {
-    console.error("Error while adding Commande and CommandeDetails:", error);
-    res
-      .status(500)
-      .json({ error: "Internal server error", details: error.message });
+    console.error("Error while sending email:", error);
+    res.status(500).json({ error: "Internal server error", details: error.message });
   }
 });

@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import InputIcon from "../InputIcon";
 
-const SigninForm = ({ isAnimated, setIsAnimated }) => {
+const SigninForm = ({ isAnimated, setIsAnimated ,setShowForgotPassword }) => {
   const router = useRouter();
 
   const [user, setUser] = useState({
@@ -79,7 +79,9 @@ const SigninForm = ({ isAnimated, setIsAnimated }) => {
             </div>
           </div>
           <div className="flex justify-end  mt-4   md:">
-            <button className="text-[12px]">Mot de Passe oublié?</button>
+            <button type="button" className="text-[12px]"   
+               onClick={() => setShowForgotPassword(true)}
+               >Mot de Passe oublié?</button>
           </div>
           <div className="flex justify-center items-center mt-4">
             <Button

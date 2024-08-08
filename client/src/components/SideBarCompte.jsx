@@ -24,9 +24,9 @@ const SideBarCompte = ({openSideBar}) => {
   const closeModal = () => setIsModalOpen(false);
   if (status === "authenticated") {
     return (
-      <div className="absolute  top-[288px]  left-38  h-screen z-10">
+      <div className="absolute  top-[288px]  left-[160px]  h-screen z-10">
         <div
-          className={`w-64 md:mb-28 bg-gray-100 text-iconColor m-5 rounded-lg ${
+          className={`w-64 pb-6 md:mb-28 bg-gray-100 text-iconColor m-5 rounded-lg ${
             openSideBar ? "translate-x-10" : "-translate-x-full opacity-0"
           } transition-all duration-300 ease-in-out`}
         >
@@ -49,7 +49,7 @@ const SideBarCompte = ({openSideBar}) => {
                   Commandes
                 </Link>
               </li>
-              {session.user.Profil_user === "client" ? (
+              {session.user.Profil_user === "Client" ? (
                 <li
                   onClick={openModal}
                   className="p-4 hover:bg-greenColor hover:text-white flex items-center space-x-3 rounded-md"

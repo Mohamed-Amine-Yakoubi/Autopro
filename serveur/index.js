@@ -18,6 +18,7 @@ const ModeleRouter = require("./src/Routers/ModeleCarRouter");
 const FavorisRouter = require("./src/Routers/FavorisRouter");
 const CommandeRouter = require("./src/Routers/CommandeRouter");
 const ChatRouter = require("./src/Routers/ChatRouter");
+const FactureRouter = require("./src/Routers/FactureRouter");
 const ApiError = require("./src/Utils/ApiError");
 const Chat = require("./src/Models/ChatModel");
 const { Op } = require("sequelize");
@@ -113,6 +114,7 @@ io.on("connection", (socket) => {
 // Routes
 app.use("/api/v1/user", UserRouter);
 app.use("/api/v1/chat", ChatRouter);
+app.use("/api/v1/facture", FactureRouter);
 app.use("/api/v1/commande", CommandeRouter);
 app.use("/api/v1/favoris", FavorisRouter);
 app.use("/api/v1/Marque", MarqueRouter);

@@ -56,4 +56,7 @@ route.patch("/Update_etat_Rec/:id_rec", UserControllers.Update_etat_Rec);
 route.post("/Add_Adresse", AdresseUserController.Add_Adresse);
 route.get("/GetAdrByIdUser/:id_user", AdresseUserController.GetAdrByIdUser);
 route.patch("/Update_Adresse/:id_user", AdresseUserController.Update_Adresse);
+
+route.post('/forgot_password',UserControllers.forgotPassword);
+ 
 module.exports = route;
