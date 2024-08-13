@@ -33,7 +33,7 @@ export const Filter = ({ filter, onFilterChange }) => {
     } else {
       setSubCategory([]);
     }
-  }, [filter.id_cat]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;

@@ -226,3 +226,20 @@ exports.User_Mail = asyncHandler(async (req, res) => {
     res.status(500).json({ error: "Internal server error", details: error.message });
   }
 });
+/******************Delete commande****************** */
+
+exports.DeleteMainCommande = asyncHandler(async (req, res) => {
+  try {
+    const { id_prod ,id_user } = req.params;
+    const deleteMainCommande = await Commande.destroy({ where: { id_prod: id_prod ,id_user: id_user  } });
+    if (deleteMainCommande) {
+      res.status(201).json(deleteMainCommande);
+    } else {
+      res.status(404).json({ message: `No favoris found this ${id_fav}` });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+//get sub category
+ 

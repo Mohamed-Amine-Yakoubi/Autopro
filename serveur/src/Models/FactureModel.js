@@ -23,6 +23,10 @@ const Facture = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    id_MainCmd: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -43,4 +47,5 @@ Facture.belongsTo(Magasin, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
+ 
 module.exports = Facture;

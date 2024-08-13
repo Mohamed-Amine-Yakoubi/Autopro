@@ -21,31 +21,46 @@ import ReclamationModal from "@/components/ReclamtionModal";
 import ChatModel from "@/components/ChatModel";
 import { BsFillChatDotsFill } from "react-icons/bs";
 import { useSession } from "next-auth/react";
+import CardsFilterCatalogue from "@/components/CardsFilterCatalogue";
 
 const Magasin = (props) => {
   const { data: session, status } = useSession();
   const id_user = session?.user?.id_user || "";
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
-  const Libelle_magasin = props.params.Magasin;
 
-  const [isModalProductOpen, setisModalProductOpen] = useState(false);
+  const id_magasin = props.params.Magasin;
+
+  const [filter, setFilter] = useState({
+    search: "",
+    id_cat: null,
+    id_subcat: null,
+    id_marque: null,
+    id_modele: null,
+    id_motor: null,
+    id_ville: null,
+    id_mat: null,
+    price: 5000,
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const [selectedProduct, setSelectedProduct] = useState(null); // State to hold the selected product
-
   const [product, setProduct] = useState([]);
   const [magasin, setMagasin] = useState("");
   const [loading, setLoading] = useState(true);
+  const handleSearch = (e) => {
+    setFilter({ ...filter, search: e.target.value });
+  };
+
+  const handleFilterChange = (name, value) => {
+    setFilter({ ...filter, [name]: value });
+  };
 
   // product
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const products = await getProductbyStoreId(id);
+        const products = await getProductbyStoreId(id_magasin);
         const productsWithCategory = await Promise.all(
           products.map(async (prod) => {
             try {
@@ -61,7 +76,7 @@ const Magasin = (props) => {
         setProduct(productsWithCategory);
         setLoading(false);
 
-        const magasinData = await getStoreByID(id);
+        const magasinData = await getStoreByID(id_magasin);
         setMagasin(magasinData);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -70,7 +85,29 @@ const Magasin = (props) => {
     };
 
     fetchData();
-  }, [id]);
+  }, [id_magasin]);
+
+  const filteredProducts = product.filter((product) => {
+    return (
+      (filter.search === "" ||
+        product.Libelle_prod?.toLowerCase().includes(
+          filter.search.toLowerCase()
+        )) &&
+      (filter.id_cat === null || product.id_cat === parseInt(filter.id_cat)) &&
+      (filter.id_subcat === null ||
+        product.id_subcat === parseInt(filter.id_subcat)) &&
+      (filter.id_ville === null ||
+        product.id_ville === parseInt(filter.id_ville)) &&
+      (filter.id_mat === null || product.id_mat === parseInt(filter.id_mat)) &&
+      product.prix_prod <= filter.price &&
+      (filter.id_marque === null ||
+        product.id_marque === parseInt(filter.id_marque)) &&
+      (filter.id_modele === null ||
+        product.id_modele === parseInt(filter.id_modele)) &&
+      (filter.id_motor === null ||
+        product.id_motor === parseInt(filter.id_motor))
+    );
+  });
 
   if (loading)
     return (
@@ -83,7 +120,7 @@ const Magasin = (props) => {
     <div className="mb-28">
       {/* section 1 */}
       <div>
-        <Header Title={`Bienvenue chez ${Libelle_magasin}`} />
+        <Header Title={`Bienvenue chez ${magasin.Libelle_magasin}`} />
       </div>
       {/* section 2 */}
 
@@ -140,7 +177,7 @@ const Magasin = (props) => {
                 <span className="font-bold text-darkColor mr-2">Email :</span>
                 {magasin.Email_magasin}
               </div>
-              <div className="flex flex-row mt-3">
+              <div className="flex flex-row mt-4">
                 <div>
                   <Link
                     href={`${magasin.Lien_instagram}`}
@@ -167,10 +204,11 @@ const Magasin = (props) => {
                   </Link>
                 </div>
               </div>
+              <div className="flex items-center  mt-4 space-x-4">
               <div>
                 <button
                   onClick={openModal}
-                  className="bg-greenColor text-white p-2 mt-5 rounded-md text-[13px]"
+                  className="bg-greenColor text-white p-2  rounded-md text-[13px]"
                 >
                   {" "}
                   Passer une reclamation
@@ -178,10 +216,14 @@ const Magasin = (props) => {
               </div>
               <div>
                 {session && session.user ? (
-                  <button className="text-iconColor text-[22px]      text-center  hover:bg-greenColor rounded-lg hover:text-white">
-                    <ChatModel icon={<BsFillChatDotsFill /> } props={id}/>
+                  <button className="text-iconColor text-[22px]    text-center  hover:bg-greenColor rounded-lg hover:text-white">
+                    <ChatModel
+                      icon={<BsFillChatDotsFill />}
+                      props={id_magasin}
+                    />
                   </button>
                 ) : null}
+              </div>
               </div>
             </div>
           </div>
@@ -191,30 +233,55 @@ const Magasin = (props) => {
       {/* section 3 */}
       <div className="    flex md:flex-row flex-col    mx-12  mt-12  md:space-x-12   ">
         <div className=" md:w-1/3  w-full ">
-          <Filter />
+          <CardsFilterCatalogue
+            filter={filter}
+            onFilterChange={handleFilterChange}
+          />
+
+          <Filter filter={filter} onFilterChange={handleFilterChange} />
         </div>
 
         <div className=" md:w-1/1    w-full  ">
           <div className="flex   items-center   bg-grayLight h-14 rounded-md   ">
             <FaSearch className="mx-5" />
+            <input
+              type="text"
+              placeholder="Trouver votre article"
+              className="outline-none bg-transparent"
+              onChange={handleSearch}
+            />
           </div>
-          <div className="flex   flex-wrap  justify-center ">
-            {product.map((product) => (
-              <div key={product.id_prod} className="mt-5     ">
-                <CardsProduit
-                  image={product.Image_thumbnail}
-                  libelle={product.Libelle_prod}
-                  categorie={product.category.Libelle_cat}
-                  prix={product.prix_prod}
-                  stock={product.Stock_prod}
-                  link={`../Catalogue/${product.id_prod}`}
-                />
+
+          <div className="flex flex-wrap justify-center">
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
+                <div key={product.id_prod} className="mt-5">
+                  <CardsProduit
+                    image={product.Image_thumbnail}
+                    libelle={product.Libelle_prod}
+                    categorie={product.category.Libelle_cat}
+                    prix={product.prix_prod}
+                    stock={product.Stock_prod}
+                    product={product}
+                    link={`./Catalogue/${product.id_prod}`}
+                  />
+                </div>
+              ))
+            ) : (
+              <div className="flex md:flex-row flex-col my-28 justify-center">
+                <p className="font-poppins text-[17px] text-gray-400">
+                  Ce produit est actuellement indisponible
+                </p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>
-      <ReclamationModal props={id} isOpen={isModalOpen} onClose={closeModal} />
+      <ReclamationModal
+        props={id_magasin}
+        isOpen={isModalOpen}
+        onClose={closeModal}
+      />
     </div>
   );
 };

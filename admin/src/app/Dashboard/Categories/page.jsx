@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Cards from "@/components/Cards";
 
-import { IoSearch } from "react-icons/io5";
+import { IoEyeSharp, IoSearch } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
 
 import { DeleteCatByID } from "@/app/lib/boutique";
@@ -15,6 +15,9 @@ import {
   GetAllMotors,
   GetAllsubCategories,
 } from "@/app/lib/Car";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
+import { HiDotsHorizontal } from "react-icons/hi";
+import { RiEdit2Fill } from "react-icons/ri";
 const Categories = () => {
   const router = useRouter();
   const [filter, setFilter] = useState("");
@@ -212,29 +215,53 @@ const Categories = () => {
                   </td>
                   <td>{item.createdAt.substring(0, 10)}</td>
                   <td>
-                    <button
-                      className="hover:bg-greenColor rounded-md hover:text-white p-2 flex items-center mt-3"
-                      onClick={() =>
-                        handleDelete(
-                          category === "Marque"
-                          ? item.id_marque
-                          : category === "Modele"
-                          ? item.id_modele
-                          : category === "Motorisation"
-                          ? item.id_motor
-                          : category === "Pieces"
-                          ? item.id_cat
-                          : category === "sousPieces"
-                          ? item.id_subcat
-                          : null
-
-
-                            
-                        )
-                      }
-                    >
-                      <MdDelete className="text-[20px] mr-2" />
-                    </button>
+              
+                    <Dropdown className="bg-gray-100 p-4  rounded-md shadow-lg">
+                      <DropdownTrigger>
+                        <Button variant="bordered">
+                          <HiDotsHorizontal />
+                        </Button>
+                      </DropdownTrigger>
+                      <DropdownMenu aria-label="Dynamic Actions">
+                  
+                        <DropdownItem>
+                          <button
+                            className=" hover:bg-greenColor rounded-md  hover:text-white p-2 flex items-center mt-3"
+                            onClick={() =>
+                              handleDelete(
+                                category === "Marque"
+                                ? item.id_marque
+                                : category === "Modele"
+                                ? item.id_modele
+                                : category === "Motorisation"
+                                ? item.id_motor
+                                : category === "Pieces"
+                                ? item.id_cat
+                                : category === "sousPieces"
+                                ? item.id_subcat
+                                : null
+      
+      
+                                  
+                              )
+                            }
+                          >
+                            <MdDelete className="text-[20px] mr-2" />
+                            <p className="text-[14px]"> Supprimer</p>
+                          </button>
+                        </DropdownItem>
+               
+                        <DropdownItem>
+                          <button
+                            className=" hover:bg-greenColor rounded-md  hover:text-white p-2 flex items-center mt-3"
+                     
+                          >
+                            <RiEdit2Fill className="text-[20px] mr-2" />
+                            <p className="text-[14px]"> Modifier</p>
+                          </button>
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </Dropdown>
                   </td>
                 </tr>
               ))}

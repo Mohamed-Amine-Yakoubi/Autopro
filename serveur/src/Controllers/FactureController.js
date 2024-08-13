@@ -11,7 +11,7 @@ require("dotenv").config();
 
 
 exports.saveFacture = asyncHandler(async (req, res) => {
-  const { Nom_user, Refrence_fact, htmlContent,id_magasin } = req.body;
+  const { Nom_user, Refrence_fact, htmlContent,id_magasin,id_MainCmd } = req.body;
 
   try {
     // Generate the PDF from HTML content
@@ -25,7 +25,8 @@ exports.saveFacture = asyncHandler(async (req, res) => {
       Nom_user,
       Refrence_fact,
       pdf_fact: pdfUrl,
-      id_magasin
+      id_magasin,
+      id_MainCmd
     });
 
     res.status(201).json(newFacture);

@@ -52,7 +52,7 @@ const ArticleDetails = (props) => {
         return Promise.all(promises)
       }).then((productsWithCategory) => {
         // Set the state with products containing category information
-        setAllProduct(productsWithCategory);
+        setAllProduct(productsWithCategory.slice(0,5));
  
 
       });

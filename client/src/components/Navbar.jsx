@@ -2,7 +2,7 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import Image from "next/image";
-import Autopro_logo from "../public/images/Autopro_logo.png";
+import Autopro_logo from "../public/images/Autopro_logo.svg";
 import { FaBars, FaUser, FaRegHeart } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
 import "../styles/Navbar.scss";
@@ -33,7 +33,7 @@ const Navbar = () => {
             href="/"
             className="flex items-center space-x-3 rtl:space-x-reverse lg:mx-28 "
           >
-            <Image src={Autopro_logo} className="w-24" alt="Flowbite Logo" />
+            <Image src={Autopro_logo} className="w-32" alt="Flowbite Logo" />
           </Link>
 
           <button

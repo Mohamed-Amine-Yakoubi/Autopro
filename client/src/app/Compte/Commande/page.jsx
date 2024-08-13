@@ -48,6 +48,11 @@ const Commande = () => {
       setCommande(item);
     });
   }, [id_user]);
+  const handleDelete = async (id_prod) => {
+    deleteProduct(id_prod).then(() => {
+      setProduct((prevProd) => prevProd.filter((e) => e.id_prod !== id_prod));
+    });
+  };
   const renderedCommandeIds = new Set();
   if (loading) return <Loading />;
   return (
@@ -136,7 +141,7 @@ const Commande = () => {
                         <DropdownItem>
                           <button
                             className=" hover:bg-greenColor rounded-md  hover:text-white p-2 flex items-center mt-3"
-                            onClick={() => handleDelete(item.id_prod)}
+                            onClick={() => handleDelete(item.id_MainCmd)}
                           >
                             <MdDelete className="text-[20px] mr-2" />
                             <p className="text-[14px]"> Supprimer</p>

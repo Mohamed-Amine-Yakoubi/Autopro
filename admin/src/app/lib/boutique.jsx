@@ -44,3 +44,19 @@ export async function DeleteStoreByID(id_magasin) {
 
   return data;
 }
+
+
+export async function DeleteCatByID(id_cat) {
+  const res = await fetch(
+    `http://localhost:4000/api/v1/magasin/deleteStore/${id_cat}`,
+    {
+      method: "DELETE",
+    }
+  );
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+
+  return data;
+}

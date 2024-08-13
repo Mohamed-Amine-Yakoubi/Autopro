@@ -509,6 +509,9 @@ const Step2 = ({ nextStep }) => {
           });
         }
       });
+      const Autopro_logo_URL =
+      "https://res.cloudinary.com/dszbzybhk/image/upload/v1723404962/c76ktevrn9lvxad0pmux.png";
+
       const mailContent = `
       <html>
         <head>
@@ -553,9 +556,16 @@ const Step2 = ({ nextStep }) => {
               border: 1px solid #fafafa ;
               border-collapse: collapse;
             }
+                  .logo {
+                width: 200px;
+                text-align:center
+              }
           </style>
         </head>
         <body class="container">
+          <div style="display:flex;justify-content:center">
+                  <img src="${Autopro_logo_URL}" class="logo" alt="logo" />
+                </div>
           <h1 style="color:#4BAF4F">En Cours De Traitement</h1>
           <h4> Bonjour ${session.user.Prenom_user} ${session.user.Nom_user}, </h4>
           <p>Pour information – nous avons reçu votre commande n°${id_MainCmd}, elle est maintenant en cours de traitement :</p>

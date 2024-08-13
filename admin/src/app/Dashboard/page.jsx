@@ -5,7 +5,8 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 import { Loading } from "@/components/Loading";
-import Home from "./Home/page";
+
+import Home_Dashboard from "./Home_Dashboard/page";
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -20,7 +21,7 @@ const Dashboard = () => {
   return (
     <div>
       {" "}
-      <Home />
+      <Home_Dashboard />
     </div>
   );
 };

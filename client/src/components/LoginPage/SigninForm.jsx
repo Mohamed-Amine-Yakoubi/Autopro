@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 import { signIn } from "next-auth/react";
-import Autopro_logo from "../../public/images/Autopro_logo.png";
+import Autopro_logo from "../../public/images/Autopro_logo.svg";
 import Image from "next/image";
  
 import Button from "../Button";

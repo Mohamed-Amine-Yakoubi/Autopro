@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import { Loading } from "@/components/Loading";
 import Dashboard from "./Dashboard/page";
 import DefaultLayout from "@/components/DefaultLayout";
+import Home_Dashboard from "./Dashboard/Home_Dashboard/page";
  
 
 export default function Home() {
@@ -21,5 +22,5 @@ export default function Home() {
 
   if (loading) return <Loading />;
 
-  return <div>{session && session.user ? <Dashboard /> : <Signin />}</div>;
+  return <div>{session && session.user ? <Home_Dashboard /> : <Signin />}</div>;
 }

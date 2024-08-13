@@ -26,7 +26,7 @@ const Cart = (props) => {
 
   const saveFacture = async (mainCommande, details, address, cities, products) => {
     const Autopro_logo_URL =
-      "https://res.cloudinary.com/dszbzybhk/image/upload/v1723032115/mbrxrrzsiral25gx6tba.png";
+      "https://res.cloudinary.com/dszbzybhk/image/upload/v1723404962/c76ktevrn9lvxad0pmux.png";
 
       const TVA_RATE = 0.19;
 
@@ -289,7 +289,8 @@ const Cart = (props) => {
           Nom_user: session.user.Nom_user,
           Refrence_fact:FileName ,
           htmlContent: FactureContent,
-          id_magasin:mainCommande[0].id_magasin
+          id_magasin:mainCommande[0].id_magasin,
+          id_MainCmd:mainCommande[0].id_MainCmd,
         }),
       });
 

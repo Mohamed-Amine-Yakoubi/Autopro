@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -12,12 +12,12 @@ import { FaShop } from "react-icons/fa6";
 import { HiOutlineLogout } from "react-icons/hi";
 
 import ModalStore from "./ModalStore";
- 
+import { useRouter } from "next/navigation";
 
 const SideBarCompte = ({openSideBar}) => {
   const { data: session, status } = useSession();
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const router = useRouter();
 
   // Re-run the effect if status or session changes
   const openModal = () => setIsModalOpen(true);
@@ -78,9 +78,13 @@ const SideBarCompte = ({openSideBar}) => {
               </li>
               <li className="p-4 hover:bg-greenColor hover:text-white flex items-center space-x-3 rounded-md">
                 <HiOutlineLogout className=" or text-[20px]" />
-                <Link href="/page3" className="font-poppins text-[13px]">
+                <button    onClick={() => {
+              signOut();
+              router.push(`/Accueil`);
+
+            }} className="font-poppins text-[13px]">
                   Se déconnecter
-                </Link>
+                </button>
               </li>
             </ul>
           </div>

@@ -23,7 +23,7 @@ import { getAllUsers } from "../../lib/User";
 import { getAllStore } from "../../lib/boutique";
 import Image from "next/image";
 
-const Home = () => {
+const Home_Dashboard = () => {
   const [claim, setClaim] = useState([]);
   const [store, setStore] = useState([]);
   const [user, setUser] = useState([]);
@@ -140,7 +140,7 @@ const Home = () => {
                           <p className="  text-[13px]">{item.NomPrenom_rec}</p>
                         </td>
 
-                        <td className="   text-[13px]">{item.Email_rec} </td>
+                        <td className="   text-[13px]">{item.Email_rec.substring(0, 15)} </td>
                         <td className="   text-[13px]  ">
                           {item.Telephone_rec}
                         </td>
@@ -273,4 +273,4 @@ const Home = () => {
     </div>
   );
 };
-export default Home;
+export default Home_Dashboard;

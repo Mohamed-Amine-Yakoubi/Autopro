@@ -2,12 +2,13 @@
 
 import { getVille } from "@/app/lib/Category";
 import { getAdrByIdUser, getUser } from "@/app/lib/User";
+import Cards from "@/components/Cards";
 import Input from "@/components/Input";
 import { Loading } from "@/components/Loading";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 
-const DetailCompte = () => {
+const Compte = () => {
   const [loading, setLoading] = useState(true);
 
   const { data: session, status } = useSession();
@@ -150,6 +151,7 @@ const DetailCompte = () => {
 
   return (
     <div>
+             <Cards className={"w-full h-full p-4  overflow-x-auto      "}>
       <form onSubmit={handleSubmit}>
         <h1 className="text-[23px] font-semibold text-greenColor mb-5">Modifier votre compte</h1>
 
@@ -237,13 +239,14 @@ const DetailCompte = () => {
         </div>
 
         <div className="flex justify-center my-5 mt-5">
-          <button type="submit" className="bg-greenColor hover:bg-darkColor text-white p-3 rounded-md text-sm">
+          <button className="bg-greenColor hover:bg-darkColor text-white p-3 rounded-md text-sm">
             Enregistrer
           </button>
         </div>
       </form>
+      </Cards>
     </div>
   );
 };
 
-export default DetailCompte;
+export default Compte;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./../styles/Input.scss";
+import "../style/Input.scss";
 
 const Input = ({ type, name, placeholder, value, onChange }) => {
   const [isFocused, setIsFocused] = useState(false);
