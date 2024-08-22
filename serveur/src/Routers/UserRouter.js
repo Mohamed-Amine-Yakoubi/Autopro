@@ -3,7 +3,8 @@ const route = express.Router();
 const UserControllers = require("../Controllers/UserController");
 const AdresseUserController = require("../Controllers/AdresseUserController");
 const AuthMiddlware = require("../Middleware/AuthMiddleware");
-const upload = require("../Middleware/Multer");
+const upload=require('../Middleware/Multer')
+
 route.post("/SignUp", UserControllers.SignUp);
 
 route.post("/SignIn", UserControllers.SingIn);

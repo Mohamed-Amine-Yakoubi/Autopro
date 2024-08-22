@@ -196,82 +196,86 @@ const Reclamations = () => {
             </tr>
           </thead>
           <tbody className="bg-white">
-            {currentcommandes.map((item, index) => {
-              return (
-                <tr className="border-b border-gray-200  " key={index}>
-                  <td className="   text-center   py-3.5 text-greenColor  text-[13px]">
-                    {item.id_rec}
-                  </td>
-                  <td className="      ">
-                    <p className="  text-[13px]">{item.NomPrenom_rec}</p>
-                  </td>
-
-                  <td className="   text-[13px]">{item.Email_rec} </td>
-                  <td className="   text-[13px]  ">{item.Telephone_rec}</td>
-                  <td className="   text-[13px]  ">
-                    {item.createdAt.substring(0, 10)}
-                  </td>
-                  <td className="   text-[13px]  ">
-                    {item.etat_rec === "Approuvé" ? (
-                      <p className="flex items-center ">
-                        <span className="text-greenColor mr-1">
-                          <FaCheckCircle />
-                        </span>
-                        Approuvé
-                      </p>
-                    ) : item.etat_rec === "En attente" ? (
-                      <p className="flex items-center ">
-                        <span className="text-orange-300 mr-1">
-                          <FaClock />
-                        </span>
-                        En attente
-                      </p>
-                    ) : item.etat_rec === "Rejeté" ? (
-                      <p className="flex items-center ">
-                        <span className="text-orange-300 mr-1">
-                          <FcCancel className="text-[18px]" />
-                        </span>
-                        Rejeté
-                      </p>
-                    ) : null}
-                  </td>
-                  <td className="  px-6   flex justify-center items-center">
-                    <div className="text-center py-2">
-                      <Dropdown className="bg-gray-100 p-3 rounded-md shadow-sm">
-                        <DropdownTrigger>
-                          <Button variant="bordered">
-                            <HiDotsHorizontal />
-                          </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu aria-label="Dynamic Actions">
-                          <DropdownItem textValue="Consulter">
-                            <div className=" hover:bg-greenColor rounded-md  hover:text-white px-3 text-center py-1 flex items-center  ">
-                              <IoEyeSharp className="text-[20px] mr-2" />
-                              <button
-                                className="text-[13px]"
-                                onClick={() => {
-                                  openModalRec(item);
-                                  handleEtat(item.id_rec);
-                                }}
-                              >
-                                Consulter
-                              </button>
-                            </div>
-                          </DropdownItem>
-
-                          <DropdownItem textValue="Supprimer">
-                            <button className=" hover:bg-greenColor rounded-md  hover:text-white px-3 text-center py-1 flex items-center  ">
-                              <MdDelete className="text-[20px] mr-2" />
-                              <p className="text-[13px]"> Supprimer</p>
-                            </button>
-                          </DropdownItem>
-                        </DropdownMenu>
-                      </Dropdown>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
+          {currentcommandes.length > 0 ? (
+  currentcommandes.map((item, index) => (
+    <tr className="border-b border-gray-200" key={index}>
+      <td className="text-center py-3.5 text-greenColor text-[13px]">
+        {item.id_rec}
+      </td>
+      <td>
+        <p className="text-[13px]">{item.NomPrenom_rec}</p>
+      </td>
+      <td className="text-[13px]">{item.Email_rec}</td>
+      <td className="text-[13px]">{item.Telephone_rec}</td>
+      <td className="text-[13px]">
+        {item.createdAt.substring(0, 10)}
+      </td>
+      <td className="text-[13px]">
+        {item.etat_rec === "Approuvé" ? (
+          <p className="flex items-center">
+            <span className="text-greenColor mr-1">
+              <FaCheckCircle />
+            </span>
+            Approuvé
+          </p>
+        ) : item.etat_rec === "En attente" ? (
+          <p className="flex items-center">
+            <span className="text-orange-300 mr-1">
+              <FaClock />
+            </span>
+            En attente
+          </p>
+        ) : item.etat_rec === "Rejeté" ? (
+          <p className="flex items-center">
+            <span className="text-orange-300 mr-1">
+              <FcCancel className="text-[18px]" />
+            </span>
+            Rejeté
+          </p>
+        ) : null}
+      </td>
+      <td className="px-6 flex justify-center items-center">
+        <div className="text-center py-2">
+          <Dropdown className="bg-gray-100 p-3 rounded-md shadow-sm">
+            <DropdownTrigger>
+              <Button variant="bordered">
+                <HiDotsHorizontal />
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Dynamic Actions">
+              <DropdownItem textValue="Consulter">
+                <div className="hover:bg-greenColor rounded-md hover:text-white px-3 text-center py-1 flex items-center">
+                  <IoEyeSharp className="text-[20px] mr-2" />
+                  <button
+                    className="text-[13px]"
+                    onClick={() => {
+                      openModalRec(item);
+                      handleEtat(item.id_rec);
+                    }}
+                  >
+                    Consulter
+                  </button>
+                </div>
+              </DropdownItem>
+              <DropdownItem textValue="Supprimer">
+                <button className="hover:bg-greenColor rounded-md hover:text-white px-3 text-center py-1 flex items-center">
+                  <MdDelete className="text-[20px] mr-2" />
+                  <p className="text-[13px]">Supprimer</p>
+                </button>
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </div>
+      </td>
+    </tr>
+  ))
+) : (
+  <tr>
+    <td colSpan="7" className="text-center py-4 pt-10 text-gray-500">
+    Aucune réclamation n'a été ajoutée
+    </td>
+  </tr>
+)}
           </tbody>
         </table>
         <div className="flex justify-center py-4">
@@ -292,12 +296,12 @@ const Reclamations = () => {
       </div>
       <div>
         <Modal
-          className="bg-white md:mt-0 md:mb-0 mb-8 mt-8 rounded-2xl"
+          className="custom-modal-lg "
           size="lg"
           isOpen={isModalOpen}
           onClose={closeModalRec}
         >
-          <div className="modal-overlay">
+          <div className="modal-overlay ">
             <ModalContent className="custom-modal-content">
               <ModalHeader className="custom-modal-header flex flex-col items-center">
                 Détails de la Réclamation

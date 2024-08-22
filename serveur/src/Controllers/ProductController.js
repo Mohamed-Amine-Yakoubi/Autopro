@@ -90,6 +90,7 @@ exports.Create_Product = asyncHandler(async (req, res) => {
       });
     }
   } catch (error) {
+    console.log("error while adding product",error)
     res.status(500).json({ error: "Internal server error" });
   }
 });

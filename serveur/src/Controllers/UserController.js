@@ -1,18 +1,19 @@
 const UserModel = require("../Models/UserModel");
 const bcrypt = require("bcrypt");
- 
+
 const asyncHandler = require("express-async-handler");
 const { Op } = require("sequelize");
 const { createToken, verifyToken } = require("../Utils/Athentification");
 const cloudinary = require("../Utils/Cloudinary");
 
 const VerificationEmail = require("../Utils/VerificationEmail");
- 
-const Reclamtion = require("../Models/ClaimModel");
-const {  sendNewPasswordEmail } = require("../Utils/UserMail");
+
+const Reclamation = require("../Models/ClaimModel");
+const { sendNewPasswordEmail } = require("../Utils/UserMail");
 //Sign Up
 const generateRandomPassword = (length = 15) => {
-  const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const charset =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let password = "";
   for (let i = 0; i < length; i++) {
     const randomIndex = Math.floor(Math.random() * charset.length);
@@ -290,53 +291,65 @@ exports.FindUserByEmail = asyncHandler(async (req, res) => {
 });
 
 //Reclamation
+ 
+
 exports.AddClaim = asyncHandler(async (req, res) => {
   try {
-    const {
-      NomPrenom_rec,
-      Email_rec,
-      Telephone_rec,
-      description_rec,
-
-      id_magasin,
-    } = req.body;
+ 
+    const { id_user, description_rec, id_magasin,Telephone_rec, NomPrenom_rec,Email_rec ,Profil_user} = req.body;
     let file_rec = null;
-    // Check if a file is uploaded
+
+    // Check if file is uploaded
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    // Handle file upload to Cloudinary
     if (req.file) {
       const image = req.file;
-      // Upload the image to Cloudinary
-      const result = await cloudinary.uploader.upload(image.path, {
-        resource_type: "auto",
-      });
-      file_rec = result.secure_url;
+      try {
+        const result = await cloudinary.uploader.upload(image.path, { resource_type: 'auto' });
+        file_rec = result.secure_url;
+      } catch (uploadError) {
+        console.error('Error uploading file to Cloudinary:', uploadError);
+        return res.status(500).json({
+          message: 'Failed to upload file to Cloudinary',
+          error: uploadError.message,
+        });
+      }
     }
-    const addclaim = await Reclamtion.create({
-      NomPrenom_rec,
-      Email_rec,
-      Telephone_rec,
-      description_rec,
-      file_rec,
 
+    // Create new claim in the database
+    const addclaim = await Reclamation.create({
+      id_user,
+      description_rec,
+      Telephone_rec, NomPrenom_rec,Email_rec,
+      file_rec,
       id_magasin,
+      Profil_user
     });
+
+    // Response based on claim creation status
     if (addclaim) {
       res.status(201).json({
-        message: " claim has been added successfully",
+        message: 'Claim has been added successfully',
         data: addclaim,
       });
     } else {
-      res.status(404).json({
-        message: "The  Favrois has not been added",
-      });
+      res.status(404).json({ message: 'The claim has not been added' });
     }
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    console.error('Error adding claim:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 //get all users claim
 exports.GetAllUsersClaim = asyncHandler(async (req, res) => {
   try {
-    const allusersclaim = await Reclamtion.findAll({where:{id_magasin:null}});
+    const allusersclaim = await Reclamation.findAll({
+      where: { id_magasin: 0 },
+    });
     if (allusersclaim) {
       res.status(200).json(allusersclaim);
     } else {
@@ -350,7 +363,7 @@ exports.GetAllUsersClaim = asyncHandler(async (req, res) => {
 exports.GetClaimStoreId = asyncHandler(async (req, res) => {
   const { id_magasin } = req.params;
   try {
-    const ClaimByStoreId = await Reclamtion.findAll({
+    const ClaimByStoreId = await Reclamation.findAll({
       where: { id_magasin: id_magasin },
     });
     if (ClaimByStoreId) {
@@ -368,7 +381,7 @@ exports.Update_etat_Rec = asyncHandler(async (req, res) => {
     const { id_rec } = req.params;
     const { etat_rec } = req.body;
     const updateFields = { etat_rec };
-    const update_Rec = await Reclamtion.update(updateFields, {
+    const update_Rec = await Reclamation.update(updateFields, {
       where: { id_rec: id_rec },
     });
 
@@ -390,7 +403,7 @@ exports.forgotPassword = async (req, res) => {
   try {
     const user = await UserModel.findOne({ where: { Email_user } });
     if (!user) {
-      return res.status(404).send({ message: 'Utilisateur non trouvé' });
+      return res.status(404).send({ message: "Utilisateur non trouvé" });
     }
 
     // Generate a new alphanumeric password with 15 characters
@@ -403,9 +416,11 @@ exports.forgotPassword = async (req, res) => {
     // Send the new password via email
     await sendNewPasswordEmail(Email_user, newPassword);
 
-    res.send({ message: 'Un nouveau mot de passe a été envoyé à votre adresse e-mail' });
+    res.send({
+      message: "Un nouveau mot de passe a été envoyé à votre adresse e-mail",
+    });
   } catch (error) {
-    console.error('Error in forgotPassword function:', error); // Log the error for debugging
-    res.status(500).send({ message: 'Internal server error' });
+    console.error("Error in forgotPassword function:", error); // Log the error for debugging
+    res.status(500).send({ message: "Internal server error" });
   }
 };

@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/Database");
 const Magasin = require("./MagasinModel");
 const User = require("./UserModel");
-
+ 
 const Reclamtion = sequelize.define(
   "Reclamtion",
   {
@@ -16,19 +16,23 @@ const Reclamtion = sequelize.define(
       allowNull: false,
     },
     Email_rec: {
-      type: DataTypes.STRING(1000),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     Telephone_rec: {
-      type: DataTypes.STRING(1000),
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     description_rec: {
-      type: DataTypes.STRING(1000),
+      type: DataTypes.STRING(400),
       allowNull: false,
     },
     file_rec: {
-      type: DataTypes.STRING(1000),
+      type: DataTypes.STRING(250),
+      allowNull: true,
+    },
+    Profil_user: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
     etat_rec: {
@@ -36,6 +40,10 @@ const Reclamtion = sequelize.define(
       allowNull: false,
       enum: ["Approuvé", "Rejeté", "En attente"],
       defaultValue: "En attente",
+    },
+    id_magasin: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -53,13 +61,13 @@ const Reclamtion = sequelize.define(
   }
 );
  
-Reclamtion.belongsTo(Magasin, {
+ 
+Reclamtion.belongsTo(User, {
   foreignKey: {
-    name: "id_magasin",
+    name: "id_user",
     allowNull: true,
   },
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-
 module.exports = Reclamtion;

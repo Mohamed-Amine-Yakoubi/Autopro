@@ -13,12 +13,28 @@
 }
 
 .custom-modal {
-  width: 90%;
-  max-width: 900px;
-
+  width: 70%;
+  max-width: 700px;
+   position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+ 
   background-color: white;
   border-radius: 10px;
 }
+.custom-modal-lg {
+ 
+   position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+ 
+  background-color: white;
+  border-radius: 10px;
+}
+ 
+
 
 .custom-modal-header {
   background-color: #f5f5f5;

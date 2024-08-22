@@ -1,8 +1,8 @@
 "use client";
- 
+
 import React, { useEffect, useState } from "react";
-import { IoEyeSharp,  IoSearch } from "react-icons/io5";
-import "./../../../style/Modal.scss"
+import { IoEyeSharp, IoSearch } from "react-icons/io5";
+import "./../../../style/Modal.scss";
 import { FcCancel } from "react-icons/fc";
 
 import { HiDotsHorizontal } from "react-icons/hi";
@@ -112,7 +112,7 @@ const Reclamations = () => {
       alert("Failed to update store");
     }
   };
-
+  console.log(claim);
   return (
     <div>
       <Cards className={"w-full h-full p-4 sm:overflow-x-auto     "}>
@@ -156,7 +156,7 @@ const Reclamations = () => {
                 <th className="border-b border-gray-200  py-[12px]  w-1/12 mx-10  text-greenColor  text-center dark:!border-navy-700">
                   <p className="text-xs tracking-wide text-gray-600">N°</p>
                 </th>
-                <th className="border-b w-1/2 border-gray-200 pr-28 py-[12px] text-start dark:!border-navy-700">
+                <th className="border-b w-1/3 border-gray-200 pr-28 py-[12px] text-start dark:!border-navy-700">
                   <p className="text-xs tracking-wide text-gray-600">
                     Nom et Prénom
                   </p>
@@ -176,14 +176,12 @@ const Reclamations = () => {
                 <th className="border-b w-1/2 border-gray-200 pr-28 py-[12px] text-start dark:!border-navy-700">
                   <p className="text-xs tracking-wide text-gray-600">Etat</p>
                 </th>
-                <th className="w-20     ">
-               
-                </th>
+                <th className="w-20     "></th>
               </tr>
             </thead>
             <tbody>
-              {currentcommandes.map((item, index) => {
-                return (
+              {currentcommandes.length > 0 ? (
+                currentcommandes.map((item, index) => (
                   <tr className="border-b border-gray-200  " key={index}>
                     <td className="   text-center   py-3.5 text-greenColor  text-[13px]">
                       {item.id_rec}
@@ -256,8 +254,17 @@ const Reclamations = () => {
                       </div>
                     </td>
                   </tr>
-                );
-              })}
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="7"
+                    className="text-center py-4 pt-10 text-gray-500"
+                  >
+                    Aucune réclamation n'a été ajoutée
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
           <div className="flex justify-center py-4">
@@ -276,46 +283,45 @@ const Reclamations = () => {
             ))}
           </div>
         </div>
-       
       </Cards>
       <div>
-          <Modal
-            className="bg-white md:mt-0 md:mb-0 mb-8 mt-8 rounded-2xl"
-            size="lg"
-            isOpen={isModalOpen}
-            onClose={closeModalRec}
-          >
-            <div className="modal-overlay">
-              <ModalContent className="custom-modal-content">
-                <ModalHeader className="custom-modal-header flex flex-col items-center">
-                  Détails de la Réclamation
-                </ModalHeader>
-                <ModalBody className="custom-modal-body">
-                  {selectedRec && (
-                    <div>
-                      <h1 className="text-[15px] mt-4 font-semibold">
-                        Description:
-                      </h1>
-                      <p className="mb-4 text-[13px]">
-                        {" "}
-                        {selectedRec.description_rec}
-                      </p>
-                      <div className="flex justify-center my-8">
-                        <Image
-                          src={selectedRec.file_rec}
-                          className="w-24 bg-grayLight border-2 border-grayColor"
-                          height="50"
-                          width="50"
-                          alt="fil"
-                        />
-                      </div>
+        <Modal
+          className="custom-modal"
+          size="md"
+          isOpen={isModalOpen}
+          onClose={closeModalRec}
+        >
+          <div className="modal-overlay ">
+            <ModalContent className="custom-modal-content">
+              <ModalHeader className="custom-modal-header flex flex-col items-center">
+                Détails de la Réclamation
+              </ModalHeader>
+              <ModalBody className="custom-modal-body">
+                {selectedRec && (
+                  <div>
+                    <h1 className="text-[15px] mt-4 font-semibold">
+                      Description:
+                    </h1>
+                    <p className="mb-4 text-[13px]">
+                      {" "}
+                      {selectedRec.description_rec}
+                    </p>
+                    <div className="flex justify-center my-8">
+                      <Image
+                        src={selectedRec.file_rec}
+                        className="w-24 bg-grayLight border-2 border-grayColor"
+                        height="50"
+                        width="50"
+                        alt="fil"
+                      />
                     </div>
-                  )}
-                </ModalBody>
-              </ModalContent>
-            </div>
-          </Modal>
-        </div>
+                  </div>
+                )}
+              </ModalBody>
+            </ModalContent>
+          </div>
+        </Modal>
+      </div>
     </div>
   );
 };

@@ -83,24 +83,7 @@ const Contact = () => {
       console.log("error", error);
     }
   };
-  const [customerName, setCustomerName] = useState('');
-  const [amount, setAmount] = useState('');
-  const [htmlContent, setHtmlContent] = useState('');
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const res = await fetch('http://localhost:4000/api/v1/facture/SaveFacture', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ Nom_user:customerName, Refrence_fact:amount ,htmlContent :htmlContent     }),
-    });
-
-    const data = await res.json();
-    console.log(data);
-  };
+ 
 
   return (
     <div className="mb-28">
@@ -153,27 +136,7 @@ const Contact = () => {
           </div>
         </div>
       </div>
-      {/* section 3 */}
-      <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Customer Name"
-        value={customerName}
-        onChange={(e) => setCustomerName(e.target.value)}
-      />
-      <input
-    type="text"
-        placeholder="Customer Name"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-      />
-      <textarea
-        placeholder="HTML Content"
-        value={htmlContent}
-        onChange={(e) => setHtmlContent(e.target.value)}
-      ></textarea>
-      <button type="submit">Create Invoice</button>
-    </form>
+ 
       <div className="mx-auto w-1/2 mt-16 mb-16">
         <hr />
       </div>

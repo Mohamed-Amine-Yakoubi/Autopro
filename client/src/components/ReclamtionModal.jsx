@@ -1,39 +1,41 @@
-import React from "react";
-import {
-  Modal,
-  ModalContent,
-  ModalBody,
-  Button,
-  useDisclosure,
-  ModalHeader,
-} from "@nextui-org/react";
+"use client";
+import React, { useEffect, useState } from "react";
+import { Modal, ModalContent, ModalBody, ModalHeader } from "@nextui-org/react";
 import "../styles/Modal.scss";
-import ProfileUser from "./ProfileUser";
+import { Ellipsis } from "react-css-spinners";
+
+import "../styles/stepper.scss";
 import { useSession } from "next-auth/react";
+import Textarea from "./Textarea";
+import Image from "next/image";
+import { IoMdPhotos } from "react-icons/io";
+import { getAllStore } from "@/app/lib/Magasin";
 import Reclamation from "./Reclamtion";
-const ReclamationModal = ({ isOpen, onClose, children,props, icon }) => {
+
+const ReclamationModal = ({  isOpen, onClose, children,props, icon }) => {
+  
 
   return (
-    <div>
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        className="    bg-white  md:mt-0 md:mb-0 mb-8 mt-8 rounded-2xl   "
-        size="lg"
-        icon={icon}
-      >
-        <div className="modal-overlay  ">
-          <ModalContent className="custom-modal-content">
-            <ModalHeader className="custom-modal-header flex flex-col items-center">
-              Passer une Reclamation
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      className="custom-modal-lg   "
+      size="lg"
+    >
+      <div className="modal-overlay">
+        <div>
+          <ModalContent>
+            <ModalHeader className="flex flex-col gap-1 rounded-t-2xl bg-grayLight text-center">
+              Réclamations
             </ModalHeader>
-            <ModalBody className="custom-modal-body  ">
-              <Reclamation props={props}/>
+            <ModalBody>
+            <Reclamation props={props}/>
             </ModalBody>
           </ModalContent>
         </div>
-      </Modal>
-    </div>
+      </div>
+    </Modal>
   );
 };
+
 export default ReclamationModal;

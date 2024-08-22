@@ -120,14 +120,14 @@ const Factures = () => {
               <th className="w-16 py-4  text-center text-textColor font-bold text-[13px]">
                 N°
               </th>
-              <th className="w-1/4 py-4  text-left text-textColor font-bold text-[13px]">
+              <th className="w-1/3 py-4  text-left text-textColor font-bold text-[13px]">
                 Nom et Prénom
               </th>
-              <th className="w-1/5 py-4  text-left text-textColor font-bold text-[13px]">
+              <th className="w-1/3 py-4  text-left text-textColor font-bold text-[13px]">
                 Référence
               </th>
            
-              <th className="w-1/5 py-4  text-left text-textColor font-bold text-[13px]">
+              <th className="w-1/3 py-4  text-left text-textColor font-bold text-[13px]">
                 Date
               </th>
           

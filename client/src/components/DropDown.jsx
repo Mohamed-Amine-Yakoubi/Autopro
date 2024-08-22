@@ -16,14 +16,18 @@ import ModalStore from "./ModalStore";
 import Link from "next/link";
 import ModalUpdateProfile from "./ModalUpdateProfile";
 import { useRouter } from "next/navigation";
+import { BsFillSendExclamationFill } from "react-icons/bs";
+import ModalClaim from "./ModalClaim";
 
 const DropDown = ({ openMenu }) => {
   const { data: session, status } = useSession();
   const [isModalProfileOpen, setIsModalProfileOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [isModalClaimOpen, setIsModalClaimOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+  const openModalClaim = () => setIsModalClaimOpen(true);
+  const closeModalClaim = () => setIsModalClaimOpen(false);
   const router = useRouter();
   const openModalProfile = () => setIsModalProfileOpen(true);
   const closeModalProfile = () => setIsModalProfileOpen(false);
@@ -87,7 +91,14 @@ const DropDown = ({ openMenu }) => {
               </div>
             </Link>
           </DropdownItem>
-
+          <DropdownItem  onClick={openModalClaim}>
+           
+              <div className="flex items-center  text-[15px] mt-2">
+                <BsFillSendExclamationFill className="text-iconColor mr-2 text-[15px]" />
+                Réclamation
+              </div>
+          
+          </DropdownItem>
           <DropdownItem
             key="delete"
             color="danger"
@@ -106,6 +117,7 @@ const DropDown = ({ openMenu }) => {
         </DropdownMenu>
       </Dropdown>
       <ModalStore isOpen={isModalOpen} onClose={closeModal} />
+      <ModalClaim isOpen={isModalClaimOpen} onClose={closeModalClaim} />
       <ModalUpdateProfile
         isOpen={isModalProfileOpen}
         onClose={closeModalProfile}

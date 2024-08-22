@@ -1,25 +1,39 @@
-import React from 'react';
-import { Modal, ModalContent, ModalBody, Button, useDisclosure } from "@nextui-org/react";
+import React from "react";
+import {
+  Modal,
+  ModalContent,
+  ModalBody,
+  Button,
+  useDisclosure,
+  ModalHeader,
+} from "@nextui-org/react";
 import "../styles/Modal.scss";
-import Login from './LoginPage/Login';
- 
-const ModalLogin = ({ isOpen, onClose, children, icon }) => {
-    const { isOpen: isModalOpen, onOpen: openModal, onClose: closeModal } = useDisclosure();
-  
-    return (
-        <div>
-            <Button onClick={openModal} className=''>{icon}</Button>
-            <Modal isOpen={isModalOpen} onClose={closeModal} className="  md:mt-0 md:mb-0 mb-8 mt-8 rounded-2xl   " size="xl">
-                <div className="modal-overlay  ">
-                    <ModalContent   >
-                        <ModalBody  >
-                            <Login/>
-                        </ModalBody>
-                    </ModalContent>
-                </div>
-            </Modal>
-        </div>
-    );
-};
+import ProfileUser from "./ProfileUser";
+import { useSession } from "next-auth/react";
+import Reclamation from "./Reclamtion";
+const ReclamationModal = ({ isOpen, onClose, children,props, icon }) => {
 
-export default ModalLogin;
+  return (
+    <div>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        className="    bg-white  md:mt-0 md:mb-0 mb-8 mt-8 rounded-2xl   "
+        size="lg"
+        icon={icon}
+      >
+        <div     className="custom-modal-lg   ">
+          <ModalContent className="custom-modal-content">
+            <ModalHeader className="custom-modal-header flex flex-col items-center">
+              Passer une Reclamation
+            </ModalHeader>
+            <ModalBody className="custom-modal-body  ">
+              <Reclamation props={props}/>
+            </ModalBody>
+          </ModalContent>
+        </div>
+      </Modal>
+    </div>
+  );
+};
+export default ReclamationModal;

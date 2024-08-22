@@ -89,7 +89,8 @@ const ModalStore = ({ isOpen, onClose, children }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="md:mt-0 md:mb-0 mb-8 mt-8 rounded-2xl bg-white"
+ 
+      className="custom-modal-lg   "
       size="lg"
     >
       <div className="modal-overlay">

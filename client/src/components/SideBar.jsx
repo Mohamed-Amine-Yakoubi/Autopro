@@ -89,7 +89,7 @@ const SideBar = ({openSideBar}) => {
                   href="/Dashboard/Reclamations"
                   className="font-poppins text-[14px]"
                 >
-                  Reclamations
+                  Réclamations Client
                 </Link>
               </li>
               <li className="p-4 hover:bg-greenColor hover:text-white flex items-center space-x-3 rounded-md">

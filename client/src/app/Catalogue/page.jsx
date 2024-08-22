@@ -1,6 +1,6 @@
 "use client";
 import Header from "@/components/Header";
-import "../globals.scss";
+ 
 import { getAllProducts } from "../lib/Product";
 import { useEffect, useState } from "react";
 import { getCategory } from "../lib/Category";
@@ -9,10 +9,14 @@ import { FaSearch } from "react-icons/fa";
 import { Loading } from "@/components/Loading";
 import { Filter } from "./Filter";
 import CardsFilterCatalogue from "@/components/CardsFilterCatalogue";
+import { addFavoris } from "../lib/Favoris";
+import { useSession } from "next-auth/react";
 
 const Catalogue = () => {
+  const { data: session } = useSession();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const id_user = session?.user?.id_user || "";
   const [filter, setFilter] = useState({
     search: "",
     id_cat: null,
@@ -25,6 +29,19 @@ const Catalogue = () => {
     price: 5000,
   });
 
+  const AddFavoris = async (id_prod) => {
+    if (!id_user) {
+      alert("You need to be logged in to add to favorites.");
+      return;
+    }
+
+    try {
+      await addFavoris(id_prod, id_user);
+      alert("Product added to favorites successfully.");
+    } catch (error) {
+      alert("Failed to add to favorites");
+    }
+  };
   const handleSearch = (e) => {
     setFilter({ ...filter, search: e.target.value });
   };
@@ -117,6 +134,7 @@ const Catalogue = () => {
                     stock={product.Stock_prod}
                     product={product}
                     link={`./Catalogue/${product.id_prod}`}
+                    handleFavoris={() => AddFavoris(product.id_prod)}
                   />
                 </div>
               ))
