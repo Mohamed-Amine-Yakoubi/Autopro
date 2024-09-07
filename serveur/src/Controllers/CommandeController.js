@@ -196,11 +196,11 @@ exports.Get_AllCommandebydiMagasin = asyncHandler(async (req, res) => {
 /*****************update etat commabde**************************** */
 exports.Update_commande = asyncHandler(async (req, res) => {
   try {
-    const { id_cmd } = req.params;
+    const { id_MainCmd ,id_magasin} = req.params;
     const { etat_cmd } = req.body;
     const updateFields = { etat_cmd };
     const update_commande = await Commande.update(updateFields, {
-      where: { id_cmd: id_cmd },
+      where: { id_MainCmd :id_MainCmd,id_magasin :id_magasin},
     });
 
     if (update_commande) {
@@ -236,6 +236,22 @@ exports.DeleteMainCommande = asyncHandler(async (req, res) => {
       res.status(201).json(deleteMainCommande);
     } else {
       res.status(404).json({ message: `No favoris found this ${id_fav}` });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+//get sub category
+ /******************Delete commande****************** */
+
+exports.DeleteCmmande = asyncHandler(async (req, res) => {
+  try {
+    const { id_cmd } = req.body;
+    const deleteCommande = await Commande.destroy({ where: { id_cmd: id_cmd   } });
+    if (deleteCommande) {
+      res.status(201).json(deleteCommande);
+    } else {
+      res.status(404).json({ message: `No commande found this ${id_cmd}` });
     }
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });

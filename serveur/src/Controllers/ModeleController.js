@@ -8,9 +8,9 @@ const privatekey = process.env.PRIVATE_KEY;
  /**************add modele************* */
 exports.Add_Modele = asyncHandler(async (req, res) => {
   try {
-    const  {Libelle_modele,id_marque} = req.body;
+    const  {Libelle_modele,id_marque,annee_modele} = req.body;
 
-    const add_Modele = await Modele.create({ Libelle_modele,id_marque });
+    const add_Modele = await Modele.create({ Libelle_modele,id_marque,annee_modele });
     if (add_Modele) {
       res.status(201).json(add_Modele);
     } else {
@@ -78,3 +78,17 @@ exports.Get_ModeleByIdMarque = asyncHandler(async (req, res) => {
 });
 
 
+/**************DeleteModele************* */
+exports.DeleteModele = asyncHandler(async (req, res) => {
+  try {
+    const { id_modele } = req.body;
+    const deletemodele = await Modele.destroy({ where: { id_modele: id_modele   } });
+    if (deletemodele) {
+      res.status(201).json(deletemodele);
+    } else {
+      res.status(404).json({ message: `No favoris found this ${id_modele}` });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});

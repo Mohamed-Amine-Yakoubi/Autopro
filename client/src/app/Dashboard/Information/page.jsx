@@ -13,6 +13,7 @@ import { MdOutlineTitle } from "react-icons/md";
 import { getVille } from "@/app/lib/Category";
 import { PiCityFill } from "react-icons/pi";
 import { useRouter } from 'next/navigation'
+import { toast, ToastContainer } from "react-toastify";
  
  
 
@@ -77,7 +78,13 @@ const Information = () => {
       const result = await res.json();
 
       if (result) {
-         router.push('./Information')
+        toast.success(
+          `Les informations de votre magasin ont été modifiées avec succès.`
+        );
+      }else{
+        toast.error(
+          `Échec de la modification des informations de votre boutique, veuillez réessayer.`
+        );
       }  
     } catch (error) {
       console.error("Failed to update store:", error.message);
@@ -86,6 +93,11 @@ const Information = () => {
   };
   return (
     <div className="  py-5 px-4  shadow-lg rounded-lg overflow-hidden bg-grayLight ">
+             <ToastContainer
+        position="top-center"
+        autoClose={2500}
+        toastStyle={{ width: "50%", width: "700px", right: "50%" }}
+      />
       <form onSubmit={handleSubmit}>
         {" "}
         {store.map((item) => (

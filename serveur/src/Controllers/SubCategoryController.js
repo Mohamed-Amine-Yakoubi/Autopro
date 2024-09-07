@@ -84,3 +84,17 @@ exports.GetAllsubCategories = asyncHandler(async (req, res) => {
       res.status(500).json({ error: "Internal server error" });
     }
   });
+  /**************DeleteModele************* */
+exports.DeleteSubcat = asyncHandler(async (req, res) => {
+  try {
+    const { id_subcat } = req.body;
+    const deletesubcat = await SubCategory.destroy({ where: { id_subcat: id_subcat   } });
+    if (deletesubcat) {
+      res.status(201).json(deletesubcat);
+    } else {
+      res.status(404).json({ message: `No favoris found this ${id_subcat}` });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});

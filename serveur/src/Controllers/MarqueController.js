@@ -49,3 +49,18 @@ exports.Get_MarqueById = asyncHandler(async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+/**************Deletemarque************* */
+exports.DeleteMarque = asyncHandler(async (req, res) => {
+  try {
+    const { id_marque } = req.body;
+    const deletemarque = await Marque.destroy({ where: { id_marque: id_marque   } });
+    if (deletemarque) {
+      res.status(201).json(deletemarque);
+    } else {
+      res.status(404).json({ message: `No favoris found this ${id_marque}` });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+ 

@@ -24,12 +24,16 @@ const Reclamtion = sequelize.define(
       allowNull: false,
     },
     description_rec: {
-      type: DataTypes.STRING(400),
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     file_rec: {
-      type: DataTypes.STRING(250),
+      type: DataTypes.TEXT,
       allowNull: true,
+    },
+    File_thumbnail: {
+      type: DataTypes.STRING, // or DataTypes.TEXT if storing image data directly
+      allowNull: false,
     },
     Profil_user: {
       type: DataTypes.STRING,

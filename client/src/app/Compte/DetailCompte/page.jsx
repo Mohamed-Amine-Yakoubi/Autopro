@@ -6,6 +6,7 @@ import Input from "@/components/Input";
 import { Loading } from "@/components/Loading";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 
 const DetailCompte = () => {
   const [loading, setLoading] = useState(true);
@@ -24,7 +25,7 @@ const DetailCompte = () => {
     rue_adr: "",
     code_adr: "",
     id_ville: "",
-    id_user: ""
+    id_user: "",
   });
   const [ville, setVille] = useState([]);
   const [confirmMdp, setConfirmMdp] = useState("");
@@ -88,8 +89,10 @@ const DetailCompte = () => {
     e.preventDefault();
 
     try {
+      // Handle address creation or update
+      let addressResponse;
       if (adresse.id_user !== id_user) {
-        const res1 = await fetch(
+        addressResponse = await fetch(
           `http://localhost:4000/api/v1/user/Add_Adresse`,
           {
             method: "POST",
@@ -98,16 +101,12 @@ const DetailCompte = () => {
             },
             body: JSON.stringify({
               ...adresse,
-              id_user: id_user
+              id_user: id_user,
             }),
           }
         );
-
-        if (!res1.ok) {
-          throw new Error("Failed to add address");
-        }
       } else {
-        const res1 = await fetch(
+        addressResponse = await fetch(
           `http://localhost:4000/api/v1/user/Update_Adresse/${id_user}`,
           {
             method: "PATCH",
@@ -117,16 +116,13 @@ const DetailCompte = () => {
             body: JSON.stringify(adresse),
           }
         );
-
-        if (!res1.ok) {
-          throw new Error("Failed to update address");
-        }
       }
 
+      // Handle user account update
       const updatedUser = { ...user };
       delete updatedUser.MotDePasse_user;
 
-      const res2 = await fetch(
+      const userResponse = await fetch(
         `http://localhost:4000/api/v1/user/UpdateAccount/${id_user}`,
         {
           method: "PUT",
@@ -136,13 +132,29 @@ const DetailCompte = () => {
           body: JSON.stringify(updatedUser),
         }
       );
-
-      if (!res2.ok) {
-        throw new Error("Failed to update user");
+ 
+      // Handle password update if applicable
+      if (user.MotDePasse_user) {
+        const passwordResponse = await fetch(
+          `http://localhost:4000/api/v1/user/UpdateAccountPassword/${id_user}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              MotDePasse_user: user.MotDePasse_user,
+            }),
+          }
+        );
+   
       }
+       
+        toast.success(` Compte mis à jour avec succès.!`);
+   
     } catch (error) {
       console.error("Failed to update user:", error.message);
-      alert("Failed to update user");
+      toast.error(`Une erreur s'est produite lors de la mise à jour.`);
     }
   };
 
@@ -150,8 +162,15 @@ const DetailCompte = () => {
 
   return (
     <div>
+      <ToastContainer
+        position="top-center"
+        autoClose={2500}
+        toastStyle={{ width: "50%", width: "700px", right: "50%" }}
+      />
       <form onSubmit={handleSubmit}>
-        <h1 className="text-[23px] font-semibold text-greenColor mb-5">Modifier votre compte</h1>
+        <h1 className="text-[23px] font-semibold text-greenColor mb-5">
+          Modifier votre compte
+        </h1>
 
         <div className="w-full flex flex-col items-center space-y-6">
           <div className="flex md:flex-row flex-col space-y-3 md:space-y-0 md:space-x-5 w-full justify-between">
@@ -203,8 +222,12 @@ const DetailCompte = () => {
           />
 
           <div className="text-[20px] font-semibold text-blueDark w-full">
-            <h1 className="text-[23px] font-semibold text-greenColor mb-5 mt-5">Changement d'adresse</h1>
-            <p className="text-[13px] font-semibold text-blueDark -mt-2 pb-1">Région</p>
+            <h1 className="text-[23px] font-semibold text-greenColor mb-5 mt-5">
+              Changement d'adresse
+            </h1>
+            <p className="text-[13px] font-semibold text-blueDark -mt-2 pb-1">
+              Région
+            </p>
             <select
               className="flex rounded-md h-[43px] py-2 w-full border-2 border-grayColor bg-grayLight text-gray-400 outline-none px-3 text-[12.5px]"
               onChange={handleChangeValueAdresse}
@@ -237,7 +260,10 @@ const DetailCompte = () => {
         </div>
 
         <div className="flex justify-center my-5 mt-5">
-          <button type="submit" className="bg-greenColor hover:bg-darkColor text-white p-3 rounded-md text-sm">
+          <button
+            type="submit"
+            className="bg-greenColor hover:bg-darkColor text-white p-3 rounded-md text-sm"
+          >
             Enregistrer
           </button>
         </div>

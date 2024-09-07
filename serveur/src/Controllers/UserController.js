@@ -291,56 +291,65 @@ exports.FindUserByEmail = asyncHandler(async (req, res) => {
 });
 
 //Reclamation
- 
 
 exports.AddClaim = asyncHandler(async (req, res) => {
   try {
- 
-    const { id_user, description_rec, id_magasin,Telephone_rec, NomPrenom_rec,Email_rec ,Profil_user} = req.body;
-    let file_rec = null;
+    const {
+      id_user,
+      description_rec,
+      id_magasin,
+      Telephone_rec,
+      NomPrenom_rec,
+      Email_rec,
+      Profil_user,
+    } = req.body;
+    const images = req.files;
+    const imagesUrls = [];
+    let thumbnailUrl;
 
-    // Check if file is uploaded
-    if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded' });
-    }
+  
 
-    // Handle file upload to Cloudinary
-    if (req.file) {
-      const image = req.file;
-      try {
-        const result = await cloudinary.uploader.upload(image.path, { resource_type: 'auto' });
-        file_rec = result.secure_url;
-      } catch (uploadError) {
-        console.error('Error uploading file to Cloudinary:', uploadError);
-        return res.status(500).json({
-          message: 'Failed to upload file to Cloudinary',
-          error: uploadError.message,
+      // Loop through each image to upload to Cloudinary
+      for (const image of images) {
+        const result = await cloudinary.uploader.upload(image.path, {
+          resource_type: "auto",
         });
+  
+        // Check if this is the first image, if so, set it as the thumbnail
+        if (!thumbnailUrl) {
+          thumbnailUrl = result.secure_url;
+        }
+  
+        imagesUrls.push(result.secure_url);
       }
-    }
+      const imageUrlsString = imagesUrls.join(",");
 
     // Create new claim in the database
     const addclaim = await Reclamation.create({
       id_user,
       description_rec,
-      Telephone_rec, NomPrenom_rec,Email_rec,
-      file_rec,
+      Telephone_rec,
+      NomPrenom_rec,
+      Email_rec,
+ 
+      File_thumbnail: thumbnailUrl,
+      file_rec: imageUrlsString,
       id_magasin,
-      Profil_user
+      Profil_user,
     });
 
     // Response based on claim creation status
     if (addclaim) {
       res.status(201).json({
-        message: 'Claim has been added successfully',
+        message: "Claim has been added successfully",
         data: addclaim,
       });
     } else {
-      res.status(404).json({ message: 'The claim has not been added' });
+      res.status(404).json({ message: "The claim has not been added" });
     }
   } catch (error) {
-    console.error('Error adding claim:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error adding claim:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -354,6 +363,25 @@ exports.GetAllUsersClaim = asyncHandler(async (req, res) => {
       res.status(200).json(allusersclaim);
     } else {
       res.status(404).json({ message: " accounts were not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+//delete all users
+exports.DeleteClaim = asyncHandler(async (req, res) => {
+  const { id_rec } = req.body;
+  try {
+
+    const deleteClaim = await Reclamation.destroy({
+      where: {id_rec:id_rec},
+    });
+    if (deleteClaim) {
+      res
+        .status(200)
+        .json({ message: "claim have been successfully deleted" });
+    } else {
+      res.status(404).json({ message: "problem during deleted claim" });
     }
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });

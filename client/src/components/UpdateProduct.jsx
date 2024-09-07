@@ -17,6 +17,7 @@ import { getSpecProduct } from "@/app/lib/Product";
 import { useRouter } from "next/navigation";
 import Input from "./Input";
 import Textarea from "./Textarea";
+import { toast, ToastContainer } from "react-toastify";
 
 export const UpdateProduct = ({idprod}) => {
   const { data: session } = useSession();
@@ -136,7 +137,13 @@ export const UpdateProduct = ({idprod}) => {
       const result = await res.json();
 
       if (result) {
-        location.reload();
+        toast.success(
+          `Votre produit a été Modifié avec succès.`
+        );
+      }else{
+        toast.error(
+          `Échec de la modification du produit, veuillez réessayer.`
+        );
       }
     } catch (error) {
       console.error("Failed to update store:", error.message);
@@ -145,6 +152,11 @@ export const UpdateProduct = ({idprod}) => {
   };
   return (
     <div className="  p-5  rounded-lg overflow-hidden   ">
+         <ToastContainer
+        position="top-center"
+        autoClose={2500}
+        toastStyle={{ width: "50%", width: "700px", right: "50%" }}
+      />
       <form onSubmit={handleSubmit}>
         <div className=" flex md:flex-row flex-col md:items-center md:space-y-0 space-y-4 md:space-x-10 space-x-0 md:justify-around">
           <div className="md:w-1/2 w-full space-y-8 flex flex-col justify-center items-center">
@@ -172,7 +184,7 @@ export const UpdateProduct = ({idprod}) => {
                       alt={`Image ${index + 1}`}
                       width={70}
                       height={70}
-                      className="border-4  rounded-md border-gray-200"
+                     className="w-[80px] h-[80px] object-scale-down border-2 border-gray-200 rounded-md	"
                       style={{ maxWidth: "100%" }}
                     />
                   ))}

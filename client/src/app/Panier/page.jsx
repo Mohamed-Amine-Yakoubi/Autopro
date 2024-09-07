@@ -41,18 +41,12 @@ const Panier = () => {
     setStep(step - 1);
   };
 
-  useEffect(() => {
-    if (session) {
-      setLoading(false);
-    }
-  }, [session]);
-  if (loading) return <Loading />;
-
+ 
   return (
     <div>
       <Header Title={"Panier"} />
 
-      {session && cart.items.length > 0 ? (
+      {  cart.items.length > 0 ? (
         <div>
           <div className="flex flex-row my-5 text-center justify-center">
             {[1, 2, 3].map((index) => (
@@ -172,8 +166,13 @@ const Step1 = ({ formData, setFormData, nextStep }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+if (session) {
+  
 
     nextStep();
+  }else{
+    alert("il faut connecter")
+  }
   };
   if (loading) return <Loading />;
   return (
@@ -585,7 +584,7 @@ const Step2 = ({ nextStep }) => {
                   
                     <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;">
                     <div style="display:flex;justify-content:space-between">
-                    <image src={${product.Image_thumbnail}}   alt="image" />
+                    <img src={${product.Image_thumbnail}}   alt="image" />
                     ${product.Libelle_prod}</div></td>
                     <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;">${cart.items[index].quantity}</td>
                     <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;" colspan="4">${product.prix_prod} TND</td>

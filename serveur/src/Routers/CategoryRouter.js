@@ -7,6 +7,6 @@ route.post("/addCategory",  upload.single("Image_cat"),  CategoryControllers.Cre
 route.get("/getAllCategories", CategoryControllers.GetAllCategories);
 route.get("/getcategory/:id_cat", CategoryControllers.GetCategory);
 route.put("/updateCategory/:id_cat",  CategoryControllers.UpdateCategory);
-route.delete("/deletecategory/:id_cat", CategoryControllers.DeleteCategory);
-
+route.delete("/deletecategory", CategoryControllers.DeleteCategory);
+ 
 module.exports = route;

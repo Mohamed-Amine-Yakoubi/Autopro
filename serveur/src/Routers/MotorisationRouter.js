@@ -13,4 +13,7 @@ route.get(
   route.get(
     "/Get_SpecMotorsByIdModel/:id_modele", MotorisationController.Get_SpecMotorsByIdModel
   );
+  route.delete(
+    "/DeleteMotor", MotorisationController.DeleteMotor
+  );
 module.exports = route;

@@ -10,6 +10,7 @@ import Autopro_logo from "../../../public/images/Autopro_logo.png";
 import { FaUserCircle } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { getAllUsers } from "@/app/lib/User";
+import Cards from "@/components/Cards";
 
 const Messages = () => {
   const { data: session, status } = useSession();
@@ -117,6 +118,8 @@ const Messages = () => {
 
   return (
     <div className="  ">
+         <Cards className={"w-full h-full p-4  overflow-x-auto     "}>
+   
       <div className="flex lg:flex-row flex-col  ">
         <div className="flex flex-col lg:py-8    px-3  lg:w-1/4 w-full   bg-white  ">
           <div className="flex flex-row items-center justify-center h-12 w-full">
@@ -157,13 +160,14 @@ const Messages = () => {
                       value={recipientId}
                       onClick={() => handleRecipientClick(StoreItem.id_user)}
                       key={index}
-                      className="flex items-center space-x-2 mt-2"
+                      className="flex items-center space-x-1 mt-2"
                     >
                       <span className="text-grayColor text-[30px]   ">
                         <FaUserCircle />
                       </span>
                       <span className="text-[13.5px]">
-                        {StoreItem.Nom_user} {StoreItem.Prenom_user}
+                        {StoreItem.Nom_user}{" "}
+                        {StoreItem.Prenom_user.substring(0, 10)}...
                       </span>
                     </button>
                   ));
@@ -199,8 +203,8 @@ const Messages = () => {
                     key={index}
                     className={`border rounded px-2 py-2 ${
                       msg.Expediteur === magasin.items[0].id_magasin
-                        ? "self-start"
-                        : "self-end"
+                        ? "self-end"
+                        : "self-start"
                     } relative text-sm ${
                       msg.Expediteur === magasin.items[0].id_magasin
                         ? "bg-green-100"
@@ -208,10 +212,24 @@ const Messages = () => {
                     } my-1 py-2  shadow rounded-xl`}
                   >
                     <div className="flex items-center">
-                      <span className="text-darColor text-[30px]   ">
-                        <FaUserCircle />
-                      </span>
-                      <div className="ml-2">{msg.Contenu}</div>
+                      {msg.Expediteur === magasin.items[0].id_magasin ? (
+                        <Image
+                          className="bg-grayLight border border-greenColor rounded-full"
+                          src={magasin.items[0].Logo_magasin}
+                          height={35}
+                          width={35}
+                          alt="logo"
+                        />
+                      ) : (
+                        <div>
+                          <span className="text-darColor text-[30px]   ">
+                            <FaUserCircle />
+                          </span>
+                        </div>
+                      )}
+                           <div className={`ml-2 ${msg.Contenu.length > 38 ? "w-72" : "w-auto"}`}>
+  {msg.Contenu}
+</div>
                     </div>
                   </div>
                 );
@@ -241,6 +259,7 @@ const Messages = () => {
           </div>
         </div>
       </div>
+      </Cards>
     </div>
   );
 };

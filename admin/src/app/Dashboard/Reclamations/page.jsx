@@ -25,11 +25,13 @@ import {
 import Image from "next/image";
 import { GetAllUsersClaim } from "@/app/lib/Reclamations";
 import Cards from "@/components/Cards";
+import Textarea from "@/components/Textarea";
 
 const Reclamations = () => {
   const [claim, setClaim] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRec, setSelectedRec] = useState(null);
+  const [answer, setAnswer] = useState("");
 
   const openModalRec = (claim) => {
     setSelectedRec(claim);
@@ -51,6 +53,9 @@ const Reclamations = () => {
   const handleSearch = (e) => {
     setFilter(e.target.value);
   };
+  const handleChangeValue = (e) => {
+    setAnswer(e.target.value);
+  };
 
   const filteredData = claim.filter(
     (item) =>
@@ -58,9 +63,11 @@ const Reclamations = () => {
         false) ||
       (item.Email_rec?.toLowerCase().includes(filter.toLowerCase()) ?? false) ||
       (String(item.etat_rec)?.includes(filter) ?? false) ||
+      (String(item.Profil_user)?.includes(filter) ?? false) ||
       (String(item.Telephone_rec)?.includes(filter) ?? false)
   );
-
+  const File_rec =
+    selectedRec && selectedRec.file_rec ? selectedRec.file_rec.split(",") : [];
   // Pagination calculations
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -112,16 +119,94 @@ const Reclamations = () => {
       alert("Failed to update store");
     }
   };
-  console.log(claim);
+  const handleSubmit = async (Email_rec,id_rec) => {
+    const Autopro_logo_URL =
+      "https://res.cloudinary.com/dszbzybhk/image/upload/v1723404962/c76ktevrn9lvxad0pmux.png";
+
+    const mailContent = `
+   <html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+    p {
+      color: #666;
+    }
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #4BAF4F;
+      color: #ffffff !important; 
+      text-decoration: none;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .logo_Auto {
+     
+      text-align: center;
+    
+    }
+    .logo {
+      width: 250px;
+   
+    }
+      h1{
+            text-align: center;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo_Auto">
+      <img src="${Autopro_logo_URL}" class="logo" alt="logo" />
+
+    </div>
+          <h1>Votre réclamation a été traitée!</h1>
+    <p>Votre numéro de réclamation est : ${id_rec}</p>
+    <p>${answer}</p>
+  </div>
+</body>
+</html>
+
+`;
+
+    const MailAnswer = await fetch(
+      `http://localhost:4000/api/v1/commande/MailCommande`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: Email_rec,
+          subject: "Votre réclamation a été traitée - Autopro",
+          html: mailContent,
+        }),
+      }
+    );
+  };
   return (
     <div>
       <Cards className={"w-full h-full p-4 sm:overflow-x-auto     "}>
         {" "}
-        <div className="relative flex items-center justify-between">
+        <div className="relative   ">
           <div className="text-[20px] font-bold text-greenColor  ">
             Recalamtions des Clients
           </div>
-          <div className="  flex md:flex-row flex-col flex-wrap md:justify-between md:items-center  space-x-4 ">
+          <div className="  flex md:flex-row flex-col flex-wrap md:justify-between md:items-center my-6  space-x-4 ">
             <div className="mb-3 relative  ">
               <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
                 <IoSearch />
@@ -134,11 +219,20 @@ const Reclamations = () => {
               />
             </div>
 
-            <div className="flex md:flex-row flex-wrap     items-center  mb-2    ">
+            <div className="flex md:flex-row flex-wrap     items-center  mb-2   md:space-x-4 space-x-0 ">
               <select
                 className="  rounded-md  text-[13px]  px-4 py-2   outline-none border-2 border-gray-200 bg-grayLight text-textColor  "
                 defaultValue="" // Set defaultValue here
-                placeholder="Choisir la marque"
+                onChange={handleSearch}
+              >
+                <option value="">Profil</option>
+                <option value="Fournisseur">Fournisseur</option>
+
+                <option value="Client">Client</option>
+              </select>
+              <select
+                className="  rounded-md  text-[13px]  px-4 py-2   outline-none border-2 border-gray-200 bg-grayLight text-textColor  "
+                defaultValue="" // Set defaultValue here
                 onChange={handleSearch}
               >
                 <option value="">Etat</option>
@@ -149,34 +243,32 @@ const Reclamations = () => {
             </div>
           </div>
         </div>
-        <div className="mt-8 h-full overflow-x-auto">
+        <div className=" h-full overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-gray-100  ">
-                <th className="border-b border-gray-200  py-[12px]  w-1/12 mx-10  text-greenColor  text-center dark:!border-navy-700">
-                  <p className="text-xs tracking-wide text-gray-600">N°</p>
+              <tr className="bg-gray-100">
+                <th className="w-10 py-4 px-5 text-center text-textColor font-bold text-[13px]">
+                  N°
                 </th>
-                <th className="border-b w-1/3 border-gray-200 pr-28 py-[12px] text-start dark:!border-navy-700">
-                  <p className="text-xs tracking-wide text-gray-600">
-                    Nom et Prénom
-                  </p>
+                <th className="w-1/5 py-4 text-left text-textColor font-bold text-[13px]">
+                  Nom et Prénom
                 </th>
-                <th className="border-b w-1/2 border-gray-200 pr-28 py-[12px] text-start dark:!border-navy-700">
-                  <p className="text-xs tracking-wide text-gray-600">Email</p>
+                <th className="w-1/5 py-4 text-left text-textColor font-bold text-[13px]">
+                  Email
                 </th>
-                <th className="border-b w-1/2 border-gray-200 pr-28 py-[12px] text-start dark:!border-navy-700">
-                  <p className="text-xs tracking-wide text-gray-600">
-                    Telephone
-                  </p>
+                <th className="w-1/6 py-4 text-left text-textColor font-bold text-[13px]">
+                  Telephone
                 </th>
-
-                <th className="border-b w-1/2 border-gray-200 pr-28 py-[12px] text-start dark:!border-navy-700">
-                  <p className="text-xs tracking-wide text-gray-600">Date</p>
+                <th className="w-1/6 py-4 text-left text-textColor font-bold text-[13px]">
+                  Profil
                 </th>
-                <th className="border-b w-1/2 border-gray-200 pr-28 py-[12px] text-start dark:!border-navy-700">
-                  <p className="text-xs tracking-wide text-gray-600">Etat</p>
+                <th className="w-1/6 py-4 text-left text-textColor font-bold text-[13px]">
+                  Date
                 </th>
-                <th className="w-20     "></th>
+                <th className="w-1/6 py-4 text-left text-textColor font-bold text-[13px]">
+                  Etat
+                </th>
+                <th className="w-20  py-4 px-6  "></th>
               </tr>
             </thead>
             <tbody>
@@ -190,8 +282,11 @@ const Reclamations = () => {
                       <p className="  text-[13px]">{item.NomPrenom_rec}</p>
                     </td>
 
-                    <td className="   text-[13px]">{item.Email_rec} </td>
+                    <td className="   text-[13px]">
+                      {item.Email_rec.substring(0, 20)}...{" "}
+                    </td>
                     <td className="   text-[13px]  ">{item.Telephone_rec}</td>
+                    <td className="   text-[13px]  ">{item.Profil_user}</td>
                     <td className="   text-[13px]  ">
                       {item.createdAt.substring(0, 10)}
                     </td>
@@ -221,7 +316,7 @@ const Reclamations = () => {
                     </td>
                     <td className="  px-6   flex justify-center items-center">
                       <div className="text-center py-2">
-                        <Dropdown className="bg-gray-100 p-3 rounded-md shadow-sm">
+                        <Dropdown className="bg-gray-100 p-4 rounded-md shadow-sm">
                           <DropdownTrigger>
                             <Button variant="bordered">
                               <HiDotsHorizontal />
@@ -229,13 +324,13 @@ const Reclamations = () => {
                           </DropdownTrigger>
                           <DropdownMenu aria-label="Dynamic Actions">
                             <DropdownItem textValue="Consulter">
-                              <div className=" hover:bg-greenColor rounded-md  hover:text-white px-3 text-center py-1 flex items-center  ">
+                              <div className=" hover:bg-greenColor rounded-md  hover:text-white px-3 text-center py-2 flex items-center mt-2 ">
                                 <IoEyeSharp className="text-[20px] mr-2" />
                                 <button
                                   className="text-[13px]"
                                   onClick={() => {
                                     openModalRec(item);
-                                    handleEtat(item.id_rec);
+                                    handleEtat(item.id_rec,answer);
                                   }}
                                 >
                                   Consulter
@@ -244,7 +339,7 @@ const Reclamations = () => {
                             </DropdownItem>
 
                             <DropdownItem textValue="Supprimer">
-                              <button className=" hover:bg-greenColor rounded-md  hover:text-white px-3 text-center py-1 flex items-center  ">
+                              <button className=" hover:bg-greenColor rounded-md  hover:text-white px-3 text-center py-2 flex items-center mt-2 ">
                                 <MdDelete className="text-[20px] mr-2" />
                                 <p className="text-[13px]"> Supprimer</p>
                               </button>
@@ -300,20 +395,76 @@ const Reclamations = () => {
                 {selectedRec && (
                   <div>
                     <h1 className="text-[15px] mt-4 font-semibold">
-                      Description:
+                      Nom et Prénom :{" "}
+                      <span className="mb-4 font-normal text-[13px]">
+                        {" "}
+                        {selectedRec.NomPrenom_rec}
+                      </span>
                     </h1>
-                    <p className="mb-4 text-[13px]">
-                      {" "}
-                      {selectedRec.description_rec}
-                    </p>
-                    <div className="flex justify-center my-8">
-                      <Image
-                        src={selectedRec.file_rec}
-                        className="w-24 bg-grayLight border-2 border-grayColor"
-                        height="50"
-                        width="50"
-                        alt="fil"
-                      />
+                    <h1 className="text-[15px] mt-4 font-semibold">
+                      Email :{" "}
+                      <span className="mb-4 font-normal text-[13px]">
+                        {" "}
+                        {selectedRec.Email_rec}
+                      </span>
+                    </h1>
+                    <h1 className="text-[15px] mt-4 font-semibold">
+                      Télèphone :{" "}
+                      <span className="mb-4 font-normal text-[13px]">
+                        {" "}
+                        {selectedRec.Telephone_rec}
+                      </span>
+                    </h1>
+                    <h1 className="text-[15px] mt-4 font-semibold">
+                      Profil :{" "}
+                      <span className="mb-4 font-normal text-[13px]">
+                        {" "}
+                        {selectedRec.Profil_user}
+                      </span>
+                    </h1>
+                    <h1 className="text-[15px] mt-4 font-semibold">
+                      Description :{" "}
+                      <span className="mb-4 font-normal text-[13px]">
+                        {" "}
+                        {selectedRec.description_rec}
+                      </span>
+                    </h1>
+
+                    <div className="flex justify-center flex-row md:space-x-2  my-8 flex-wrap ">
+                      {File_rec.map((url, index) => (
+                        <Image
+                          key={index}
+                          src={
+                            url.endsWith(".pdf") ? "/path/to/pdf-icon.png" : url
+                          }
+                          alt={`File ${index + 1}`}
+                          width={70}
+                          height={70}
+                          className="border-4 rounded-md border-gray-200"
+                          style={{ maxWidth: "100%" }}
+                          onClick={() => window.open(url, "_blank")}
+                        />
+                      ))}
+                    </div>
+                    <div>
+                      <Textarea
+                        type={"text"}
+                        name={"answer"}
+                        rows={5}
+                        onChange={handleChangeValue}
+                        placeholder={"Votre Réponse"}
+                      />{" "}
+                    </div>
+                    <div className="flex justify-end">
+                      <button
+                        type="submit"
+                        className="bg-greenColor text-white hover:bg-darkColor rounded-full p-2 px-7 text-[13.5px] my-3"
+                        onClick={() => {
+                          handleSubmit(selectedRec.Email_rec,selectedRec.id_rec);
+                        }}
+                      >
+                        Envoyer
+                      </button>
                     </div>
                   </div>
                 )}

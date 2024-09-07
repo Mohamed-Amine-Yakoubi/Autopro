@@ -16,6 +16,7 @@ import {
 import { useSession } from "next-auth/react";
 import Input from "./Input";
 import Textarea from "./Textarea";
+import { toast, ToastContainer } from "react-toastify";
 
 const AddProduct = () => {
   const { data: session } = useSession();
@@ -128,12 +129,9 @@ const AddProduct = () => {
     Image_prod: null,
     id_subcat: 0,
     id_magasin: 28,
-
-    Diametre: null,
-
+    Diametre: null ,
     Hauteur: null,
     Largeur: null,
-
     Longueur: null,
     Epaisseur: null,
     id_cat: OptionCategory,
@@ -183,7 +181,7 @@ const AddProduct = () => {
         Array.from(formData[key]).forEach((file) => {
           formDataToSend.append(key, file);
         });
-      } else {
+      } else if (formData[key] !== null && formData[key] !== ""){
         formDataToSend.append(key, formData[key]);
       }
     }
@@ -198,9 +196,14 @@ const AddProduct = () => {
       );
 
       if (!res.ok) {
-        throw new Error("Failed to add store");
+     
+        toast.error(
+          `Échec de l'ajout du produit , Veuillez réessayer .`
+        );
       } else {
-        location.reload();
+        toast.success(
+          `Votre produit a été ajouté avec succès.`
+        );
       }
     } catch (error) {
       alert("Failed to add store");
@@ -209,6 +212,11 @@ const AddProduct = () => {
   console.log(selectedbutton);
   return (
     <div className="py-5 px-4   ">
+         <ToastContainer
+        position="top-center"
+        autoClose={2500}
+        toastStyle={{ width: "50%", width: "700px", right: "50%" }}
+      />
       <form onSubmit={HandleSubmit}>
         <div className=" flex md:flex-row flex-col md:items-center md:space-y-0 space-y-4 md:space-x-10 space-x-0 md:justify-around">
           <div className="md:w-1/2 w-full space-y-8 flex flex-col justify-center items-center">
@@ -216,7 +224,7 @@ const AddProduct = () => {
               <div className="flex flex-col items-center">
                 <div>
                   <label htmlFor="fileInput">
-                    <IoMdPhotos className="rounded-full bg-grayLight border-4 p-10 border-gray-200 text-greenColor text-[170px] cursor-pointer" />
+                    <IoMdPhotos className="rounded-full bg-grayLight border-4 p-10 border-gray-200 text-greenColor text-[150px] cursor-pointer" />
                   </label>
 
                   <input

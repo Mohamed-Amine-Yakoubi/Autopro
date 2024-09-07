@@ -10,8 +10,9 @@ route.get("/getOneCommandeByIdUser/:id_user", CommandeController.getOneCommandeB
 route.get("/Get_MainCommande/:id_MainCmd", CommandeController.Get_MainCommande);
 route.get("/getdetailsCommande/:id_MainCmd", CommandeController.getdetailsCommande);
 route.get("/Get_AllCommandebydiMagasin/:id_MainCmd/:id_magasin", CommandeController.Get_AllCommandebydiMagasin);
-route.put("/Update_commande/:id_cmd", CommandeController.Update_commande);
+route.put("/Update_commande/:id_MainCmd/:id_magasin", CommandeController.Update_commande);
 route.post("/MailCommande", CommandeController.User_Mail);
+route.delete("/DeleteCommande", CommandeController.DeleteCmmande);
 
 
 module.exports = route;

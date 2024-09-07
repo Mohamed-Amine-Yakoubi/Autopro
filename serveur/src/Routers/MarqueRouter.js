@@ -11,4 +11,8 @@ route.get(
   route.get(
     "/GetMarqueById/:id_marque", MarqueControllers.Get_MarqueById
   );
+
+  route.delete(
+    "/DeleteMarque", MarqueControllers.DeleteMarque
+  );
 module.exports = route;

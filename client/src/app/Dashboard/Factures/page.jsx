@@ -1,7 +1,7 @@
 "use client";
 
 import { getStoreByUserID } from "@/app/lib/Magasin";
-
+ 
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { IoEyeSharp, IoReloadCircle, IoSearch } from "react-icons/io5";
@@ -28,6 +28,8 @@ import {
 } from "@nextui-org/react";
 import Image from "next/image";
 import { getFactureByIdStore } from "@/app/lib/facture";
+import Cards from "@/components/Cards";
+import Link from "next/link";
 
 const Factures = () => {
   const store = useSelector((state) => state.store);
@@ -80,12 +82,15 @@ const Factures = () => {
   for (let i = 1; i <= Math.ceil(factures.length / commandesPerPage); i++) {
     pageNumbers.push(i);
   }
+  const pdfUrl = 'https://res.cloudinary.com/dszbzybhk/raw/upload/v1723118067/pdfs/facture-AP-qlRehCII.pdf';
 
- 
-   
  
   return (
     <div className="  mb-10">
+         <Cards className={"w-full h-full p-4  overflow-x-auto     "}>
+        <div className="text-[20px] font-bold text-greenColor my-5  ">
+       Factures clients
+        </div>
       <div className="  flex md:flex-row flex-col flex-wrap md:justify-between md:items-center  space-x-4 ">
         <div className="mb-3 relative  ">
           <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
@@ -98,22 +103,10 @@ const Factures = () => {
             placeholder="Chercher"
           />
         </div>
-
-        <div className="flex md:flex-row flex-wrap     items-center  mb-2    ">
-          <select
-            className="  rounded-md  text-[13px]  px-4 py-2   outline-none border-2 border-gray-200 bg-grayLight text-textColor  "
-            defaultValue="" // Set defaultValue here
-            placeholder="Choisir la marque"
-            onChange={handleSearch}
-          >
-            <option value="">Etat</option>
-            <option value="Approuvé">Approuvé</option>
-
-            <option value="En attente">En attente</option>
-          </select>
-        </div>
+ 
       </div>
-      <div className="shadow-lg rounded-lg overflow-hidden ">
+ 
+      <div className="  rounded-lg overflow-hidden ">
         <table className="w-full table-fixed">
           <thead>
             <tr className="bg-gray-100">
@@ -168,13 +161,8 @@ const Factures = () => {
                           <DropdownItem textValue="Consulter">
                             <div className=" hover:bg-greenColor rounded-md  hover:text-white px-3 text-center py-1 flex items-center  ">
                               <IoEyeSharp className="text-[20px] mr-2" />
-                              <button
-                                className="text-[13px]"
-                              
-                              >
-                                Consulter
-                              </button>
-                            </div>
+ <Link className="text-[13px]" href={item.pdf_fact} target="_blank">Consulter</Link>
+                  </div>
                           </DropdownItem>
 
                           <DropdownItem textValue="Supprimer">
@@ -208,7 +196,7 @@ const Factures = () => {
           ))}
         </div>
       </div>
-    
+    </Cards>
     </div>
   );
 };

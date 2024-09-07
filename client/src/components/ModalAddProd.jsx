@@ -22,6 +22,7 @@ const ModalAddProd = ({   icon }) => {
       <Button onClick={openModal} className="">
         {icon}
       </Button>
+      
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}

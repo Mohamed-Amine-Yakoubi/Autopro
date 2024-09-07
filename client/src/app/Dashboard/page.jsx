@@ -79,13 +79,11 @@ const Dashboard = () => {
       });
     }
   }, [store]);
-  console.log("total", totalArgent);
-  console.log("total commande", totalCommande);
-  console.log("total claim", totalClaim);
-  console.log("total totalArticle", totalArticle);
+ 
  
   return (
     <div>
+      
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
         <StatisticsCard
           color={"greenColor"}
@@ -224,12 +222,10 @@ const Dashboard = () => {
                     <th className="w-1/12 py-4  text-center text-textColor font-bold text-[13px]">
                       N°
                     </th>
-                    <th className="w-1/3 py-4  text-left text-textColor font-bold text-[13px]">
+                    <th className="w-1/2 py-4  text-left text-textColor font-bold text-[13px]">
                       Client
                     </th>
-                    <th className="w-1/4 py-4  text-left text-textColor font-bold text-[13px]">
-                      Prix
-                    </th>
+           
                     <th className="w-1/4 py-4  text-left text-textColor font-bold text-[13px]">
                       Référence
                     </th>
@@ -237,7 +233,7 @@ const Dashboard = () => {
                     <th className="w-1/4 py-4  text-left text-textColor font-bold text-[13px]">
                       Date
                     </th>
-                    <th className="w-1/4 py-4  text-left text-textColor font-bold text-[13px]">
+                    <th className="w-1/3 py-4  text-left text-textColor font-bold text-[13px]">
                       Etat
                     </th>
                   </tr>
@@ -258,15 +254,13 @@ const Dashboard = () => {
                         </td>
                         <td className="      ">
                           <p className="  text-[13px]">
-                            {" "}
+    
                             {client
                               ? `${client.Prenom_user} ${client.Nom_user}`
                               : "unknow"}
                           </p>
                         </td>
-                        <td className="   text-[13px]">
-                          {item.prix_total},00 TND{" "}
-                        </td>
+                  
                         <td className="   text-[13px]">
                           {item.Reference_cmd}{" "}
                         </td>

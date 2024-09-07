@@ -10,6 +10,7 @@ import Textarea from "./Textarea";
 import Image from "next/image";
 import { IoMdPhotos } from "react-icons/io";
 import { getAllStore } from "@/app/lib/Magasin";
+import { toast, ToastContainer } from "react-toastify";
 
 const ModalClaim = ({ isOpen, onClose, children }) => {
   const { data: session, status } = useSession();
@@ -92,7 +93,9 @@ const ModalClaim = ({ isOpen, onClose, children }) => {
       });
 
       if (res.ok) {
-        alert("Success");
+        toast.success(
+          `Félicitations ${session.user.Prenom_user} ${session.user.Nom_user} ! Votre réclamation a été soumise avec succès et sera traitée dans les plus brefs délais`
+        );
         setForm({
           id_user: session.user.id_user,
           id_magasin: "",
@@ -101,7 +104,9 @@ const ModalClaim = ({ isOpen, onClose, children }) => {
         });
         setSelectedImage("");
       } else {
-        alert("Failed");
+        toast.error(
+          "Votre réclamation n'a pas pu être soumise. Veuillez réessayer ou contacter notre service client"
+        );
       }
     } catch (error) {
       console.log("error", error);
@@ -115,6 +120,11 @@ const ModalClaim = ({ isOpen, onClose, children }) => {
       className="custom-modal-lg   "
       size="lg"
     >
+<ToastContainer
+  position="top-center"
+  autoClose={2500}
+  toastStyle={{    width: "50%", width: "700px" ,right:'50%',    }}
+/>
       <div className="modal-overlay">
         <div>
           <ModalContent>

@@ -9,25 +9,43 @@ import { DeleteCatByID } from "@/app/lib/boutique";
 
 import { useRouter } from "next/navigation";
 import {
+  DeleteMarque,
+  DeleteModele,
+  DeleteMotor,
+  DeletePiece,
+  DeletesousPiece,
   getAllCategories,
   getAllMarque,
   GetAllModele,
   GetAllMotors,
   GetAllsubCategories,
 } from "@/app/lib/Car";
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@nextui-org/react";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { RiEdit2Fill } from "react-icons/ri";
+import { IoMdAddCircleOutline } from "react-icons/io";
+import AddCategory from "@/components/AddCategory";
+import Image from "next/image";
 const Categories = () => {
   const router = useRouter();
   const [filter, setFilter] = useState("");
+  const [type, setType] = useState("");
   const [category, setCategory] = useState("Marque");
   const [marque, setMarque] = useState([]);
   const [modele, setModele] = useState([]);
   const [motorisation, setMotorisation] = useState([]);
   const [Categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
+  const [isModalClaimOpen, setIsModalClaimOpen] = useState(false);
 
+  const openModalClaim = () => setIsModalClaimOpen(true);
+  const closeModalClaim = () => setIsModalClaimOpen(false);
   useEffect(() => {
     getAllMarque().then((itemMarque) => {
       setMarque(itemMarque);
@@ -46,16 +64,30 @@ const Categories = () => {
     });
   }, []);
   const handleDelete = async (id) => {
-    DeleteCatByID(id).then(() => {
-      if (category === "Marque") {
-        setMarque((prev) => prev.filter((e) => e.id_marque !== id));
-      } else if (category === "Modele") {
-        setModele((prev) => prev.filter((e) => e.id_modele !== id));
+    try {
+      if (category === "Modele") {
+        await DeleteModele(id);
+        setModele((prev) => prev.filter((item) => item.id_modele !== id));
+      } else if (category === "Marque") {
+        await DeleteMarque(id);
+        setMarque((prev) => prev.filter((item) => item.id_marque !== id));
       } else if (category === "Motorisation") {
-        setMotorisation((prev) => prev.filter((e) => e.id_motor !== id));
+        await DeleteMotor(id);
+        setMotorisation((prev) => prev.filter((item) => item.id_motor !== id));
+      } else if (category === "Pieces") {
+        await DeletePiece(id);
+        setCategories((prev) => prev.filter((item) => item.id_cat !== id));
+      } else if (category === "sousPieces") {
+        await DeletesousPiece(id);
+        setSubcategories((prev) =>
+          prev.filter((item) => item.id_subcat !== id)
+        );
       }
-    });
+    } catch (error) {
+      console.error("Failed to delete item", error);
+    }
   };
+
   const handleSearch = (e) => {
     setFilter(e.target.value);
   };
@@ -116,6 +148,7 @@ const Categories = () => {
   for (let i = 1; i <= Math.ceil(FilterCat.length / CatPerPage); i++) {
     pageNumbers.push(i);
   }
+  console.log("currentItems", currentItems);
   return (
     <div>
       <Cards className={"w-full h-full p-4 sm:overflow-x-auto     "}>
@@ -124,7 +157,7 @@ const Categories = () => {
           <div className="text-[20px] font-bold text-greenColor  ">
             Catégoires
           </div>
-          <div className="  flex md:flex-row flex-col flex-wrap md:justify-between md:items-center  space-x-4 ">
+          <div className="  flex md:flex-row flex-col flex-wrap md:justify-between md:items-center  md:space-x-4 space-x-0 ">
             <div className="mb-3 relative  ">
               <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
                 <IoSearch />
@@ -137,7 +170,7 @@ const Categories = () => {
               />
             </div>
 
-            <div className="flex md:flex-row flex-wrap     items-center  mb-2    ">
+            <div className="flex md:flex-row flex-wrap     items-center  mb-3    ">
               <select
                 className="  rounded-md  text-[13px]  px-4 py-2   outline-none border-2 border-gray-200 bg-grayLight text-textColor  "
                 value={category}
@@ -150,6 +183,22 @@ const Categories = () => {
                 <option value="Pieces">Piéces</option>
                 <option value="sousPieces">sousPiéces</option>
               </select>
+            </div>
+            <div className="   mb-3    ">
+              {[
+                "Marque",
+                "Modele",
+                "Motorisation",
+                "Pieces",
+                "sousPieces",
+              ].includes(category) && (
+                <button
+                  onClick={openModalClaim}
+                  className="bg-greenColor text-white p-2 rounded-lg    "
+                >
+                  <IoMdAddCircleOutline className="  text-[25px]" />
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -200,22 +249,44 @@ const Categories = () => {
                       ? item.id_subcat
                       : null}
                   </td>
-                  <td>
-                    {category === "Marque"
-                      ? item.Libelle_marque
-                      : category === "Modele"
-                      ? item.Libelle_modele
-                      : category === "Motorisation"
-                      ? item.Libelle_motor
-                      : category === "Pieces"
-                      ? item.Libelle_cat
-                      : category === "sousPieces"
-                      ? item.Libelle_subcat
-                      : null}
+                  <td className="flex  flex-row    items-center   space-x-4 my-2  ">
+                    <div>
+                      {category === "Pieces" ? (
+                        <Image
+                          src={item.Image_cat}
+                          width={50}
+                          height={50}
+                          alt="Selected"
+                          className="border-2  rounded-md border-gray-200"
+                          style={{ maxWidth: "100%" }}
+                        />
+                      ) : category === "sousPieces" ? (
+                        <Image
+                          src={item.Image_subcat}
+                          width={50}
+                          height={50}
+                          alt="Selected"
+                          className="border-2  rounded-md border-gray-200"
+                          style={{ maxWidth: "100%" }}
+                        />
+                      ) : null}
+                    </div>
+                    <div>
+                      {category === "Marque"
+                        ? item.Libelle_marque
+                        : category === "Modele"
+                        ? item.Libelle_modele
+                        : category === "Motorisation"
+                        ? item.Libelle_motor
+                        : category === "Pieces"
+                        ? item.Libelle_cat
+                        : category === "sousPieces"
+                        ? item.Libelle_subcat
+                        : null}
+                    </div>
                   </td>
                   <td>{item.createdAt.substring(0, 10)}</td>
                   <td>
-              
                     <Dropdown className="bg-gray-100 p-4  rounded-md shadow-lg">
                       <DropdownTrigger>
                         <Button variant="bordered">
@@ -223,26 +294,22 @@ const Categories = () => {
                         </Button>
                       </DropdownTrigger>
                       <DropdownMenu aria-label="Dynamic Actions">
-                  
                         <DropdownItem>
                           <button
                             className=" hover:bg-greenColor rounded-md  hover:text-white p-2 flex items-center mt-3"
                             onClick={() =>
                               handleDelete(
                                 category === "Marque"
-                                ? item.id_marque
-                                : category === "Modele"
-                                ? item.id_modele
-                                : category === "Motorisation"
-                                ? item.id_motor
-                                : category === "Pieces"
-                                ? item.id_cat
-                                : category === "sousPieces"
-                                ? item.id_subcat
-                                : null
-      
-      
-                                  
+                                  ? item.id_marque
+                                  : category === "Modele"
+                                  ? item.id_modele
+                                  : category === "Motorisation"
+                                  ? item.id_motor
+                                  : category === "Pieces"
+                                  ? item.id_cat
+                                  : category === "sousPieces"
+                                  ? item.id_subcat
+                                  : null
                               )
                             }
                           >
@@ -250,15 +317,23 @@ const Categories = () => {
                             <p className="text-[14px]"> Supprimer</p>
                           </button>
                         </DropdownItem>
-               
+
                         <DropdownItem>
-                          <button
-                            className=" hover:bg-greenColor rounded-md  hover:text-white p-2 flex items-center mt-3"
-                     
-                          >
-                            <RiEdit2Fill className="text-[20px] mr-2" />
-                            <p className="text-[14px]"> Modifier</p>
-                          </button>
+                          {[
+                            "Marque",
+                            "Modele",
+                            "Motorisation",
+                            "Pieces",
+                            "sousPieces",
+                          ].includes(category) && (
+                            <button
+                              onClick={openModalClaim}
+                              className=" hover:bg-greenColor rounded-md  hover:text-white p-2 flex items-center mt-3"
+                            >
+                              <RiEdit2Fill className="text-[20px] mr-2" />
+                              <p className="text-[14px]"> Modifier</p>
+                            </button>
+                          )}
                         </DropdownItem>
                       </DropdownMenu>
                     </Dropdown>
@@ -284,6 +359,11 @@ const Categories = () => {
           </div>
         </div>
       </Cards>
+      <AddCategory
+        isOpen={isModalClaimOpen}
+        type={category}
+        onClose={closeModalClaim}
+      />
     </div>
   );
 };

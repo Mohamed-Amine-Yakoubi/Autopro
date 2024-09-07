@@ -45,7 +45,7 @@ route.delete(
 route.post("/SearchUser", UserControllers.Search_User);
 route.get("/activate/:token", UserControllers.activateAccount);
 route.post("/FindUserByEmail", UserControllers.FindUserByEmail);
-route.post("/AddClaim", upload.single("file_rec"), UserControllers.AddClaim);
+route.post("/AddClaim",  upload.array("file_rec", 5), UserControllers.AddClaim);
 route.get(
   "/GetAllUsersClaim",UserControllers.GetAllUsersClaim
 );
@@ -53,7 +53,9 @@ route.get(
   "/GetClaimStoreId/:id_magasin",UserControllers.GetClaimStoreId
 );
 route.patch("/Update_etat_Rec/:id_rec", UserControllers.Update_etat_Rec);
-
+route.delete(
+  "/DeleteClaim",UserControllers.DeleteClaim
+);
 route.post("/Add_Adresse", AdresseUserController.Add_Adresse);
 route.get("/GetAdrByIdUser/:id_user", AdresseUserController.GetAdrByIdUser);
 route.patch("/Update_Adresse/:id_user", AdresseUserController.Update_Adresse);

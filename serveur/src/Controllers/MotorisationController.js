@@ -66,3 +66,17 @@ exports.Get_SpecMotorsByIdModel = asyncHandler(async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+/**************DeleteModele************* */
+exports.DeleteMotor = asyncHandler(async (req, res) => {
+  try {
+    const { id_motor } = req.body;
+    const deletemotor = await Motorisation.destroy({ where: { id_motor: id_motor   } });
+    if (deletemotor) {
+      res.status(201).json(deletemotor);
+    } else {
+      res.status(404).json({ message: `No favoris found this ${id_motor}` });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});

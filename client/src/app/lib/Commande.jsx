@@ -153,3 +153,23 @@ export async function SendMail_commande() {
 
   return data;
 }
+
+export async function DeleteCommande(id_cmd) {
+  const res = await fetch(
+    `http://localhost:4000/api/v1/commande/DeleteCommande`,
+
+    {
+      method:"DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({id_cmd}),
+    });
+ 
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+
+  return data;
+}

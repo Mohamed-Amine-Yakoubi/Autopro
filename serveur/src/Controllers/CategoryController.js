@@ -15,7 +15,6 @@ exports.CreateCategories = asyncHandler(async (req, res) => {
   try {
     const Libelle_cat = req.body.Libelle_cat;
     const image = req.file; // Assuming you're using 'req.file' for single file upload
- 
 
     // Upload the image to Cloudinary
     const result = await cloudinary.uploader.upload(image.path, {
@@ -41,7 +40,6 @@ exports.CreateCategories = asyncHandler(async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
 
 /****************get all categories*************** */
 exports.GetAllCategories = asyncHandler(async (req, res) => {
@@ -97,16 +95,14 @@ exports.UpdateCategory = asyncHandler(async (req, res) => {
 /*************delete specific category*************/
 exports.DeleteCategory = asyncHandler(async (req, res) => {
   try {
-    const { id_cat } = req.params;
+    const { id_cat } = req.body;
 
     const category = await CategoryModel.destroy({
       where: { id_cat: id_cat },
       new: true,
     });
     if (category) {
-      res
-        .status(201)
-        .json({ message: "category has been deleted", data: category });
+      res.status(201).json(category);
     } else {
       res.status(400).json({ message: `No category found this ${id_cat}` });
     }

@@ -37,6 +37,7 @@ const ChatModel = ({ icon ,props}) => {
         </div>
       </Modal>
     </div>
+    
   );
 };
 

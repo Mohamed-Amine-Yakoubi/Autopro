@@ -9,7 +9,7 @@ import { io } from "socket.io-client";
 import Autopro_logo from "../public/images/Autopro_logo.png";
 import { FaUserCircle } from "react-icons/fa";
 
-const Chat = ({props}) => {
+const Chat = ({ props }) => {
   const { data: session, status } = useSession();
   const id_user = session?.user?.id_user || "";
 
@@ -52,7 +52,7 @@ const Chat = ({props}) => {
     }
   }, [session, status]);
   if (props && props.id) {
-  console.log("sdfgsdf",props.id);
+    console.log("sdfgsdf", props.id);
   }
   const handleSendMessage = () => {
     if (message && recipientId && session?.user?.id_user) {
@@ -93,11 +93,11 @@ const Chat = ({props}) => {
     });
   }, [id_user]);
   useEffect(() => {
-    if (props ) {
+    if (props) {
       setRecipientId(props);
     }
   }, [props]);
-console.log("recipientId",recipientId)
+  console.log("recipientId", recipientId);
   const handleRecipientClick = (recipientId) => {
     setRecipientId(recipientId);
     fetchConversation(recipientId);
@@ -114,7 +114,6 @@ console.log("recipientId",recipientId)
     }
   };
 
-
   if (status === "loading") {
     return <p>Loading...</p>;
   }
@@ -122,7 +121,6 @@ console.log("recipientId",recipientId)
   return (
     <div className="  ">
       <div className="flex lg:flex-row flex-col  ">
-  
         <div className="flex flex-col lg:py-8    px-3     bg-white ">
           <div className="flex flex-row items-center justify-center h-12 w-full">
             <Image
@@ -147,41 +145,82 @@ console.log("recipientId",recipientId)
           <div className="flex flex-col mt-8">
             <div className="flex flex-row items-center justify-between text-xs">
               <span className="font-bold">Discussions</span>
+
               <span className="flex items-center justify-center bg-gray-300 h-4 w-4 rounded-full">
                 {conversations.length}
               </span>
             </div>
-            <div className="flex flex-col space-y-1 mt-4 -mx-2  mb-5 overflow-y-scroll">
+            {conversations.length > 0 ? (
+              <div
+                className="flex flex-col space-y-1 mt-4 -mx-2  mb-5 overflow-y-scroll "
+                style={{ height: 82 }}
+              >
+                <ul>
+                  {conversations.map((user, index) => {
+                    const storeRes = store.filter(
+                      (Item) => Item.id_magasin === user
+                    );
+                    return storeRes.map((StoreItem) => (
+                      <button
+                        value={recipientId}
+                        onClick={() =>
+                          handleRecipientClick(StoreItem.id_magasin)
+                        }
+                        key={index}
+                        className="flex items-center space-x-2 mt-2"
+                      >
+                        <Image
+                          className="bg-grayLight border border-greenColor rounded-full"
+                          src={StoreItem.Logo_magasin}
+                          height={35}
+                          width={35}
+                          alt="logo"
+                        />
+                        <span className="text-[13.5px]">
+                          {StoreItem.Libelle_magasin}
+                        </span>
+                      </button>
+                    ));
+                  })}
+                </ul>
+              </div>
+            ) : null}
+            <hr />
+            <div className="flex flex-row items-center justify-between text-xs mt-4">
+              <span className="font-bold">Tous les magasin</span>
+              <span className="flex items-center justify-center bg-gray-300 h-4 w-4 rounded-full">
+                {store.length}
+              </span>
+            </div>
+            <div
+              className="flex flex-col space-y-1 mt-4 -mx-2  mb-5 overflow-y-scroll   "
+              style={{ height: 82 }}
+            >
               <ul>
-                {conversations.map((user, index) => {
-                  const storeRes = store.filter(
-                    (Item) => Item.id_magasin === user
-                  );
-                  return storeRes.map((StoreItem) => (
-                    <button
-                      value={recipientId}
-                      onClick={() => handleRecipientClick(StoreItem.id_magasin)}
-                      key={index}
-                      className="flex items-center space-x-2 mt-2"
-                    >
-                      <Image
-                        className="bg-grayLight border border-greenColor rounded-full"
-                        src={StoreItem.Logo_magasin}
-                        height={35}
-                        width={35}
-                        alt="logo"
-                      />
-                      <span className="text-[13.5px]">
-                        {StoreItem.Libelle_magasin}
-                      </span>
-                    </button>
-                  ));
-                })}
+                {store.map((StoreItem, index) => (
+                  <button
+                    value={recipientId}
+                    onClick={() => handleRecipientClick(StoreItem.id_magasin)}
+                    key={index}
+                    className="flex items-center space-x-2 mt-2"
+                  >
+                    <Image
+                      className="bg-grayLight border border-greenColor rounded-full"
+                      src={StoreItem.Logo_magasin}
+                      height={35}
+                      width={35}
+                      alt="logo"
+                    />
+                    <span className="text-[13.5px]">
+                      {StoreItem.Libelle_magasin}
+                    </span>
+                  </button>
+                ))}
               </ul>
             </div>
           </div>
         </div>
-        <div className="flex flex-col  w-full     h-full p-6">
+        <div className="flex flex-col  w-full     h-full px-6">
           <div className="  py-3 bg-gray-200 rounded-t-2xl border-b">
             {store
               .filter((item) => item.id_magasin === recipientId)
@@ -219,7 +258,7 @@ console.log("recipientId",recipientId)
                     } my-1 py-2  shadow rounded-xl`}
                   >
                     <div className="flex items-center">
-                      {storeRes && (
+                      {storeRes ? (
                         <Image
                           className="bg-grayLight border border-greenColor rounded-full"
                           src={storeRes.Logo_magasin}
@@ -227,8 +266,18 @@ console.log("recipientId",recipientId)
                           width={35}
                           alt="logo"
                         />
+                      ) : (
+                        <span className="text-darColor text-[30px]   ">
+                          <FaUserCircle />
+                        </span>
                       )}
-                      <div className="ml-2">{msg.Contenu}</div>
+                      <div
+                        className={`ml-2 ${
+                          msg.Contenu.length > 38 ? "w-72" : "w-auto"
+                        }`}
+                      >
+                        {msg.Contenu}
+                      </div>
                     </div>
                   </div>
                 );
