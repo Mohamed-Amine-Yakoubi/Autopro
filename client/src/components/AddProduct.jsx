@@ -532,7 +532,7 @@ const AddProduct = () => {
             )}
           </div>
         </div>
-        <div className="flex justify-center my-5">
+        <div className="flex justify-center mt-5">
           <button className="bg-greenColor hover:bg-darkColor text-white p-3 rounded-md text-[13.5px]">
             Enregistrer
           </button>

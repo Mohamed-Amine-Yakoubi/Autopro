@@ -65,11 +65,13 @@ const Favoris = () => {
     fetchFavoris();
   }, [session]);
 
-  const handleFavoris = async (id_prod, id_user) => {
+  const handleFavoris = async (id_prod, id_user ,id_fav) => {
     try {
-      await deleteFavoris(id_prod, id_user);
 
-      location.reload();
+      await deleteFavoris(id_prod, id_user);
+      setFavoris((prevFav) => prevFav.filter((e) => e.id_fav !== id_fav));
+      setProducts((prevProducts) => prevProducts.filter((p) => p.id_prod !== id_prod));
+ 
     } catch (error) {
       alert("Failed to add to favorites");
     }
@@ -82,7 +84,7 @@ const Favoris = () => {
     (item) =>
       item.Libelle_prod?.toLowerCase().includes(filter.toLowerCase()) ?? false
   );
-
+ 
   if (loading) {
     return (
       <div>
@@ -97,7 +99,7 @@ const Favoris = () => {
         <Header Title={"Favoris"} />
       </div>
 
-      <div className="    flex md:flex-row flex-col    mx-12  mt-12  md:space-x-12   ">
+      <div className="    flex md:flex-row flex-col    mx-12  mt-12  md:space-x-12  mb-8  ">
         <div className=" md:w-1/1    w-full  ">
           <div className="flex md:flex-row flex-col justify-between  items-center ">
             <div>
@@ -106,7 +108,7 @@ const Favoris = () => {
                 Vos produits préférés
               </h1>
               <h1 className="text-[14px] text-greenColor">
-                {filteredData.length} produits
+                {filteredData.length} produits  
               </h1>
             </div>
             <div className="flex flex-row items-center space-x-5 ">
@@ -125,7 +127,9 @@ const Favoris = () => {
             <div className="   my-10">
               <div className="flex md:flex-row flex-col   justify-center">
                 {filteredData && filteredData.length > 0 ? (
-                  filteredData.map((product) => (
+                  filteredData.map((product) => {
+                    const favorite=favoris.find(e=>e.id_prod===product.id_prod)
+                    return(
                     <div key={product.id_prod}>
                       <div className="flex justify-center">
                         <CardsProduit
@@ -136,12 +140,12 @@ const Favoris = () => {
                           stock={product.Stock_prod}
                           link={`./Catalogue/${product.id_prod}`}
                           handleFavoris={() =>
-                            handleFavoris(product.id_prod, session.user.id_user)
+                            handleFavoris(product.id_prod, session.user.id_user ,favorite.id_fav)
                           }
                         />
                       </div>
                     </div>
-                  ))
+                 ) })
                 ) : (
                   <p className="font-poppins text-[20px] my-32 text-gray-400">
                     Aucun article ajouté à la liste de souhaits

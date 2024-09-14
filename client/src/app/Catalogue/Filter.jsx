@@ -27,19 +27,20 @@ export const Filter = ({ filter, onFilterChange }) => {
 
   useEffect(() => {
     if (filter.id_cat) {
+      console.log("Selected Category ID:", filter.id_cat); // Debugging purpose
       getSubCategoryByIdCat(filter.id_cat).then((categories) => {
         setSubCategory(categories);
       });
     } else {
       setSubCategory([]);
     }
-  }, []);
+  }, [filter.id_cat]); // Dependency on filter.id_cat to re-run when it changes
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const newValue = type === "checkbox" ? (checked ? value : null) : value;
     onFilterChange(name, newValue);
-    console.log(name, newValue);
+    console.log(name, newValue); // Debugging purpose
   };
 
   const handleViewMoreCategories = () => {
@@ -71,7 +72,7 @@ export const Filter = ({ filter, onFilterChange }) => {
       `}</style>
       <hr className="my-6" />
       <h1 className="font-semibold text-textColor mb-5 text-[14px]">
-        Catégories
+        Piéces
       </h1>
       <div className="bg-grayLight rounded-md pt-4 pb-4">
         {categories
@@ -86,11 +87,11 @@ export const Filter = ({ filter, onFilterChange }) => {
                   onChange={handleChange}
                   value={cat.id_cat}
                   name="id_cat"
-                  checked={filter.id_cat === String(cat.id_cat)}
+                  checked={Number(filter.id_cat) === cat.id_cat} // Ensure comparison is correct
                 />{" "}
                 {cat.Libelle_cat}
               </label>
-              {filter.id_cat === String(cat.id_cat) && (
+              {Number(filter.id_cat) === cat.id_cat && (
                 <div>
                   {subcategory.map((item) => (
                     <div key={item.id_subcat} className="mt-2 mx-5">
@@ -106,7 +107,7 @@ export const Filter = ({ filter, onFilterChange }) => {
                           onChange={handleChange}
                           value={item.id_subcat}
                           name="id_subcat"
-                          checked={filter.id_subcat === String(item.id_subcat)}
+                          checked={Number(filter.id_subcat) === item.id_subcat} // Ensure correct comparison
                         />{" "}
                         {item.Libelle_subcat}
                       </label>

@@ -3,19 +3,20 @@
 import { signIn } from "next-auth/react";
 import Autopro_logo from "../../public/images/Autopro_logo.svg";
 import Image from "next/image";
- 
+
 import Button from "../Button";
 import { MdFacebook } from "react-icons/md";
 import { RiInstagramLine } from "react-icons/ri";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import { FaUser, FaLock } from "react-icons/fa";
 import { useRouter } from "next/navigation";
- 
+
 import { useState } from "react";
 import InputIcon from "../InputIcon";
 
-const SigninForm = ({ isAnimated, setIsAnimated ,setShowForgotPassword }) => {
+const SigninForm = ({ isAnimated, setIsAnimated, setShowForgotPassword }) => {
   const router = useRouter();
+  const [errors, setErrors] = useState({});
 
   const [user, setUser] = useState({
     Email_user: "",
@@ -28,13 +29,27 @@ const SigninForm = ({ isAnimated, setIsAnimated ,setShowForgotPassword }) => {
       ...prevUser,
       [name]: value,
     }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "", // Clear the error when the user starts typing
+    }));
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let newErrors = {};
+
     const formData = new FormData(e.target);
     const email = formData.get("Email_user");
     const password = formData.get("MotDePasse_user");
-
+    if (!user.Email_user) newErrors.Email_user = "Email est requis.";
+    if (!user.MotDePasse_user) newErrors.MotDePasse_user = "Mot de passe est requis.";
+       // If there are any validation errors, do not proceed
+       if (Object.keys(newErrors).length > 0) {
+        // Display errors or handle them accordingly
+        setErrors(newErrors);
+        return; // Stop execution if validation fails
+      }
+  
     // Call signIn from NextAuth with "Credentials" provider
     signIn("credentials", { email, password, redirect: false }).then((res) => {
       if (res?.error) {
@@ -56,6 +71,7 @@ const SigninForm = ({ isAnimated, setIsAnimated ,setShowForgotPassword }) => {
         </h1>
         <form className="mt-12   " onSubmit={handleSubmit}>
           <div className="space-y-5    ">
+            <div>
             <div className="relative">
               <InputIcon
                 type={"text"}
@@ -67,6 +83,13 @@ const SigninForm = ({ isAnimated, setIsAnimated ,setShowForgotPassword }) => {
 
               <FaUser className="text-[26px]  absolute left-3  top-1/2 transform -translate-y-1/2 h-5 w-5 text-iconColor" />
             </div>
+            {errors.Email_user && (
+              <p className="text-red-500 text-[10px]   mt-2">
+                {errors.Email_user}
+              </p>
+            )}{" "}
+            </div>
+            <div>
             <div className="relative">
               <InputIcon
                 type={"password"}
@@ -77,11 +100,20 @@ const SigninForm = ({ isAnimated, setIsAnimated ,setShowForgotPassword }) => {
               />
               <FaLock className="text-[26px]  absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-iconColor" />
             </div>
+            {errors.MotDePasse_user && (
+              <p className="text-red-500 text-[10px] mt-2 ">
+                {errors.MotDePasse_user}
+              </p>
+            )}{" "}</div>
           </div>
           <div className="flex justify-end  mt-4   md:">
-            <button type="button" className="text-[12px]"   
-               onClick={() => setShowForgotPassword(true)}
-               >Mot de Passe oublié?</button>
+            <button
+              type="button"
+              className="text-[12px]"
+              onClick={() => setShowForgotPassword(true)}
+            >
+              Mot de Passe oublié?
+            </button>
           </div>
           <div className="flex justify-center items-center mt-4">
             <Button

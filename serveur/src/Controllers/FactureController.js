@@ -10,7 +10,7 @@ const uploadPDF = require("../Utils/uploadPDF");
 require("dotenv").config();
 
 exports.saveFacture = asyncHandler(async (req, res) => {
-  const { Nom_user, Refrence_fact, htmlContent, id_magasin, id_MainCmd } =
+  const { Nom_user, Refrence_fact, htmlContent, id_magasin, id_MainCmd,id_user } =
     req.body;
 
   try {
@@ -27,6 +27,7 @@ exports.saveFacture = asyncHandler(async (req, res) => {
       pdf_fact: pdfUrl,
       id_magasin,
       id_MainCmd,
+      id_user
     });
 
     res.status(201).json(newFacture);
@@ -46,6 +47,51 @@ exports.getFacturebyIdStore = asyncHandler(async (req, res) => {
       res.status(201).json(FacturebyIdStore);
     } else {
       res.status(404).json({ message: `No favoris found this ${id_magasin}` });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+exports.getFacturebyIdCmd = asyncHandler(async (req, res) => {
+  try {
+    const { id_MainCmd} = req.body;
+    const FacturebyIdCmd = await Facture.findAll({
+      where: { id_MainCmd: id_MainCmd },
+    });
+    if (FacturebyIdCmd) {
+      res.status(201).json(FacturebyIdCmd);
+    } else {
+      res.status(404).json({ message: `No favoris found this ${id_MainCmd}` });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+exports.getFacturebyIdUser= asyncHandler(async (req, res) => {
+  try {
+    const { id_user} = req.params;
+    const FacturebyIdUser = await Facture.findAll({
+      where: { id_user: id_user },
+    });
+    if (FacturebyIdUser) {
+      res.status(201).json(FacturebyIdUser);
+    } else {
+      res.status(404).json({ message: `No favoris found this ${id_user}` });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+exports.GetAllFacture = asyncHandler(async (req, res) => {
+  try {
+    const allfacture = await Facture.findAll({});
+    if (allfacture) {
+      res.status(200).json(allfacture);
+    } else {
+      res.status(404).json({ message: " accounts were not found" });
     }
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });

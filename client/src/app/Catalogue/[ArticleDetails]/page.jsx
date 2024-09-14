@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { getAllProducts, getSpecProduct } from "@/app/lib/Product";
-import { getCategory } from "@/app/lib/Category";
+import { getCategory, getOneVille, getVille } from "@/app/lib/Category";
 import { FaRegHeart } from "react-icons/fa";
 import { Loading } from "@/components/Loading";
 import { getSubCategory } from "@/app/lib/SubCategory";
@@ -15,8 +15,14 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import { FcCancel } from "react-icons/fc";
 import CardsProduit from "@/components/CardsProduit";
 import Carousel from "@/components/Carousel";
+import { FaLocationDot } from "react-icons/fa6";
+import { useSession } from "next-auth/react";
+import { addFavoris } from "@/app/lib/Favoris";
 
 const ArticleDetails = (props) => {
+  const { data: session } = useSession();
+ 
+  const id_user = session?.user?.id_user || "";
   const [product, setProduct] = useState(null);
   const [Allproduct, setAllProduct] = useState([]);
   const [matiere, setMatiere] = useState(null);
@@ -24,6 +30,7 @@ const ArticleDetails = (props) => {
   const [subcat, setSubcat] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState("");
+  const [ville, setVille] = useState("");
 
   const idprod = props.params.ArticleDetails;
   const [quantity, setQuantity] = useState(1);
@@ -49,18 +56,12 @@ const ArticleDetails = (props) => {
               return prod;
             });
         });
-        return Promise.all(promises)
-      }).then((productsWithCategory) => {
+        return Promise.all(promises);
+      })
+      .then((productsWithCategory) => {
         // Set the state with products containing category information
-        setAllProduct(productsWithCategory.slice(0,5));
- 
-
+        setAllProduct(productsWithCategory.slice(0, 5));
       });
-     
-  
-
-     
- 
   }, []);
 
   useEffect(() => {
@@ -79,6 +80,10 @@ const ArticleDetails = (props) => {
         setMagasin(magasinData);
         const matiereData = await getMatterById(productData.id_mat);
         setMatiere(matiereData);
+
+        const itemVille = await getOneVille(magasinData.id_ville);
+
+        setVille(itemVille);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -88,7 +93,19 @@ const ArticleDetails = (props) => {
 
     fetchData();
   }, [idprod]);
+  const AddFavoris = async (id_prod) => {
+    if (!id_user) {
+      alert("You need to be logged in to add to favorites.");
+      return;
+    }
 
+    try {
+      await addFavoris(id_prod, id_user);
+ 
+    } catch (error) {
+      alert("Failed to add to favorites");
+    }
+  };
   if (loading) {
     return (
       <div>
@@ -108,26 +125,31 @@ const ArticleDetails = (props) => {
       <div className="flex md:flex-row flex-col  justify-center  md:mx-0 mx-4    gap-16">
         <div className="flex   justify-center   " key={product.id_prod}>
           <div className="flex   flex-col    gap-2">
+            <div className="bg-grayLight">
             <Image
               src={activeImage || product.Image_thumbnail}
               alt="Product Image"
               width={650}
               height={650}
-              className="w-[450px] aspect-square   rounded-md bg-grayLight"
+              className="w-[450px] aspect-square  object-contain p-2 mix-blend-multiply   rounded-md "
             />
+            </div>
+            {imageProd.length>1  ?(
             <div className="flex flex-wrap gap-2 md:gap-4 justify-center md:justify-between  ">
               {imageProd.map((item, index) => (
+                <div className="bg-grayLight">
                 <Image
                   key={index}
                   src={item}
                   alt={`image product ${index + 1}`}
-                  className=" w-[75px]    rounded-md bg-grayLight cursor-pointer"
+                  className=" w-[75px]    rounded-md  object-contain p-2 mix-blend-multiply cursor-pointer "
                   width={100}
                   height={100}
                   onClick={() => setActiveImage(item)}
-                />
+                /></div>
               ))}
             </div>
+          ):null}
           </div>
         </div>
         <div className="    ">
@@ -135,14 +157,14 @@ const ArticleDetails = (props) => {
             <div className="flex   mb-4  flex-row items-center space-x-2">
               <Link
                 className="flex     flex-row items-center space-x-2 "
-                href={`/Magasin/${magasin.Libelle_magasin}?id=${magasin.id_magasin}`}
+                href={`/Magasin/${magasin.id_magasin}`}
               >
                 <Image
                   src={magasin.Logo_magasin}
                   alt="Product Image"
                   width={50}
                   height={50}
-                  className="w-[50px] aspect-square   rounded-full border-2 border-greenColor bg-grayLight"
+                  className="w-[50px] aspect-square  object-contain rounded-full border-2 border-greenColor bg-grayLight"
                 />
                 <p>{magasin.Libelle_magasin}</p>
               </Link>
@@ -154,7 +176,7 @@ const ArticleDetails = (props) => {
               </p>
             </div>
 
-            <h1 className=" text-gray-800 text-[40px] font-bold">
+            <h1 className=" text-gray-800 text-[35px] font-bold">
               {product.Libelle_prod}
             </h1>
             <p className="md:w-96 text-gray-500 text-[13px] text-justify">
@@ -164,49 +186,61 @@ const ArticleDetails = (props) => {
               {product.prix_prod}.00 TND
             </p>
             <p className=" text-[16px] font-bold mb-2 mt-5">Critères</p>
+            <p className=" text-[14px]  mt-1">
+              <span className="text-gray-500  ">Référence </span>:{" "}
+              <span className="text-textColor font-semibold">
+                {product.Reference_prod}
+              </span>
+            </p>
             <p className=" text-[14px]   ">
               <span className="text-gray-500  ">Matiére </span>:{" "}
               <span className="text-textColor font-semibold">
                 {matiere.Libelle_mat}{" "}
               </span>
             </p>
-            <p className=" text-[14px]  mt-1">
-              <span className="text-gray-500  ">Référence </span>:{" "}
-              <span className="text-textColor font-semibold">
-                {product.Reference_prod} mm
-              </span>
-            </p>
-            <p className=" text-[14px]  mt-1">
-              <span className="text-gray-500  ">Hauteur [mm]</span>:{" "}
-              <span className="text-textColor font-semibold">
-                {product.Hauteur} mm
-              </span>
-            </p>
-            <p className=" text-[14px]  mt-1">
-              <span className="text-gray-500  ">Largeur [mm]</span>:{" "}
-              <span className="text-textColor font-semibold">
-                {product.Largeur} mm{" "}
-              </span>
-            </p>
-            <p className=" text-[14px]  mt-1">
-              <span className="text-gray-500  ">Diamétre [mm]</span>:{" "}
-              <span className="text-textColor font-semibold">
-                {product.Diametre} mm
-              </span>
-            </p>
-            <p className=" text-[14px]  mt-1">
-              <span className="text-gray-500  ">Longueur [mm]</span>:{" "}
-              <span className="text-textColor font-semibold">
-                {product.Longueur} mm
-              </span>
-            </p>
-            <p className=" text-[14px]  mt-1">
-              <span className="text-gray-500  ">Épaisseur [mm]</span>:{" "}
-              <span className="text-textColor font-semibold">
-                {product.Epaisseur} mm
-              </span>
-            </p>
 
+            {product.Hauteur != null && (
+              <p className=" text-[14px]  mt-1">
+                <span className="text-gray-500  ">Hauteur [mm]</span>:{" "}
+                <span className="text-textColor font-semibold">
+                  {product.Hauteur} mm
+                </span>
+              </p>
+            )}
+            {product.Largeur != null && (
+              <p className=" text-[14px]  mt-1">
+                <span className="text-gray-500  ">Largeur [mm]</span>:{" "}
+                <span className="text-textColor font-semibold">
+                  {product.Largeur} mm{" "}
+                </span>
+              </p>
+            )}
+            {product.Diametre != null && (
+              <p className=" text-[14px]  mt-1">
+                <span className="text-gray-500  ">Diamétre [mm]</span>:{" "}
+                <span className="text-textColor font-semibold">
+                  {product.Diametre} mm
+                </span>
+              </p>
+            )}
+
+            {product.Longueur != null && (
+              <p className=" text-[14px]  mt-1">
+                <span className="text-gray-500  ">Longueur [mm]</span>:{" "}
+                <span className="text-textColor font-semibold">
+                  {product.Longueur} mm
+                </span>
+              </p>
+            )}
+
+            {product.Epaisseur != null && (
+              <p className=" text-[14px]  mt-1">
+                <span className="text-gray-500  ">Épaisseur [mm]</span>:{" "}
+                <span className="text-textColor font-semibold">
+                  {product.Epaisseur} mm
+                </span>
+              </p>
+            )}
             <div className="flex md:flex-row flex-wrap   items-center space-x-5    mt-5">
               <div className="flex flex-row items-center ">
                 <button
@@ -235,6 +269,7 @@ const ArticleDetails = (props) => {
 
               <div className="flex items-center">
                 <button
+                 onClick={() => AddFavoris(product.id_prod)}
                   className="bg-darkColor p-3 rounded-full text-white hover:bg-greenColor"
                   type="button"
                 >
@@ -259,6 +294,15 @@ const ArticleDetails = (props) => {
                 </p>
               )}
             </div>
+            <div>
+              <p className="text-darkColor font-semibold text-[15px] my-5 flex items-center">
+                <span className="mr-1 text-greenColor">
+                  <FaLocationDot />
+                </span>
+                {magasin.Adresse_magasin} , {ville.Libelle_ville}
+              </p>
+               
+            </div>
           </div>
         </div>
       </div>
@@ -270,7 +314,10 @@ const ArticleDetails = (props) => {
             </h1>
           </div>
           <div className="hidden md:block">
-            <Link href={`/Catalogue`} className=" text-sm xl:mx-24  lg:mx-24 border-greenColor border-[2px] rounded-full p-2 px-4 hover:bg-greenColor hover:text-white">
+            <Link
+              href={`/Catalogue`}
+              className=" text-sm xl:mx-24  lg:mx-24 border-greenColor border-[2px] rounded-full p-2 px-4 hover:bg-greenColor hover:text-white"
+            >
               Voir plus...
             </Link>
           </div>
@@ -281,15 +328,15 @@ const ArticleDetails = (props) => {
               <div key={product.id_prod}>
                 <div className="flex justify-center ">
                   {/* <Link href={`/Catalogue/${product.id_prod}`}> */}
-                    <CardsProduit
-                      image={product.Image_thumbnail}
-                      libelle={product.Libelle_prod}
-                      categorie={product.category.Libelle_cat}
-                      prix={product.prix_prod}
-                      stock={product.Stock_prod}
-                      link={`./Catalogue/${product.id_prod}`}
-                      handleFavoris={() => handleFavoris(product.id_prod)}
-                    />
+                  <CardsProduit
+                    image={product.Image_thumbnail}
+                    libelle={product.Libelle_prod}
+                    categorie={product.category.Libelle_cat}
+                    prix={product.prix_prod}
+                    stock={product.Stock_prod}
+                    link={`./Catalogue/${product.id_prod}`}
+                    handleFavoris={() => handleFavoris(product.id_prod)}
+                  />
                   {/* </Link> */}
                 </div>
               </div>

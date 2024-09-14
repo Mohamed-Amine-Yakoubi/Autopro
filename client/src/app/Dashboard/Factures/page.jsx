@@ -1,7 +1,7 @@
 "use client";
 
 import { getStoreByUserID } from "@/app/lib/Magasin";
- 
+
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { IoEyeSharp, IoReloadCircle, IoSearch } from "react-icons/io5";
@@ -14,7 +14,7 @@ import { MdDelete } from "react-icons/md";
 import { FaCheckCircle } from "react-icons/fa";
 import { FaClock } from "react-icons/fa6";
 import { useSelector } from "react-redux";
- 
+
 import {
   Modal,
   ModalContent,
@@ -34,19 +34,16 @@ import Link from "next/link";
 const Factures = () => {
   const store = useSelector((state) => state.store);
   const [factures, setFactures] = useState([]);
- 
 
   const { data: session } = useSession();
   const id_user = session?.user?.id_user || "";
   const [filter, setFilter] = useState("");
 
- 
-
   useEffect(() => {
     if (store) {
       store.items.map((items) => {
         getFactureByIdStore(items.id_magasin).then((itemFacture) => {
-          setFactures(itemFacture);
+          setFactures(itemFacture || []);
         });
       });
     }
@@ -57,10 +54,9 @@ const Factures = () => {
 
   const filteredData = factures.filter(
     (item) =>
-      (item.Nom_user?.toLowerCase().includes(filter.toLowerCase()) ??
-        false) ||
-      (item.Refrence_fact?.toLowerCase().includes(filter.toLowerCase()) ?? false)  
- 
+      (item.Nom_user?.toLowerCase().includes(filter.toLowerCase()) ?? false) ||
+      (item.Refrence_fact?.toLowerCase().includes(filter.toLowerCase()) ??
+        false)
   );
 
   // Pagination calculations
@@ -82,123 +78,140 @@ const Factures = () => {
   for (let i = 1; i <= Math.ceil(factures.length / commandesPerPage); i++) {
     pageNumbers.push(i);
   }
-  const pdfUrl = 'https://res.cloudinary.com/dszbzybhk/raw/upload/v1723118067/pdfs/facture-AP-qlRehCII.pdf';
-
- 
+  const pdfUrl =
+    "https://res.cloudinary.com/dszbzybhk/raw/upload/v1723118067/pdfs/facture-AP-qlRehCII.pdf";
+    const renderedCommandeIds = new Set();
   return (
     <div className="  mb-10">
-         <Cards className={"w-full h-full p-4  overflow-x-auto     "}>
+      <Cards className={"w-full h-full p-4  overflow-x-auto     "}>
         <div className="text-[20px] font-bold text-greenColor my-5  ">
-       Factures clients
+          Factures clients
         </div>
-      <div className="  flex md:flex-row flex-col flex-wrap md:justify-between md:items-center  space-x-4 ">
-        <div className="mb-3 relative  ">
-          <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-            <IoSearch />
-          </span>
-          <input
-            type="text"
-            className="outline-none md:w-96 text-[13px] w-full bg-grayLight border-2 border-gray-200 py-2 pl-8 pr-3 rounded-md"
-            onChange={handleSearch}
-            placeholder="Chercher"
-          />
+        <div className="  flex md:flex-row flex-col flex-wrap md:justify-between md:items-center  space-x-4 ">
+          <div className="mb-3 relative  ">
+            <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
+              <IoSearch />
+            </span>
+            <input
+              type="text"
+              className="outline-none md:w-96 text-[13px] w-full bg-grayLight border-2 border-gray-200 py-2 pl-8 pr-3 rounded-md"
+              onChange={handleSearch}
+              placeholder="Chercher"
+            />
+          </div>
         </div>
- 
-      </div>
- 
-      <div className="  rounded-lg overflow-hidden ">
-        <table className="w-full table-fixed">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="w-16 py-4  text-center text-textColor font-bold text-[13px]">
-                N°
-              </th>
-              <th className="w-1/3 py-4  text-left text-textColor font-bold text-[13px]">
-                Nom et Prénom
-              </th>
-              <th className="w-1/3 py-4  text-left text-textColor font-bold text-[13px]">
-                Référence
-              </th>
-           
-              <th className="w-1/3 py-4  text-left text-textColor font-bold text-[13px]">
-                Date
-              </th>
-          
-              <th className="w-20  py-4 px-6  ">
-                {" "}
-                <button className="text-[24px]">
-                  <IoReloadCircle />
-                </button>{" "}
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white">
-            {currentcommandes.map((item, index) => {
-              return (
-                <tr className="border-b border-gray-200  " key={index}>
-                  <td className="   text-center   py-3.5 text-greenColor  text-[13px]">
-                    {item.id_fact}
-                  </td>
-                  <td className="      ">
-                    <p className="  text-[13px]">{item.Nom_user}</p>
-                  </td>
 
-                  <td className="   text-[13px]">{item.Refrence_fact} </td>
-            
-                  <td className="   text-[13px]  ">
-                    {item.createdAt.substring(0, 10)}
-                  </td>
-                 
-                  <td className="  px-6   flex justify-center items-center">
-                    <div className="text-center py-2">
-                      <Dropdown className="bg-gray-100 p-3 rounded-md shadow-sm">
-                        <DropdownTrigger>
-                          <Button variant="bordered">
-                            <HiDotsHorizontal />
-                          </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu aria-label="Dynamic Actions">
-                          <DropdownItem textValue="Consulter">
-                            <div className=" hover:bg-greenColor rounded-md  hover:text-white px-3 text-center py-1 flex items-center  ">
-                              <IoEyeSharp className="text-[20px] mr-2" />
- <Link className="text-[13px]" href={item.pdf_fact} target="_blank">Consulter</Link>
-                  </div>
-                          </DropdownItem>
+        <div className="  rounded-lg overflow-hidden ">
+          <table className="w-full table-fixed">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="w-16 py-4  text-center text-textColor font-bold text-[13px]">
+                  N°
+                </th>
+                <th className="w-1/3 py-4  text-left text-textColor font-bold text-[13px]">
+                  Client
+                </th>
+                <th className="w-1/3 py-4  text-left text-textColor font-bold text-[13px]">
+                  Référence
+                </th>
 
-                          <DropdownItem textValue="Supprimer">
-                            <button className=" hover:bg-greenColor rounded-md  hover:text-white px-3 text-center py-1 flex items-center  ">
-                              <MdDelete className="text-[20px] mr-2" />
-                              <p className="text-[13px]"> Supprimer</p>
-                            </button>
-                          </DropdownItem>
-                        </DropdownMenu>
-                      </Dropdown>
-                    </div>
+                <th className="w-1/3 py-4  text-left text-textColor font-bold text-[13px]">
+                  Date
+                </th>
+
+                <th className="w-20  py-4 px-6  ">
+                  {" "}
+                  <button className="text-[24px]">
+                    <IoReloadCircle />
+                  </button>{" "}
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              {currentcommandes.length > 0 ?(
+              currentcommandes.map((item, index) => {
+  
+                return (
+                  <tr className="border-b border-gray-200  " key={index}>
+                    <td className="   text-center   py-3.5 text-greenColor  text-[13px]">
+                      {item.id_fact}
+                    </td>
+                    <td className="      ">
+                      <p className="  text-[13px]">{item.Nom_user}</p>
+                    </td>
+
+                    <td className="   text-[13px]">{item.Refrence_fact} </td>
+
+                    <td className="   text-[13px]  ">
+                      {item.createdAt.substring(0, 10)}
+                    </td>
+
+                    <td className="  px-6   flex justify-center items-center">
+                      <div className="text-center py-2">
+                        <Dropdown className="bg-gray-100 p-3 rounded-md shadow-sm">
+                          <DropdownTrigger>
+                            <Button variant="bordered">
+                              <HiDotsHorizontal />
+                            </Button>
+                          </DropdownTrigger>
+                          <DropdownMenu aria-label="Dynamic Actions">
+                            <DropdownItem textValue="Consulter">
+                              <div className=" hover:bg-greenColor rounded-md  hover:text-white px-3 text-center py-1 flex items-center  ">
+                                <IoEyeSharp className="text-[20px] mr-2" />
+                                <Link
+                                  className="text-[13px]"
+                                  href={item.pdf_fact}
+                                  target="_blank"
+                                >
+                                  Consulter
+                                </Link>
+                              </div>
+                            </DropdownItem>
+
+                            <DropdownItem textValue="Supprimer">
+                              <button className=" hover:bg-greenColor rounded-md  hover:text-white px-3 text-center py-1 flex items-center  ">
+                                <MdDelete className="text-[20px] mr-2" />
+                                <p className="text-[13px]"> Supprimer</p>
+                              </button>
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </Dropdown>
+                      </div>
+                    </td>
+                  </tr>
+              
+            )})) :
+              (
+                <tr>
+                  <td
+                    colSpan="5"
+                    className="text-center py-4 pt-10 text-gray-500"
+                  >
+                    Aucune Factures n'a été ajoutée
                   </td>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        <div className="flex justify-center py-4">
-          {pageNumbers.map((number) => (
-            <button
-              key={number}
-              onClick={() => paginate(number)}
-              className={`px-3 py-1 rounded-full text-[13px] ${
-                number === currentPage
-                  ? "bg-greenColor text-white"
-                  : "bg-gray-200"
-              } mx-1`}
-            >
-              {number}
-            </button>
-          ))}
+              )}
+            </tbody>
+          </table>
+          <div className="flex justify-center py-4">
+            {pageNumbers.map((number) => (
+              <button
+                key={number}
+                onClick={() => paginate(number)}
+                className={`px-3 py-1 rounded-full text-[13px] ${
+                  number === currentPage
+                    ? "bg-greenColor text-white"
+                    : "bg-gray-200"
+                } mx-1`}
+              >
+                {number}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
-    </Cards>
+      </Cards>
     </div>
   );
 };
- 
+
 export default Factures;

@@ -1,11 +1,11 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 import Header from "@/components/Header";
-import "../globals.scss";
+ 
 
 import { useEffect, useState } from "react";
 
-import CardsProduit from "@/components/CardsProduit";
+
 import { FaSearch } from "react-icons/fa";
 import { Loading } from "@/components/Loading";
 
@@ -110,7 +110,7 @@ const Magasin = () => {
           </div>
           <div className="flex mt-10 flex-wrap justify-center">
             {filteredData.length > 0 ? (
-              filteredData.map((store) => {
+              filteredData.filter(item=>item.etat_magasin==="Approuvé").map((store) => {
                 const villeItems = ville.find(
                   (item) => item.id_ville === store.id_ville
                 );

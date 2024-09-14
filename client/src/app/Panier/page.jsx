@@ -200,13 +200,13 @@ if (session) {
                   {/* <Link href={`./Catalogue/${item.id_prod}`}> */}
 
                   <td className="px-8 my-3 tab1 flex flex-row items-center space-x-3">
-                    <div>
+                    <div    className="w-[100px] h-[100px] bg-grayColor rounded-md shadow-sm">
                       <Image
                         src={item.Image_thumbnail}
                         height={100}
                         width={100}
                         alt="image_thumbnail"
-                        className="bg-grayColor rounded-md shadow-sm"
+                        className=" shadow-sm w-[100px] h-[100px]  rounded-md  object-contain p-2 mix-blend-multiply"
                       />
                     </div>
                     <div>
@@ -230,7 +230,7 @@ if (session) {
                         </p>
 
                         <p className="text-[12.3px] font-bold text-greenColor">
-                          {item.prix_prod} TND
+                          {item.prix_prod.toFixed(2)} TND
                         </p>
                       </div>
                     </div>
@@ -265,7 +265,9 @@ if (session) {
                     </button>
                   </td>
                   <td className="px-8 text-center text-[13px] font-bold text-darkColor">
-                    {item.prix_prod * item.quantity},00 TND
+                    {item.prix_prod.toFixed(
+                          3
+                        ) * item.quantity} TND
                   </td>
                   <td className="text-darkColor text-center">
                     <div>
@@ -286,7 +288,7 @@ if (session) {
               <tbody className="  flex flex-col">
                 <tr className="text-[13px] flex justify-between">
                   <th className="text-start text-darkColor pt-4">sous-total</th>
-                  <td className="text-end pt-4">{cart.subTotalPrice},00 TND</td>
+                  <td className="text-end pt-4">{cart.subTotalPrice.toFixed(2)} TND</td>
                 </tr>
                 <tr className="text-[13px] flex justify-between">
                   <th className="text-start pt-3">Livraison</th>
@@ -294,11 +296,11 @@ if (session) {
                 </tr>
                 <tr className="border-b text-start flex justify-between text-[13px]">
                   <th className="text-start pt-3 pb-4">TVA</th>
-                  <td className="text-end pt-3 pb-4">{cart.TVA}</td>
+                  <td className="text-end pt-3 pb-4">{cart.TVA.toFixed(2)}</td>
                 </tr>
                 <tr className="text-[13px] flex justify-between">
                   <th className="text-start pt-4">Total de la commande</th>
-                  <td className="text-end pt-4"> {cart.totalPrice} TND</td>
+                  <td className="text-end pt-4"> {cart.totalPrice.toFixed(2)} TND</td>
                 </tr>
 
                 <tr
@@ -582,10 +584,10 @@ const Step2 = ({ nextStep }) => {
                 ${productDetails.map((product, index) => `
                   <tr>
                   
-                    <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;">
-                    <div style="display:flex;justify-content:space-between">
-                    <img src={${product.Image_thumbnail}}   alt="image" />
-                    ${product.Libelle_prod}</div></td>
+                    <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;display: flex;justify-content:space-between;align-items:center"">
+                
+                 <img src=${product.Image_thumbnail}   alt="image" style="border: 1px solid #e0e0e0; width:50px;height:50px" />
+                 <span style="margin-left:10px;margin-top:15px">${product.Libelle_prod}</span> </td>
                     <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;">${cart.items[index].quantity}</td>
                     <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;" colspan="4">${product.prix_prod} TND</td>
                   </tr>
@@ -792,13 +794,14 @@ const Step2 = ({ nextStep }) => {
                 className="flex items-center justify-between mb-3  "
               >
                 <div className="flex items-center">
+                  <div className="bg-grayColor rounded-md">
                   <Image
                     src={item.Image_thumbnail}
                     height={60}
                     width={60}
                     alt="image_thumbnail"
-                    className="bg-grayColor rounded-md shadow-sm"
-                  />
+                    className=" rounded-md shadow-sm   object-contain p-2 mix-blend-multiply"
+                  /></div>
                   <p className="ml-3 text-[12.5px]">
                     {item.Libelle_prod} x {item.quantity}
                   </p>
@@ -855,7 +858,7 @@ const Step2 = ({ nextStep }) => {
             <tbody className="  flex flex-col">
               <tr className="text-[13px] flex justify-between">
                 <th className="text-start text-darkColor pt-4">sous-total</th>
-                <td className="text-end pt-4">{cart.subTotalPrice},00 TND</td>
+                <td className="text-end pt-4">{cart.subTotalPrice.toFixed(2)} TND</td>
               </tr>
               <tr className="text-[13px] flex justify-between">
                 <th className="text-start pt-3">Livraison</th>
@@ -863,11 +866,11 @@ const Step2 = ({ nextStep }) => {
               </tr>
               <tr className="border-b text-start flex justify-between text-[13px]">
                 <th className="text-start pt-3 pb-4">TVA</th>
-                <td className="text-end pt-3 pb-4">{cart.TVA}</td>
+                <td className="text-end pt-3 pb-4">{cart.TVA.toFixed(2)}</td>
               </tr>
               <tr className="text-[13px] flex justify-between">
                 <th className="text-start pt-4">Total de la commande</th>
-                <td className="text-end pt-4"> {cart.totalPrice} TND</td>
+                <td className="text-end pt-4"> {cart.totalPrice.toFixed(2)} TND</td>
               </tr>
             </tbody>
           </table>

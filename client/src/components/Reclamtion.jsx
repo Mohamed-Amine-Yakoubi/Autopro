@@ -6,11 +6,11 @@ import Input from "./Input";
 import { IoMdPhotos } from "react-icons/io";
 import Textarea from "./Textarea";
 import Image from "next/image";
- 
-const Reclamation = ({props}) => {
+
+const Reclamation = ({ props }) => {
   const { data: session, status } = useSession();
   const [selectedImage, setSelectedImage] = useState("");
- 
+
   const [form, setForm] = useState({
     NomPrenom_rec: "",
     Email_rec: "",
@@ -84,6 +84,11 @@ const Reclamation = ({props}) => {
 
   return (
     <div className="p-6 py-8  ">
+      <p className="text-[12.4px] text-center color text-gray-500    mb-5">
+        Autopro vous permet de déposer une réclamation directement sur la
+        plateforme. Il vous suffit de choisir le destinataire de votre
+        réclamation et de remplir le formulaire ci-dessous.
+      </p>
       <form onSubmit={handleContact}>
         {!session ? (
           <div>
@@ -117,7 +122,6 @@ const Reclamation = ({props}) => {
           </div>
         ) : null}
         <div className="mt-5 space-y-1">
-      
           <Textarea
             type="textarea"
             name="description_rec"

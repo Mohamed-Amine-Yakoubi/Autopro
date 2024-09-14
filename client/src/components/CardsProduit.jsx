@@ -40,8 +40,8 @@ const CardsProduit = ({
       <Link href={link}>
         <div className=" flex justify-center">
           <Image
-            className=" w-[180px] h-[180px] object-contain p-2"
-            
+            className=" w-[180px] h-[180px] object-contain p-2 mix-blend-multiply  "
+ 
             src={image}
             width={180}
             height={180}

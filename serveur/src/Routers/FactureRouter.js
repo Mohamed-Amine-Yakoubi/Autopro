@@ -6,4 +6,15 @@ route.post('/SaveFacture', FactureController.saveFacture);
 route.get(
     "/getFacturebyIdStore/:id_magasin", FactureController.getFacturebyIdStore
   );
+ 
+  route.get(
+    "/getFacturebyIdCmd", FactureController.getFacturebyIdCmd
+  );
+  route.get(
+    "/getFacturebyIdUser/:id_user", FactureController.getFacturebyIdUser
+  );
+
+  route.get(
+    "/GetAllFacture", FactureController.GetAllFacture
+  );
 module.exports = route;

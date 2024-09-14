@@ -16,13 +16,18 @@ import { getCategory } from "../lib/Category";
 import Link from "next/link";
 import { Loading } from "@/components/Loading";
 import { useSession } from "next-auth/react";
- 
+import ModalStore from "@/components/ModalStore";
+import { FaShop } from "react-icons/fa6";
 
 const Accueil = () => {
   const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(true);
   const { data: session } = useSession();
- 
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   useEffect(() => {
     getAllProducts()
       .then((products) => {
@@ -41,18 +46,14 @@ const Accueil = () => {
       })
       .then((productsWithCategory) => {
         // Set the state with products containing category information
-        setProduct(productsWithCategory.slice(0,5));
+        setProduct(productsWithCategory.slice(0, 5));
         setLoading(false);
-
       });
   }, []);
 
-
-
-
   const handleFavoris = async (id_prod) => {
     try {
-      const id_user=session.user.id_user;
+      const id_user = session.user.id_user;
       const res = await fetch(
         `http://localhost:4000/api/v1/favoris/AddFavoris`,
         {
@@ -69,15 +70,17 @@ const Accueil = () => {
       }
 
       await res.json();
-
-    
     } catch (error) {
       alert("Failed to add to favorites");
     }
   };
 
-
-  if (loading) return <div><Loading/></div>;
+  if (loading)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   return (
     <div className="   ">
       <div className="relative      ">
@@ -85,7 +88,8 @@ const Accueil = () => {
           src={bmw_header}
           className=" object-cover  md:h-[550px] h-[650px] w-full   "
           alt="header image"
-          loading="eager"        />
+          loading="eager"
+        />
         <div className="absolute inset-0 bg-gray-700 opacity-50 rounded-md"></div>
 
         <div className="container absolute inset-0 flex    items-center    mx-auto   justify-center ">
@@ -111,7 +115,7 @@ const Accueil = () => {
         {" "}
         <Slider />
       </div>
-   
+
       {/* section 2 */}
       <div className="   mt-32  mb-32  ">
         <div className="   2xl:mx-48  lg:mx-28 md:text-center   lg:text-start mx-0 text-center  ">
@@ -132,17 +136,21 @@ const Accueil = () => {
             </h1>
           </div>
           <div className="hidden md:block">
-            <Link href={`./Catalogue`} className=" text-[13px]   border-greenColor border-[2px] rounded-full p-2 px-4 hover:bg-greenColor hover:text-white">
+            <Link
+              href={`./Catalogue`}
+              className=" text-[13px]   border-greenColor border-[2px] rounded-full p-2 px-4 hover:bg-greenColor hover:text-white"
+            >
               Voir plus...
             </Link>
           </div>
         </div>
-        <div className="container mx-auto flex flex-col justify-center    ">
-          <Carousel className="md:mx-8">
-            {product.map((product) => (
-              <div key={product.id_prod}>
-                <div className="flex justify-center ">
-                  {/* <Link href={`/Catalogue/${product.id_prod}`}> */}
+        {product.length > 0 ? (
+          <div className="container mx-auto flex flex-col justify-center    ">
+            <Carousel className="md:mx-8">
+              {product.map((product) => (
+                <div key={product.id_prod}>
+                  <div className="flex justify-center ">
+                    {/* <Link href={`/Catalogue/${product.id_prod}`}> */}
                     <CardsProduit
                       image={product.Image_thumbnail}
                       libelle={product.Libelle_prod}
@@ -152,12 +160,20 @@ const Accueil = () => {
                       link={`./Catalogue/${product.id_prod}`}
                       handleFavoris={() => handleFavoris(product.id_prod)}
                     />
-                  {/* </Link> */}
+                    {/* </Link> */}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </Carousel>
-        </div>
+              ))}
+            </Carousel>
+          </div>
+        ) : (
+          <div className="flex md:flex-row flex-col my-28 justify-center">
+            <p className="font-poppins text-[17px] text-gray-400">
+              produit est actuellement indisponible
+            </p>
+          </div>
+        )}
+
         <div className="flex justify-center  mt-12">
           <div className="block md:hidden  ">
             <button className=" text-[14px] xl:mx-30  lg:mx-28 border-greenColor border-[2px] rounded-full p-2 px-4 hover:bg-greenColor hover:text-white">
@@ -179,22 +195,37 @@ const Accueil = () => {
         <div className="    w-1/2">
           <div className="space-y-4 md:mx-5 md:text-start text-center">
             <h1 className="font-bukrabold font-bukra text-xl">
-              Qualité et valeur dans chaque pièce
+              Créez Votre Boutique sur Autopro
             </h1>
             <div className="text-sm text-gray-600    ">
               <p className="leading-6">
-                Explorez nos catalogues pour découvrir des produits
-                soigneusement sélectionnés,
-                <br /> offrant une qualité exceptionnelle et une valeur
-                incomparable.
+                Autopro vous offre la possibilité de créer votre propre boutique
+                sur notre plateforme. Il vous suffit de remplir le formulaire
+                ci-dessous, et nous étudierons votre demande pour vous répondre
+                dans un délai maximum de 3 jours.
               </p>
             </div>
-            <button className=" text-sm border-greenColor border-[3px] rounded-full p-2 px-3 hover:bg-greenColor hover:text-white">
-              explorez le catalogue
-            </button>
+            {session?.user?.Profil_user === "Fournisseur" ? (
+              <div className="my-4">
+              <Link
+                href="/Dashboard"
+                className=" text-sm border-greenColor border-[3px]  rounded-full p-2 px-3 hover:bg-greenColor hover:text-white"
+              >
+                Votre Boutique
+              </Link>
+              </div>
+            ) : (
+              <button
+                onClick={openModal}
+                className=" text-sm border-greenColor border-[3px] rounded-full p-2 px-3 hover:bg-greenColor hover:text-white"
+              >
+                Demande boutique
+              </button>
+            )}
           </div>
         </div>
       </div>
+      <ModalStore isOpen={isModalOpen} onClose={closeModal} />
     </div>
   );
 };

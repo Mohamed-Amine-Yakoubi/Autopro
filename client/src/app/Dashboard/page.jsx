@@ -89,7 +89,7 @@ const Dashboard = () => {
           color={"greenColor"}
           icon={<FaMoneyBillTrendUp />}
           title={"Ventes totales"}
-          value={`${totalArgent} TD`}
+          value={`${totalArgent.toFixed(2)} TD`}
           footer={"+55% que la semaine dernière"}
         />
         <StatisticsCard
@@ -97,14 +97,14 @@ const Dashboard = () => {
           icon={<FaShoppingBasket />}
           title={"Total Commande"}
           value={totalCommande}
-          footer={"+3% than last month"}
+          footer={"+3% que le mois dernier"}
         />
         <StatisticsCard
           color={"greenColor"}
           icon={<BsFillSendExclamationFill />}
           title={"Reclamations"}
           value={totalClaim}
-          footer={"+1% than last month"}
+          footer={"+1% que le mois dernier"}
         />
         <StatisticsCard
           color={"greenColor"}
@@ -135,19 +135,19 @@ const Dashboard = () => {
                       N°
                     </th>
                     <th className="w-1/4 py-4  text-left text-textColor font-bold text-[13px]">
-                      Nom et Prénom
+                      Client
                     </th>
-                    <th className="w-1/4 py-4  text-left text-textColor font-bold text-[13px]">
+                    <th className="w-1/6 py-4  text-left text-textColor font-bold text-[13px]">
                       Email
                     </th>
-                    <th className="w-1/4 py-4  text-left text-textColor font-bold text-[13px]">
+                    <th className="w-1/6 py-4  text-left text-textColor font-bold text-[13px]">
                       Telephone
                     </th>
 
                     <th className="w-1/2 py-4  text-left text-textColor font-bold text-[13px]">
                       Date
                     </th>
-                    <th className="w-1/4 py-4  text-left text-textColor font-bold text-[13px]">
+                    <th className="w-1/3 py-4  text-left text-textColor font-bold text-[13px]">
                       Etat
                     </th>
                   </tr>
@@ -160,7 +160,7 @@ const Dashboard = () => {
                           {item.id_rec}
                         </td>
                         <td className="      ">
-                          <p className="  text-[13px]">{item.NomPrenom_rec}</p>
+                          <p className="  text-[13px]">{item.NomPrenom_rec.slice(0, 10)}...</p>
                         </td>
 
                         <td className="   text-[13px]">
@@ -222,7 +222,7 @@ const Dashboard = () => {
                     <th className="w-1/12 py-4  text-center text-textColor font-bold text-[13px]">
                       N°
                     </th>
-                    <th className="w-1/2 py-4  text-left text-textColor font-bold text-[13px]">
+                    <th className="w-1/4 py-4  text-left text-textColor font-bold text-[13px]">
                       Client
                     </th>
            
@@ -256,7 +256,7 @@ const Dashboard = () => {
                           <p className="  text-[13px]">
     
                             {client
-                              ? `${client.Prenom_user} ${client.Nom_user}`
+                              ? `${client.Prenom_user} ${client.Nom_user.slice(0, 3)}...`
                               : "unknow"}
                           </p>
                         </td>
@@ -266,7 +266,7 @@ const Dashboard = () => {
                         </td>
                         <td className="   text-[13px]  ">{item.Date_cmd}</td>
                         <td className="  text-[13px]  ">
-                          <div className="w-1/2 mx-10  ">
+                          <div className="     ">
                             {item.etat_cmd === "Approuvé" ? (
                               <p className="flex items-center ">
                                 <span className="text-greenColor mr-1">

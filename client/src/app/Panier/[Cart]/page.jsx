@@ -8,11 +8,13 @@ import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { FaCircleCheck } from "react-icons/fa6";
 import Autopro_logo from "../../../public/images/Autopro_logo.png";
+import { getAllStore } from "@/app/lib/Magasin";
 
 const Cart = (props) => {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(true);
   const [factureSaved, setFactureSaved] = useState(false);
+  const [store, setStore] = useState([]);
 
   const [ville, setVille] = useState([]);
   const [commande, setCommande] = useState([]);
@@ -22,15 +24,56 @@ const Cart = (props) => {
   const id_user = session?.user?.id_user || "";
   const id_Maincmd = props.params.Cart;
 
-  console.log("commande", commande);
 
-  const saveFacture = async (mainCommande, details, address, cities, products) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (session) {
+          setLoading(false);
+        }
+        const itemStore = await getAllStore();
+        setStore(itemStore);
+        const address = await getAdrByIdUser(id_user);
+        setAdresse(address);
+
+        const cities = await getVille();
+        setVille(cities);
+        const mainCommande = await getMainCommande(id_Maincmd);
+        setCommande(mainCommande);
+        const details = await getCommandeDetails(id_Maincmd);
+        setDetailscommande(details);
+
+        const productPromises = details.map((item) =>
+          getSpecProduct(item.id_prod)
+        );
+        const products = await Promise.all(productPromises);
+        setProduct(products);
+
+        if (!factureSaved) {
+          await saveFacture(mainCommande, details, address, cities, products);
+          setFactureSaved(true);
+        }
+      } catch (error) {
+        console.error("Error in fetching data or saving facture:", error);
+      }
+    };
+
+    fetchData();
+  }, [id_user, id_Maincmd, factureSaved, session]);
+
+  const saveFacture = async (
+    mainCommande,
+    details,
+    address,
+    cities,
+    products
+  ) => {
     const Autopro_logo_URL =
       "https://res.cloudinary.com/dszbzybhk/image/upload/v1723404962/c76ktevrn9lvxad0pmux.png";
 
-      const TVA_RATE = 0.19;
+    const TVA_RATE = 0.19;
 
-      const FactureContent = `
+    const FactureContent = `
         <!DOCTYPE html>
         <html lang="en">
           <head>
@@ -164,13 +207,17 @@ const Cart = (props) => {
                 </div>
                 <div>
                   <h4 style="font-size: 30px; font-weight: bold">Facture</h4>
-                  <p>N° #: ${mainCommande[0].id_MainCmd} du ${mainCommande[0].Date_cmd}</p>
+                  <p>N° #: ${mainCommande[0].id_MainCmd} du ${
+                      mainCommande[0].Date_cmd
+                    }</p>
                   <div style="border: 2px solid black; border-radius: 5px; padding: 10px; padding-inline-end: 120px;">
                     <p>${session.user.Telephone_user}</p>
-                    <p style="font-weight: bold">${session.user.Nom_user} ${session.user.Prenom_user}</p>
+                    <p style="font-weight: bold">${session.user.Nom_user} ${
+                      session.user.Prenom_user
+                    }</p>
                     <p>${address.rue_adr}</p>
                     <p>${address.code_adr} ${
-                      cities.find(city => city.id_ville === address.id_ville)?.Libelle_ville
+                      cities.find((city) => city.id_ville === address.id_ville)?.Libelle_ville
                     }</p>
                     <p>${session.user.Email_user}</p>
                   </div>
@@ -180,30 +227,44 @@ const Cart = (props) => {
               <table class="table_1">
                 <thead>
                   <tr>
+                    <th style="width: 200px;">Magasin</th>
                     <th style="width: 100px;">Référence</th>
-                    <th style="width: 250px;">Désignation</th>
+                    <th style="width: 200px;">Désignation</th>
                     <th style="width: 50px;">Qté</th>
                     <th style="width: 100px;">Prix Unitaire</th>
-                    <th style="width: 100px;">Montant HT</th>
-                    <th style="width: 100px;">Montant TTC</th>
+         
                   </tr>
                 </thead>
               </table>
               <table class="table_2">
                 <tbody>
-                  ${details.map(detail => {
-                    const product = products.find(prod => prod.id_prod === detail.id_prod);
-                    return product ? `
+                  ${details
+                    .map((detail) => {
+                      const product = products.find(
+                        (prod) => prod.id_prod === detail.id_prod
+                      );
+                      const magasin = store.find(
+                        (item) => item.id_magasin === detail.id_magasin
+                      );
+                      return product && magasin
+                        ? `
                       <tr>
+                              
+            
+                        <td style="width: 200px;">${magasin.Libelle_magasin}</td>
                         <td style="width: 100px;">${product.Reference_prod}</td>
-                        <td style="width: 250px;">${product.Libelle_prod}</td>
+                        <td style="width:200px;">${product.Libelle_prod}</td>
                         <td style="width: 50px;">${detail.Qte_dtcmd}</td>
-                        <td style="width: 100px;">${(product.prix_prod).toFixed(3)}</td>
-                        <td style="width: 100px;">${(product.prix_prod * detail.Qte_dtcmd).toFixed(3)}</td>
-                        <td style="width: 100px;">${(product.prix_prod * detail.Qte_dtcmd * (1 + TVA_RATE)).toFixed(3)}</td>
+                        <td style="width: 100px;">${product.prix_prod.toFixed(
+                          3
+                        )}</td>
+                       
+                   
                       </tr>
-                    ` : '';
-                  }).join('')}
+                    `
+                        : "";
+                    })
+                    .join("")}
                 </tbody>
               </table>
   <div style="display: flex" class="section_3">
@@ -232,9 +293,29 @@ const Cart = (props) => {
         <table class="table_5">
           <tbody>
             <tr>
-             <td>${details.reduce((sum, detail) => sum + (products.find(prod => prod.id_prod === detail.id_prod)?.prix_prod || 0) * detail.Qte_dtcmd, 0).toFixed(3)}</td>
+             <td>${details
+               .reduce(
+                 (sum, detail) =>
+                   sum +
+                   (products.find((prod) => prod.id_prod === detail.id_prod)
+                     ?.prix_prod || 0) *
+                     detail.Qte_dtcmd,
+                 0
+               )
+               .toFixed(3)}</td>
                       <td>${(TVA_RATE * 100).toFixed(2)}%</td>
-                      <td>${details.reduce((sum, detail) => sum + ((products.find(prod => prod.id_prod === detail.id_prod)?.prix_prod || 0) * detail.Qte_dtcmd * TVA_RATE), 0).toFixed(3)}</td>
+                      <td>${details
+                        .reduce(
+                          (sum, detail) =>
+                            sum +
+                            (products.find(
+                              (prod) => prod.id_prod === detail.id_prod
+                            )?.prix_prod || 0) *
+                              detail.Qte_dtcmd *
+                              TVA_RATE,
+                          0
+                        )
+                        .toFixed(3)}</td>
              
           
             </tr>
@@ -244,16 +325,59 @@ const Cart = (props) => {
           <tbody>
         <tr>
                       <td>
-                        ${details.reduce((sum, detail) => sum + (products.find(prod => prod.id_prod === detail.id_prod)?.prix_prod || 0) * detail.Qte_dtcmd, 0).toFixed(3)}
+                        ${details
+                          .reduce(
+                            (sum, detail) =>
+                              sum +
+                              (products.find(
+                                (prod) => prod.id_prod === detail.id_prod
+                              )?.prix_prod || 0) *
+                                detail.Qte_dtcmd,
+                            0
+                          )
+                          .toFixed(3)}
                       </td>
                       <td>
-                        ${details.reduce((sum, detail) => sum + ((products.find(prod => prod.id_prod === detail.id_prod)?.prix_prod || 0) * detail.Qte_dtcmd * TVA_RATE), 0).toFixed(3)}
+                        ${details
+                          .reduce(
+                            (sum, detail) =>
+                              sum +
+                              (products.find(
+                                (prod) => prod.id_prod === detail.id_prod
+                              )?.prix_prod || 0) *
+                                detail.Qte_dtcmd *
+                                TVA_RATE,
+                            0
+                          )
+                          .toFixed(3)}
                       </td>
                       <td>
-                        ${details.reduce((sum, detail) => sum + ((products.find(prod => prod.id_prod === detail.id_prod)?.prix_prod || 0) * detail.Qte_dtcmd * (1 + TVA_RATE)), 0).toFixed(3)}
+                        ${details
+                          .reduce(
+                            (sum, detail) =>
+                              sum +
+                              (products.find(
+                                (prod) => prod.id_prod === detail.id_prod
+                              )?.prix_prod || 0) *
+                                detail.Qte_dtcmd *
+                                (1 + TVA_RATE),
+                            0
+                          )
+                          .toFixed(3)}
                       </td>
                           <td style="font-weight:bold">
-                        ${details.reduce((sum, detail) => sum + ((products.find(prod => prod.id_prod === detail.id_prod)?.prix_prod || 0) * detail.Qte_dtcmd * (1 + TVA_RATE)), 0).toFixed(3)}
+                        ${details
+                          .reduce(
+                            (sum, detail) =>
+                              sum +
+                              (products.find(
+                                (prod) => prod.id_prod === detail.id_prod
+                              )?.prix_prod || 0) *
+                                detail.Qte_dtcmd *
+                                (1 + TVA_RATE),
+                            0
+                          )
+                          .toFixed(3)}
                       </td>
                     </tr>
           </tbody>
@@ -265,9 +389,30 @@ const Cart = (props) => {
           <tr>
             <th>Total</th>
             <th style="font-size: 12px; font-weight: bold">
-                      ${details.reduce((sum, detail) => sum + ((products.find(prod => prod.id_prod === detail.id_prod)?.prix_prod || 0) * detail.Qte_dtcmd * (1 + TVA_RATE)), 0).toFixed(3)}
+                      ${details
+                        .reduce(
+                          (sum, detail) =>
+                            sum +
+                            (products.find(
+                              (prod) => prod.id_prod === detail.id_prod
+                            )?.prix_prod || 0) *
+                              detail.Qte_dtcmd *
+                              (1 + TVA_RATE),
+                          0
+                        )
+                        .toFixed(3)}
                     </th>
-            <th>                        ${details.reduce((sum, detail) => sum + ((products.find(prod => prod.id_prod === detail.id_prod)?.prix_prod || 0) * detail.Qte_dtcmd * TVA_RATE), 0).toFixed(3)}
+            <th>                        ${details
+              .reduce(
+                (sum, detail) =>
+                  sum +
+                  (products.find((prod) => prod.id_prod === detail.id_prod)
+                    ?.prix_prod || 0) *
+                    detail.Qte_dtcmd *
+                    TVA_RATE,
+                0
+              )
+              .toFixed(3)}
 </th>
  
           </tr>
@@ -278,21 +423,25 @@ const Cart = (props) => {
           </body>
         </html>
       `;
-      const FileName = `facture-${mainCommande[0].Reference_cmd}`;
+    const FileName = `facture-${mainCommande[0].Reference_cmd}`;
     try {
-      const response = await fetch(`http://localhost:4000/api/v1/facture/SaveFacture`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          Nom_user: session.user.Nom_user,
-          Refrence_fact:FileName ,
-          htmlContent: FactureContent,
-          id_magasin:mainCommande[0].id_magasin,
-          id_MainCmd:mainCommande[0].id_MainCmd,
-        }),
-      });
+      const response = await fetch(
+        `http://localhost:4000/api/v1/facture/SaveFacture`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            Nom_user: session.user.Nom_user,
+            Refrence_fact: FileName,
+            htmlContent: FactureContent,
+            id_magasin: mainCommande[0].id_magasin,
+            id_MainCmd: mainCommande[0].id_MainCmd,
+            id_user: session.user.id_user,
+          }),
+        }
+      );
 
       if (!response.ok) {
         console.error("Failed to save facture", response.statusText);
@@ -304,37 +453,6 @@ const Cart = (props) => {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (session) {
-          setLoading(false);
-        }
-          const address = await getAdrByIdUser(id_user);
-          setAdresse(address);
-       
-        const cities = await getVille();
-        setVille(cities);
-        const mainCommande = await getMainCommande(id_Maincmd);
-        setCommande(mainCommande);
-        const details = await getCommandeDetails(id_Maincmd);
-        setDetailscommande(details);
-
-        const productPromises = details.map(item => getSpecProduct(item.id_prod));
-        const products = await Promise.all(productPromises);
-        setProduct(products);
-
-        if (!factureSaved) {
-          await saveFacture(mainCommande, details, address, cities, products);
-          setFactureSaved(true);
-        }
-      } catch (error) {
-        console.error("Error in fetching data or saving facture:", error);
-      }
-    };
-
-    fetchData();
-  }, [id_user, id_Maincmd, factureSaved, session]);
 
   const totalPrix = commande.reduce((sum, item) => sum + item.prix_total, 0);
   if (loading) return <Loading />;
@@ -367,7 +485,7 @@ const Cart = (props) => {
             <td className="pb-5 text-[14px]">08/08/2024</td>
             <td className="pb-5 text-[14px]">{session.user.Email_user}</td>
 
-            <td className="pb-5 text-[14px]">{totalPrix} TND</td>
+            <td className="pb-5 text-[14px]">{totalPrix.toFixed(2)} TND</td>
 
             <td className="pb-5 text-[14px]">Paiement a la livraison</td>
           </tr>
@@ -407,7 +525,7 @@ const Cart = (props) => {
 
         <tr className="text-[13.5px] font-semibold text-darkColor border-t  ">
           <td className="pt-5">Sous-total :</td>
-          <td className="pt-5">{totalPrix} </td>
+          <td className="pt-5">{totalPrix.toFixed(2)} </td>
         </tr>
         <tr className="text-[13.5px] font-semibold text-darkColor  ">
           <td className="pt-2">Moyen de paiement :</td>
@@ -416,7 +534,7 @@ const Cart = (props) => {
         <tr className="text-[16px] font-bold text-darkColor border-b   mb-5">
           <td className="pt-2 pb-5">Total : </td>
 
-          <td className="pt-2 pb-5">{totalPrix} TND</td>
+          <td className="pt-2 pb-5">{totalPrix.toFixed(2)} TND</td>
         </tr>
       </table>
 

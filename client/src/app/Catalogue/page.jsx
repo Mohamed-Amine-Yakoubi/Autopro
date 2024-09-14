@@ -37,7 +37,7 @@ const Catalogue = () => {
 
     try {
       await addFavoris(id_prod, id_user);
-      alert("Product added to favorites successfully.");
+ 
     } catch (error) {
       alert("Failed to add to favorites");
     }
@@ -93,6 +93,25 @@ const Catalogue = () => {
     );
   });
 
+  // Pagination calculations
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [CataloguePerPage] = useState(12);
+  const indexOfLastcommande = currentPage * CataloguePerPage;
+  const indexOfFirstcommande = indexOfLastcommande - CataloguePerPage;
+  const currentCatalogue = filteredProducts.slice(
+    indexOfFirstcommande,
+    indexOfLastcommande
+  );
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Render page numbers
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(products.length / CataloguePerPage); i++) {
+    pageNumbers.push(i);
+  }
   if (loading)
     return (
       <div>
@@ -123,8 +142,8 @@ const Catalogue = () => {
             />
           </div>
           <div className="flex flex-wrap justify-center">
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
+            {currentCatalogue.length > 0 ? (
+              currentCatalogue.map((product) => (
                 <div key={product.id_prod} className="mt-5">
                   <CardsProduit
                     image={product.Image_thumbnail}
@@ -141,10 +160,25 @@ const Catalogue = () => {
             ) : (
               <div className="flex md:flex-row flex-col my-28 justify-center">
                 <p className="font-poppins text-[17px] text-gray-400">
-                  Ce produit est actuellement indisponible
+                  produit est actuellement indisponible
                 </p>
               </div>
             )}
+          </div>
+          <div className="flex justify-center py-4">
+            {pageNumbers.map((number) => (
+              <button
+                key={number}
+                onClick={() => paginate(number)}
+                className={`px-3 py-1 rounded-full text-[13px] ${
+                  number === currentPage
+                    ? "bg-greenColor text-white"
+                    : "bg-gray-200"
+                } mx-1`}
+              >
+                {number}
+              </button>
+            ))}
           </div>
         </div>
       </div>

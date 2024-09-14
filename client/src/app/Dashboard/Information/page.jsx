@@ -125,9 +125,9 @@ const Information = () => {
                 </div>
                 <Image
                   src={item.Logo_magasin}
-                  className="rounded-full p-5 bg-white border-4 border-gray-200"
-                  width={200}
-                  height={200}
+                  className="rounded-full w-[180px] h-[180px] p-3 object-contain bg-white border-4 border-gray-200"
+                  width={180}
+                  height={180}
                   alt="alt"
                 />
               </div>

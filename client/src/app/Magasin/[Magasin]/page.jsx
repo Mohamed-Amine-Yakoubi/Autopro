@@ -132,7 +132,7 @@ const Magasin = (props) => {
               alt="Product Image"
               width={200}
               height={200}
-              className=" lg:w-[130px] w-full  aspect-square   rounded-full border-2 border-greenColor bg-grayLight"
+              className=" lg:w-[130px] object-cover w-full  aspect-square p-5  rounded-full border-2 border-greenColor bg-grayLight"
             />
           </div>
           <div>
@@ -140,7 +140,7 @@ const Magasin = (props) => {
               Bienvenue chez {magasin.Libelle_magasin}
             </h1>
             <p className=" mt-1  font-bold lg:text-start text-center text-greenColor text-[12px]">
-              Boutique
+              Magasin
             </p>
 
             <p className="text    mx-auto     mt-1 text-[12px] lg:text-start text-center font-poppins lg:w-[550px]  ">
@@ -263,14 +263,14 @@ const Magasin = (props) => {
                     prix={product.prix_prod}
                     stock={product.Stock_prod}
                     product={product}
-                    link={`./Catalogue/${product.id_prod}`}
+                    link={`../Catalogue/${product.id_prod}`}
                   />
                 </div>
               ))
             ) : (
               <div className="flex md:flex-row flex-col my-28 justify-center">
                 <p className="font-poppins text-[17px] text-gray-400">
-                  Ce produit est actuellement indisponible
+                 Produit est actuellement indisponible
                 </p>
               </div>
             )}

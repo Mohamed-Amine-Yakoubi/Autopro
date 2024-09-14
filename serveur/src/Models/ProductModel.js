@@ -23,8 +23,8 @@ const Product = sequelize.define(
       allowNull: false,
     },
     Caracteristiques_prod: {
-      type: DataTypes.STRING(1000),
-      allowNull: false,
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
     Reference_prod: {
       type: DataTypes.STRING,
@@ -36,11 +36,11 @@ const Product = sequelize.define(
       allowNull: false,
     },
     Image_thumbnail: {
-      type: DataTypes.STRING, // or DataTypes.TEXT if storing image data directly
+      type: DataTypes.TEXT, // or DataTypes.TEXT if storing image data directly
       allowNull: false,
     },
     Image_prod: {
-      type: DataTypes.STRING(1000), // or DataTypes.TEXT if storing image data directly
+      type: DataTypes.TEXT, // or DataTypes.TEXT if storing image data directly
       allowNull: false,
     },
     Stock_prod: {

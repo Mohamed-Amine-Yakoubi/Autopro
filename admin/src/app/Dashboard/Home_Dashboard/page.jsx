@@ -72,14 +72,14 @@ const Home_Dashboard = () => {
           icon={<FaMoneyBillTrendUp />}
           title={"Boutique"}
           value={totalstore}
-          footer={"+55% que la semaine dernière"}
+          footer={"+55% que le mois dernier"}
         />
         <StatisticsCard
           color={"greenColor"}
           icon={<FaShoppingBasket />}
           title={"Fournisseur"}
           value={totalFournisseur}
-          footer={"+3% than last month"}
+          footer={"+3% que le mois dernier"}
         />
         <StatisticsCard
           color={"greenColor"}
@@ -112,7 +112,7 @@ const Home_Dashboard = () => {
                       N°
                     </th>
                     <th className="w-1/4 py-4  text-left text-gray-600 font-bold text-[13px]">
-                      Nom et Prénom
+                      Utilisateur
                     </th>
                     <th className="w-1/4 py-4  text-left text-gray-600 font-bold text-[13px]">
                       Email
@@ -184,7 +184,7 @@ const Home_Dashboard = () => {
             {" "}
             <div className="relative flex items-center justify-between">
               <div className="text-[20px] font-bold text-greenColor  ">
-                Demande Boutique
+               Boutique
               </div>
               <div className="  text-[13.5px] ">
             
@@ -227,7 +227,7 @@ const Home_Dashboard = () => {
 
                       <td className="flex items-center py-2">
                         <Image
-                          className="bg-blueLight rounded-md border  mr-2"
+                          className="bg-blueLight rounded-md w-[50px] h-[50px] border object-contain mr-2"
                           src={item.Logo_magasin}
                           height={50}
                           width={50}

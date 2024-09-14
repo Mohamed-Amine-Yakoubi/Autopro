@@ -136,14 +136,16 @@ const CommandeClientDetails = (props) => {
                 <td className="text-center py-1.5  w-10  text-[13px]">
                   {items.id_dtcmd}
                 </td>
-                <td className=" py-2 text-[13.5px] flex items-center">
+                <td className=" py-2 text-[13.5px] flex items-center ">
+                  <div className=" bg-grayLight rounded-md  ">
                   <Image
-                    className="bg-grayLight rounded-md  "
+                    className=" object-contain p-2 mix-blend-multiply "
                     src={productItem.Image_thumbnail}
                     width={50}
                     height={50}
                     alt="Image_thumbnail"
                   />
+                  </div>
                   <Link
                     href={`/Catalogue/${productItem.id_prod}`}
                     className="text-greenColor mx-2 "

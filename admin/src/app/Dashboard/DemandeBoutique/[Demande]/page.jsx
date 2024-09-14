@@ -74,7 +74,7 @@ const Demande = (props) => {
           <div className="flex items-center space-x-3">
             <Image
               src={store.Logo_magasin}
-              className="rounded-md   bg-blueLight border-2 border-gray-200"
+              className="rounded-full   bg-blueLight border-2 object-contain p-2 w-[80px] h-[80px] border-gray-200"
               width={80}
               height={80}
               alt="alt"

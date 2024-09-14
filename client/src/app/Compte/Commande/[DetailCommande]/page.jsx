@@ -26,6 +26,8 @@ import {
 import { HiDotsHorizontal } from "react-icons/hi";
 import { FcCancel } from "react-icons/fc";
 import { IoEyeSharp } from "react-icons/io5";
+import { MdNoBackpack } from "react-icons/md";
+import { toast, ToastContainer } from "react-toastify";
 
 const DetailCommande = (props) => {
   const { data: session } = useSession();
@@ -124,13 +126,22 @@ const DetailCommande = (props) => {
   const Date_cmd = commande.map((item) => item.Date_cmd);
   const firstDate = Date_cmd[0];
 
-  const handleEtat = async (e,id_cmd) => {
+  const handleEtat = async (e, id_magasin, id_cmd) => {
     e.preventDefault();
     const newEtat = e.target.name; // Get the new state from the button name
 
     try {
+      if (newEtat=== "Annuler") {
+        toast.error(
+          ` Votre commande a été annulée. Nous nous excusons pour le désagrément. `
+        );
+      }  if (newEtat=== "Retour") {
+        toast.warning(
+          `Nous vous informons que votre commande est actuellement en retour. Nous vous contacterons dès que nous aurons plus d'informations sur la prochaine étape`
+        );
+      }  else{
       const res = await fetch(
-        `http://localhost:4000/api/v1/commande/Update_commande/${id_cmd}`,
+        `http://localhost:4000/api/v1/commande/Update_specific_commande/${id_cmd}/${id_magasin}`,
         {
           method: "PUT",
           headers: {
@@ -147,22 +158,27 @@ const DetailCommande = (props) => {
       const result = await res.json();
 
       if (result) {
-        const updatedCommandes = commande.map((cmd) =>
-          cmd.id_cmd === id_cmd ? { ...cmd, etat_cmd: newEtat } : cmd
+        setCommande((prevCommandes) =>
+          prevCommandes.map((cmd) =>
+            cmd.id_cmd === id_cmd ? { ...cmd, etat_cmd: newEtat } : cmd
+          )
         );
-        setCommande(updatedCommandes);
-      }
+      }    }
     } catch (error) {
       console.error("Failed to update store:", error.message);
       alert("Failed to update store");
     }
   };
+ 
   if (loading) return <Loading />;
 
   return (
     <div className="  ">
-
-
+      <ToastContainer
+        position="top-center"
+        autoClose={2500}
+        toastStyle={{ width: "50%", width: "700px", right: "50%" }}
+      />
       <p className="text-start text-[15px] mb-8">
         La commande <span className="text-greenColor">n°{id_Maincmd}</span> a
         été passée le {firstDate}.
@@ -206,6 +222,8 @@ const DetailCommande = (props) => {
                   <p className="text-greenColor">Terminée</p>
                 ) : items.etat_cmd === "Annuler" ? (
                   <p className="text-red-400">Annuler</p>
+                ) : items.etat_cmd === "Retour" ? (
+                  <p className="text-gray-500">Retour</p>
                 ) : null}
               </td>
               <td className="py-1 5  text-[13px]">
@@ -218,28 +236,45 @@ const DetailCommande = (props) => {
                   <DropdownMenu aria-label="Dynamic Actions">
                     <DropdownItem textValue="Consulter">
                       <div className=" hover:bg-greenColor rounded-md  hover:text-white px-3 text-center py-1 flex items-center  ">
-                      <IoEyeSharp className="text-[20px] mr-2 " />
+                        <IoEyeSharp className="text-[20px] mr-2 " />
                         <button
                           onClick={() => handleCommande(items.id_magasin)}
                           className="text-[14px]"
                         >
-                          Consulter 
+                          Consulter
+                        </button>
+                      </div>
+                    </DropdownItem>
+                    <DropdownItem textValue="Consulter">
+                      <div className=" hover:bg-greenColor rounded-md  hover:text-white px-3 text-center py-1 flex items-center  ">
+                        <MdNoBackpack className="text-[20px] mr-2 " />
+                        <button
+                          name="Retour"
+                          type="submit"
+                          onClick={(e) =>
+                            handleEtat(e, items.id_magasin, items.id_cmd)
+                          }
+                          className="text-[14px]"
+                        >
+                          Retour
                         </button>
                       </div>
                     </DropdownItem>
                     <DropdownItem textValue="Consulter">
                       <div className=" hover:bg-greenColor rounded-md  hover:text-white px-3 text-center py-1 flex items-center  ">
                         <FcCancel className="text-[20px] mr-2" />
-                        <button
-                          name="Annuler"
-                          type="submit"
-                          className="text-[14px]"
-                          onClick={(e) =>
-                            handleEtat(e  ,items.id_cmd)
-                          }
-                        >
-                          Annuler
-                        </button>
+                     
+                          <button
+                            name="Annuler"
+                            type="submit"
+                            className="text-[14px]"
+                            onClick={(e) =>
+                              handleEtat(e, items.id_magasin, items.id_cmd)
+                            }
+                          >
+                            Annuler
+                          </button>
+                      
                       </div>
                     </DropdownItem>
                   </DropdownMenu>
@@ -254,7 +289,7 @@ const DetailCommande = (props) => {
               Sous-total :
             </td>
             <td className="pt-5" colSpan="2">
-              {totalPrix} TND
+              {totalPrix.toFixed(2)} TND
             </td>
           </tr>
           <tr className="text-[13.5px] font-semibold text-darkColor">
@@ -270,7 +305,7 @@ const DetailCommande = (props) => {
               Total :
             </td>
             <td className="pt-2 pb-5" colSpan="2">
-              {totalPrix + 7} TND
+              {totalPrix.toFixed(2) + 7} TND
             </td>
           </tr>
         </tfoot>
@@ -296,7 +331,7 @@ const DetailCommande = (props) => {
                       <div className="  text-[17px] px-5  items-center font-bold text-darkColor flex   ">
                         <Image
                           src={itemMagasin.Logo_magasin}
-                          className="bg-grayLight rounded-full border-2  mr-3 border-greenColor"
+                          className="bg-grayLight rounded-full border-2  object-contain h-[40px] w-[40px] mr-3 border-greenColor"
                           height={40}
                           width={40}
                           alt="logo"
@@ -347,13 +382,15 @@ const DetailCommande = (props) => {
                           className=""
                         >
                           <td className="px-5 py-2 text-[13.5px] flex items-center">
+                            <div className="bg-grayLight  rounded-md ">
                             <Image
-                              className="bg-grayLight rounded-md  "
+                              className=" w-[50px] h-[50x] object-contain mix-blend-multiply "
                               src={productItem.Image_thumbnail}
                               width={50}
                               height={50}
                               alt="Image_thumbnail"
                             />
+                            </div>
                             <Link
                               href={`/Catalogue/${productItem.id_prod}`}
                               className="text-greenColor mx-2 "

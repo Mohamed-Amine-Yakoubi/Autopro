@@ -215,6 +215,28 @@ exports.Update_commande = asyncHandler(async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+/*****************update etat specfic commabde**************************** */
+exports.Update_specific_commande = asyncHandler(async (req, res) => {
+  try {
+    const { id_cmd,id_magasin} = req.params;
+    const { etat_cmd } = req.body;
+    const updateFields = { etat_cmd };
+    const update_commande = await Commande.update(updateFields, {
+      where: { id_cmd :id_cmd,id_magasin :id_magasin},
+    });
+
+    if (update_commande) {
+      res.status(201).json(update_commande);
+    } else {
+      res.status(404).json({
+        message: "Store has not been added",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 /******************sen Mail commande****************** */
 exports.User_Mail = asyncHandler(async (req, res) => {
   try {

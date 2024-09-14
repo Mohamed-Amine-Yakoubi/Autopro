@@ -240,24 +240,19 @@ const CommandeClient = () => {
     }
   };
 
+ 
   const handleDelete = async (id_cmd) => {
     try {
-      const res = await DeleteCommande(id_cmd);
-   
-    // Check if the response was successful
-    if (res.ok) {
-      // Remove the deleted command from the combinedData state
-      setCombinedData((prevCommandes) =>
-        prevCommandes.filter((cmd) => cmd.id_cmd !== id_cmd)
-      );
-    } else {
-      throw new Error("Failed to delete the command");
-    }
+      DeleteCommande(id_cmd).then(() => {
+        setCombinedData((prevCommandes) =>
+          prevCommandes.filter((cmd) => cmd.id_cmd !== id_cmd)
+        );
+      });
     } catch (error) {
-      console.log("error while handle delete", error);
+      console.log("Error while handling delete:", error);
+      alert("Failed to delete the claim. Please try again.");
     }
   };
-
   return (
     <div className="  mb-10">
       <Cards className={"w-full h-full p-4  overflow-x-auto     "}>
@@ -324,7 +319,8 @@ const CommandeClient = () => {
               </tr>
             </thead>
             <tbody className="bg-white">
-              {currentcommandes.map((item) => {
+            {currentcommandes.length > 0 ? (
+              currentcommandes.map((item) => {
                 const client = user.find(
                   (itemUser) => itemUser.id_user === item.id_user
                 );
@@ -332,10 +328,10 @@ const CommandeClient = () => {
                 return (
                   <tr
                     className="border-b border-gray-200  "
-                    key={item.id_MainCmd}
+                    key={item.id_cmd}
                   >
                     <td className="   text-center   py-3.5 text-greenColor  text-[13px]">
-                      {item.id_MainCmd}
+                      {item.id_cmd}
                     </td>
                     <td className="      ">
                       <p className="  text-[13px]">
@@ -356,7 +352,7 @@ const CommandeClient = () => {
                           <span className="text-greenColor mr-1">
                             <FaCheckCircle />
                           </span>
-                          Approuvé {item.id_cmd}
+                          Approuvé  
                         </p>
                       ) : item.etat_cmd === "en attente" ? (
                         <p className="flex items-center ">
@@ -459,7 +455,16 @@ const CommandeClient = () => {
                     </td>
                   </tr>
                 );
-              })}
+              })):(
+                <tr>
+                  <td
+                    colSpan="7"
+                    className="text-center py-4 pt-10 text-gray-500"
+                  >
+                    Aucune commande n'a été ajoutée
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
           <div className="flex justify-center py-4">

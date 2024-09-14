@@ -20,6 +20,7 @@ const ModalStore = ({ isOpen, onClose, children }) => {
   const { data: session } = useSession();
   const [step, setStep] = useState(1);
   const [store, setStore] = useState([]);
+
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     Libelle_magasin: "",
@@ -32,7 +33,7 @@ const ModalStore = ({ isOpen, onClose, children }) => {
     Lien_instagram: "",
     Lien_linkedin: "",
     Lien_siteWeb: "",
-    id_proprietaire: session.user.id,
+    id_proprietaire: session?.user?.id || "",
     id_ville: 0,
   });
 
@@ -80,21 +81,22 @@ const ModalStore = ({ isOpen, onClose, children }) => {
   };
 
   useEffect(() => {
-    getStoreByUserID(session.user.id_user).then((data) => {
-      setStore(data);
-    });
-  }, [session.user.id]);
+    if (session) {
+      getStoreByUserID(session.user.id_user).then((data) => {
+        setStore(data);
+      });
+    }
+  }, [session?.user?.id]);
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
- 
       className="custom-modal-lg   "
       size="lg"
     >
       <div className="modal-overlay">
-        {store != null ? (
+        {store != null && session ? (
           <div>
             <ModalContent>
               <ModalHeader className="flex flex-col gap-1 rounded-t-2xl bg-grayLight text-center">
@@ -102,11 +104,11 @@ const ModalStore = ({ isOpen, onClose, children }) => {
               </ModalHeader>
               <ModalBody>
                 <p className="text-[15px] text-center text-blueDark mt-10">
-                  Cher {session.user.name}, votre demande est en cours d'examen,
-                  vous recevrez bientôt un email de confirmation
+                  Cher {session?.user.name}, votre demande est en cours
+                  d'examen, vous recevrez bientôt un email de confirmation
                 </p>
                 <div className="flex justify-center">
-                  <Ellipsis color="#4BAF4F" size={100} thickness={15} />
+                  <Ellipsis color="#4BAF4F" size={80} thickness={15} />
                 </div>
               </ModalBody>
             </ModalContent>
@@ -169,63 +171,115 @@ const ModalStore = ({ isOpen, onClose, children }) => {
   );
 };
 const Step1 = ({ formData, setFormData, nextStep }) => {
+  const [errors, setErrors] = useState({});
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
-  
-      setFormData({ ...formData, [name]: value });
-   
+    setFormData({ ...formData, [name]: value });
   };
 
   const HandleSubmit = (e) => {
     e.preventDefault();
+    let newErrors = {};
+    // Validation for empty fields
+    if (!formData.Libelle_magasin)
+      newErrors.Libelle_magasin = "Le nom de boutique est requis.";
+    if (!formData.Email_magasin)
+      newErrors.Email_magasin = "Email est requis.";
+    if (!formData.Adresse_magasin)
+      newErrors.Adresse_magasin = "Adrésse est requis.";
+    if (!formData.Telephone_magasin)
+      newErrors.Telephone_magasin = "Le numéro de telephone est requis.";
+    if (!formData.Description_magasin)
+      newErrors.Description_magasin = "La description est requis.";
+    // If there are any validation errors, do not proceed
+    if (Object.keys(newErrors).length > 0) {
+      // Display errors or handle them accordingly
+      setErrors(newErrors);
+      return; // Stop execution if validation fails
+    }
     nextStep();
   };
 
   return (
     <form onSubmit={HandleSubmit}>
-      <div className="flex flex-col space-y-5">
-        <p className="text-[12.4px] text-center color text-gray-500 mt-2  mb-3">
+      <div className="flex flex-col space-y-5 h-[450px] overflow-y-auto">
+        <p className="text-[12.4px] text-center color text-gray-500 mt-2  mb-2">
           Autopro vous offre la possibilité de créer votre propre boutique sur
           notre plateforme. Il vous suffit de remplir le formulaire ci-dessous,
           et nous étudierons votre demande pour vous répondre dans un délai
           maximum de 3 jours.
         </p>
-        <Input
-          type={"text"}
-          name={"Libelle_magasin"}
-          placeholder={"Nom de la boutique"}
-          value={formData.Libelle_magasin}
-          onChange={handleChange}
-        />
-
-        <Input
-          type={"text"}
-          name={"Email_magasin"}
-          placeholder={"Email"}
-          value={formData.Email_magasin}
-          onChange={handleChange}
-        />
-        <Input
-          type={"text"}
-          name={"Adresse_magasin"}
-          placeholder={"Adresse"}
-          value={formData.Adresse_magasin}
-          onChange={handleChange}
-        />
-        <Input
-          type={"text"}
-          name={"Telephone_magasin"}
-          placeholder={"Téléphone"}
-          value={formData.Telephone_magasin}
-          onChange={handleChange}
-        />
-        <Textarea
-          name={"Description_magasin"}
-          placeholder={"Description"}
-          value={formData.Description_magasin}
-          onChange={handleChange}
-        />
+        <div>
+          <Input
+            type={"text"}
+            name={"Libelle_magasin"}
+            placeholder={"Nom de la boutique"}
+            value={formData.Libelle_magasin}
+            onChange={handleChange}
+          />
+          {errors.Libelle_magasin && (
+            <p className="text-red-500 text-[10px] mt-2">
+              {errors.Libelle_magasin}
+            </p>
+          )}
+        </div>
+        <div>
+          <Input
+            type={"text"}
+            name={"Email_magasin"}
+            placeholder={"Email"}
+            value={formData.Email_magasin}
+            onChange={handleChange}
+          />{" "}
+          {errors.Email_magasin && (
+            <p className="text-red-500 text-[10px] mt-2">
+              {errors.Email_magasin}
+            </p>
+          )}
+        </div>
+        <div>
+          <Input
+            type={"text"}
+            name={"Adresse_magasin"}
+            placeholder={"Adresse"}
+            value={formData.Adresse_magasin}
+            onChange={handleChange}
+          />{" "}
+          {errors.Adresse_magasin && (
+            <p className="text-red-500 text-[10px] mt-2">
+              {errors.Adresse_magasin}
+            </p>
+          )}
+        </div>
+        <div>
+          <Input
+            type={"text"}
+            name={"Telephone_magasin"}
+            placeholder={"Téléphone"}
+            value={formData.Telephone_magasin}
+            onChange={handleChange}
+          />{" "}
+          {errors.Telephone_magasin && (
+            <p className="text-red-500 text-[10px] mt-2">
+              {errors.Telephone_magasin}
+            </p>
+          )}
+        </div>
+        <div>
+          <Textarea
+            name={"Description_magasin"}
+            placeholder={"Description"}
+            value={formData.Description_magasin}
+            onChange={handleChange}
+          />{" "}
+          {errors.Description_magasin && (
+            <p className="text-red-500 text-[10px] mt-2">
+              {errors.Description_magasin}
+            </p>
+          )}
+        </div>
       </div>
       <div className="flex justify-center">
         <button
@@ -241,10 +295,10 @@ const Step1 = ({ formData, setFormData, nextStep }) => {
 const Step2 = ({ formData, setFormData, prevStep, nextStep }) => {
   const [ville, setVille] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-
 
     // Si le champ est id_ville, convertissez la valeur en nombre entier
     const parsedValue = name === "id_ville" ? parseInt(value) : value;
@@ -260,6 +314,7 @@ const Step2 = ({ formData, setFormData, prevStep, nextStep }) => {
   };
   const HandleSubmit = (e) => {
     e.preventDefault();
+   
     nextStep();
   };
   // Ville
@@ -270,7 +325,7 @@ const Step2 = ({ formData, setFormData, prevStep, nextStep }) => {
   }, []);
   return (
     <form onSubmit={HandleSubmit}>
-      <div className="flex flex-col space-y-5 mt-8">
+      <div className="flex flex-col space-y-5 h-[450px] mt-8">
         <select
           className="flex rounded-lg h-[43px] py-2 w-full max-w-lg bg-grayLight text-gray-400 outline-none px-5 text-[13px]"
           value={formData.id_ville} // Bind the selected value to the formData
@@ -313,8 +368,8 @@ const Step2 = ({ formData, setFormData, prevStep, nextStep }) => {
           value={formData.Lien_siteWeb}
           onChange={handleChange}
         />
-        <div className=" flex items-center justify-center mt-4">
-          <div className=" flex items-center justify-center w-[20px] bg-grayLight rounded-md py-8 px-24">
+        <div className=" flex items-center justify-center my-3">
+          <div className=" flex items-center justify-center w-[20px] bg-grayLight rounded-md py-7 px-16">
             {selectedImage ? (
               <div className="">
                 <h2>Selected Image:</h2>

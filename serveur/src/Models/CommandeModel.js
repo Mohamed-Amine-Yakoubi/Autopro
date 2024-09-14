@@ -28,7 +28,7 @@ const Commande = sequelize.define(
     etat_cmd: {
       type: DataTypes.STRING,
       allowNull: false,
-      enum: ["en attente", "approuvé", "rejeté", "Annuler"],
+      enum: ["en attente", "approuvé", "Retour", "Annuler"],
       defaultValue: "en attente",
     },
     Date_cmd: {

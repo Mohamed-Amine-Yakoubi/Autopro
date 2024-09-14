@@ -282,7 +282,7 @@ const DemandeBoutique = () => {
 
                   <td className="flex items-center py-2">
                     <Image
-                      className="bg-blueLight rounded-md border  mr-2"
+                      className="bg-blueLight rounded-md border w-[50px] h-[50px]  object-contain mr-2"
                       src={item.Logo_magasin}
                       height={50}
                       width={50}

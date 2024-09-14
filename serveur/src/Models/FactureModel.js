@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/Database");
 const Magasin = require("./MagasinModel");
+const User = require("./UserModel");
 
 const Facture = sequelize.define(
   "Facture",
@@ -47,5 +48,9 @@ Facture.belongsTo(Magasin, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
- 
+Facture.belongsTo(User, {
+  foreignKey: "id_user",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 module.exports = Facture;

@@ -213,7 +213,9 @@ const Article = () => {
               </tr>
             </thead>
             <tbody className="bg-white">
-              {currentProducts.map((item) => (
+               {currentProducts.length > 0 ? (
+               
+               currentProducts.map((item) => (
                 <tr className="border-b border-gray-200   " key={item.id_prod}>
                   <td className=" px-6  text-[13px]">{item.id_prod}</td>
                   <td className="   px-6   ">
@@ -261,7 +263,7 @@ const Article = () => {
                         </DropdownTrigger>
                         <DropdownMenu aria-label="Dynamic Actions">
                           <DropdownItem>
-                            <div className=" hover:bg-greenColor rounded-md  hover:text-white p-2 flex items-center mt-3">
+                            <div className=" hover:bg-greenColor rounded-md  hover:text-white p-2 flex items-center mt-1">
                               <IoEyeSharp className="text-[20px] mr-2" />
                               <Link
                                 className="text-[14px]"
@@ -273,7 +275,7 @@ const Article = () => {
                           </DropdownItem>
                           <DropdownItem>
                             <button
-                              className=" hover:bg-greenColor rounded-md  hover:text-white p-2 flex items-center mt-3"
+                              className=" hover:bg-greenColor rounded-md  hover:text-white p-2 flex items-center mt-1"
                               onClick={() => handleDelete(item.id_prod)}
                             >
                               <MdDelete className="text-[20px] mr-2" />
@@ -283,7 +285,7 @@ const Article = () => {
                           <DropdownItem
                             onClick={() => openModalProduct(item.id_prod)}
                           >
-                            <div className=" hover:bg-greenColor rounded-md  hover:text-white p-2 flex items-center mt-3 mb-1">
+                            <div className=" hover:bg-greenColor rounded-md  hover:text-white p-2 flex items-center mt-2 mb-1">
                               <RiEdit2Fill className="text-[20px] mr-2" />
 
                               <button className="text-[14px]">Modifier</button>
@@ -294,7 +296,16 @@ const Article = () => {
                     </div>
                   </td>
                 </tr>
-              ))}
+              ))): (
+                <tr>
+                  <td
+                    colSpan="7"
+                    className="text-center py-4 pt-10 text-gray-500"
+                  >
+                    Aucun produit n'a été ajoutée
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
           <div className="flex justify-center py-4">

@@ -12,7 +12,7 @@ import { HiDotsHorizontal } from "react-icons/hi";
 
 import { MdDelete } from "react-icons/md";
 import { FaCheckCircle } from "react-icons/fa";
-import { FaClock } from "react-icons/fa6";
+import { FaClock, FaFilePdf } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import { DeleteClaim, GetClaimStoreId } from "@/app/lib/Reclamations";
 import {
@@ -29,6 +29,7 @@ import {
 import Image from "next/image";
 import Textarea from "@/components/Textarea";
 import Cards from "@/components/Cards";
+import Link from "next/link";
 
 const Reclamations = () => {
   const store = useSelector((state) => state.store);
@@ -477,20 +478,21 @@ const Reclamations = () => {
                     </h1>
 
                     <div className="flex justify-center flex-row md:space-x-2  my-8 flex-wrap ">
-                      {File_rec.map((url, index) => (
-                        <Image
-                          key={index}
-                          src={
-                            url.endsWith(".pdf") ? "/path/to/pdf-icon.png" : url
-                          }
-                          alt={`File ${index + 1}`}
-                          width={70}
-                          height={70}
-                          className="border-4 rounded-md border-gray-200"
-                          style={{ maxWidth: "100%" }}
-                          onClick={() => window.open(url, "_blank")}
-                        />
-                      ))}
+                    {File_rec.map((url, index) => (
+    <div key={index} onClick={() => window.open(url, "_blank")} className="border-4 rounded-md border-gray-200 p-2 cursor-pointer">
+      {url.endsWith(".pdf") ? (
+        <FaFilePdf size={70}  />
+      ) : (
+        <Image
+          src={url}
+          alt={`File ${index + 1}`}
+          width={70}
+          height={70}
+          style={{ maxWidth: "100%" }}
+        />
+      )}
+    </div>
+  ))}
                     </div>
                     <div>
                       <Textarea

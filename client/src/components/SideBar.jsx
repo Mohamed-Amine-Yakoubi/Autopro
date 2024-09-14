@@ -38,7 +38,7 @@ const SideBar = ({openSideBar}) => {
             <div className="flex  py-10 px-4 flex-col items-center justify-center">
               <Image
                 src={item.Logo_magasin}
-                className="rounded-full bg-white border-2  border-gray-200 "
+                className="rounded-full w-[80px] h-[80px] object-contain bg-white border-2  border-gray-200 "
                 width={80}
                 height={80}
                 alt="alt"

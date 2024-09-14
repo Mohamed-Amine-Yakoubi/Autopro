@@ -46,8 +46,7 @@ const Navbar = () => {
         </p>
       </div>
       <div className=" flex items-center space-x-5">
-        <IoNotifications className="text-[20px] text-textColor" />
-        <FaFacebookMessenger className="text-[18px] text-textColor" />
+
         <button
           className="flex items-center space-x-1 text-textColor"
           onClick={() => {
