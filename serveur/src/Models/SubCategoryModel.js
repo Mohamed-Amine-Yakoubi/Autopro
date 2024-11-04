@@ -15,7 +15,7 @@ const SubCategory = sequelize.define(
       allowNull: false,
     },
     Image_subcat: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
 

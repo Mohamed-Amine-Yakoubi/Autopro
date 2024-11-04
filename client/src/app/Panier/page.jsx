@@ -324,383 +324,423 @@ if (session) {
     </div>
   );
 };
-const Step2 = ({ nextStep }) => {
-  const [loading, setLoading] = useState(true);
-  const [commande, setCommande] = useState(true);
-  const [commandeUsers, setCommandeUsers] = useState(true);
-  const dispatch = useDispatch();
-  const cart = useSelector((state) => state.cart);
-
-  const { data: session, status } = useSession();
-  const id_user = session?.user?.id_user || "";
-  const router = useRouter();
-  const [user, setUser] = useState({
-    Nom_user: "",
-    Prenom_user: "",
-    Email_user: "",
-    Telephone_user: "",
-    Adresse_user: "",
-    MotDePasse_user: "",
-  });
-  const [adresse, setAdresse] = useState({
-    rue_adr: "",
-    code_adr: "",
-    id_ville: "",
-    id_user: session.user.id_user,
-  });
-  const [ville, setVille] = useState([]);
-  const [confirmMdp, setConfirmMdp] = useState("");
-
-  useEffect(() => {
-    if (id_user) {
-      getUser(id_user).then((item) => {
-        setUser(item);
-      });
-
-      getAdrByIdUser(id_user).then((item) => {
-        setAdresse(item);
-      });
-    }
-    getVille().then((Ville) => {
-      setVille(Ville);
+ 
+  const Step2 = ({ nextStep }) => {
+    const [loading, setLoading] = useState(true);
+    const [commande, setCommande] = useState([]);
+    const [commandeUsers, setCommandeUsers] = useState([]);
+    const dispatch = useDispatch();
+    const cart = useSelector((state) => state.cart);
+  
+    const { data: session, status } = useSession();
+    const id_user = session?.user?.id_user;
+    const router = useRouter();
+    const [user, setUser] = useState({
+      Nom_user: "",
+      Prenom_user: "",
+      Email_user: "",
+      Telephone_user: "",
+      MotDePasse_user: "",
     });
-    Get_AllCommandeUsers().then((item)=>{
-      setCommandeUsers(item)
-    }
-  )
-    getAllMainCommande(id_user).then((item) => {
-      setCommande(item);
+    const [adresse, setAdresse] = useState({
+      rue_adr: "",
+      code_adr: "",
+      id_ville: "",
+      id_user: id_user || "",
     });
-  }, [id_user]);
-
-  const handleChangeValue = (e) => {
-    const { name, value } = e.target;
-
-    if (name === "MotDePasse_user") {
-      setUser((prevUser) => ({
-        ...prevUser,
-        MotDePasse_user: value,
-      }));
-    } else if (name === "confirmMdp") {
-      setConfirmMdp(value);
-    } else {
-      setUser((prevUser) => ({
-        ...prevUser,
+    const [ville, setVille] = useState([]);
+    const [confirmMdp, setConfirmMdp] = useState("");
+    const [selectedOption, setSelectedOption] = useState("");
+    const [error, setError] = useState(null);
+  
+    useEffect(() => {
+      if (id_user) {
+        // Fetch user details
+        getUser(id_user)
+          .then((item) => {
+            setUser(item);
+          })
+          .catch((err) => {
+            console.error("Failed to fetch user:", err);
+            setError("Failed to fetch user details.");
+          });
+  
+        // Fetch address by user ID
+        getAdrByIdUser(id_user)
+          .then((item) => {
+            if (item) {
+              setAdresse(item);
+            }
+          })
+          .catch((err) => {
+            console.error("Failed to fetch address:", err);
+            setError("Failed to fetch address.");
+          });
+      }
+  
+      // Fetch cities
+      getVille()
+        .then((Ville) => {
+          setVille(Ville);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch cities:", err);
+          setError("Failed to fetch cities.");
+        });
+  
+      // Fetch all commandes for users
+      Get_AllCommandeUsers()
+        .then((item) => {
+          setCommandeUsers(item);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch commandes:", err);
+          setError("Failed to fetch commandes.");
+        });
+  
+      // Fetch all main commandes
+      if (id_user) {
+        getAllMainCommande(id_user)
+          .then((item) => {
+            setCommande(item);
+          })
+          .catch((err) => {
+            console.error("Failed to fetch main commandes:", err);
+            setError("Failed to fetch main commandes.");
+          });
+      }
+    }, [id_user]);
+  
+    const handleChangeValue = (e) => {
+      const { name, value } = e.target;
+  
+      if (name === "MotDePasse_user") {
+        setUser((prevUser) => ({
+          ...prevUser,
+          MotDePasse_user: value,
+        }));
+      } else if (name === "confirmMdp") {
+        setConfirmMdp(value);
+      } else {
+        setUser((prevUser) => ({
+          ...prevUser,
+          [name]: value,
+        }));
+      }
+    };
+  
+    const handleChangeValueAdresse = (e) => {
+      const { name, value } = e.target;
+  
+      setAdresse((prevAdr) => ({
+        ...prevAdr,
         [name]: value,
       }));
-    }
-  };
-
-  const handleChangeValueAdresse = (e) => {
-    const { name, value } = e.target;
-
-    setAdresse((prevAdr) => ({
-      ...prevAdr,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      if (adresse.id_user != id_user) {
-        const res1 = await fetch(
-          `http://localhost:4000/api/v1/user/Add_Adresse`,
-          {
+    };
+  
+    const handleToggle = (option) => {
+      setSelectedOption(option);
+    };
+  
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      setError(null); // Reset error state
+  
+      try {
+        if (!id_user) {
+          throw new Error("User session is not available.");
+        }
+  
+        // Determine if the address exists by checking if adresse has an ID (assuming id_adr exists)
+        const isAddressExist = adresse && adresse.id_adr;
+  
+        if (!isAddressExist) {
+          // Add new address
+          const res1 = await fetch(`http://localhost:4000/api/v1/user/Add_Adresse`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
               ...adresse,
+              id_user: id_user, // Ensure id_user is included
             }),
+          });
+  
+          if (!res1.ok) {
+            const errorData = await res1.json();
+            throw new Error(errorData.message || "Failed to add address.");
+          }
+        } else {
+          // Update existing address
+          const res1 = await fetch(
+            `http://localhost:4000/api/v1/user/Update_Adresse/${id_user}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                ...adresse,
+              }),
+            }
+          );
+  
+          if (!res1.ok) {
+            const errorData = await res1.json();
+            throw new Error(errorData.message || "Failed to update address.");
+          }
+        }
+  
+        // Update user information (excluding password)
+        const { MotDePasse_user, ...updatedUser } = user;
+  
+        const res2 = await fetch(
+          `http://localhost:4000/api/v1/user/UpdateAccount/${id_user}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedUser),
           }
         );
-
-        if (!res1.ok) {
-          throw new Error("Failed to add address");
+  
+        if (!res2.ok) {
+          const errorData = await res2.json();
+          throw new Error(errorData.message || "Failed to update user.");
         }
-      } else if (adresse.id_user === id_user) {
-        const res1 = await fetch(
-          `http://localhost:4000/api/v1/user/Update_Adresse/${id_user}`,
+  
+        // Fetch product details
+        const productDetails = await Promise.all(
+          cart.items.map(async (item) => {
+            const res = await fetch(`http://localhost:4000/api/v1/product/get_specProduct/${item.id_prod}`);
+            if (!res.ok) {
+              const errorData = await res.json();
+              throw new Error(errorData.message || "Failed to fetch product details.");
+            }
+            return await res.json();
+          })
+        );
+  
+        // Prepare command data
+        const commandData = [];
+        const maxIdMainCmdResult =
+          commandeUsers.length > 0
+            ? Math.max(...commandeUsers.map((cmd) => cmd.id_MainCmd))
+            : 0;
+        const id_MainCmd = maxIdMainCmdResult ? maxIdMainCmdResult + 1 : 1;
+  
+        cart.items.forEach((item) => {
+          const existingCommandData = commandData.find(
+            (data) => data.id_magasin === item.id_magasin
+          );
+  
+          if (existingCommandData) {
+            existingCommandData.add_CommandeDetail.push({
+              Qte_dtcmd: item.quantity,
+              prix_Total_dtcmd: item.prix_prod * item.quantity,
+              id_prod: item.id_prod,
+              id_magasin: item.id_magasin,
+            });
+            existingCommandData.prix_total += item.prix_prod * item.quantity;
+          } else {
+            commandData.push({
+              id_MainCmd: id_MainCmd,
+              id_user: id_user,
+              id_magasin: item.id_magasin,
+              prix_total: item.prix_prod * item.quantity,
+              Date_cmd: new Date().toISOString().slice(0,10),
+              add_CommandeDetail: [
+                {
+                  id_MainCmd: id_MainCmd,
+                  Qte_dtcmd: item.quantity,
+                  prix_Total_dtcmd: item.prix_prod * item.quantity,
+                  id_prod: item.id_prod,
+                  id_magasin: item.id_magasin,
+                },
+              ],
+            });
+          }
+        });
+  
+        // Prepare email content
+        const Autopro_logo_URL =
+          "https://res.cloudinary.com/dszbzybhk/image/upload/v1723404962/c76ktevrn9lvxad0pmux.png";
+  
+        const mailContent = `
+          <html>
+            <head>
+              <style>
+                body {
+                  font-family: Arial, sans-serif;
+                  display: flex; justify-content: center;
+                  margin: 0;
+                  padding: 0;
+                }
+                .container {
+                  max-width: 600px;
+                  margin: 0 auto;
+                  padding: 20px;
+                  border-radius: 5px;
+                  background-color:white;
+                }
+                h1 {
+                  color: #333;
+                  padding-bottom:10px;
+                }
+                p {
+                  color: #666;
+                }
+                .button {
+                  display: inline-block;
+                  padding: 10px 20px;
+                  background-color: #007bff;
+                  color:white;
+                  text-decoration: none;
+                  border-radius: 5px;
+                }
+                table {
+                  width: 100%;
+                  margin-top:25px;
+                  border: 1px solid #fafafa ;
+                  border-collapse: collapse;
+                }
+                .logo {
+                  width: 200px;
+                  text-align:center
+                }
+              </style>
+            </head>
+            <body class="container">
+              <div style="display:flex;justify-content:center">
+                <img src="${Autopro_logo_URL}" class="logo" alt="logo" />
+              </div>
+              <h1 style="color:#4BAF4F">En Cours De Traitement</h1>
+              <h4> Bonjour ${session.user.Prenom_user} ${session.user.Nom_user}, </h4>
+              <p>Pour information – nous avons reçu votre commande n°${id_MainCmd}, elle est maintenant en cours de traitement :</p>
+              <p>Payer en argent comptant à la livraison ou par chèque libellé au nom de Autopro.</p>
+              <div style="display:flex;justify-content: center; align-items:center;">
+                <table>
+                  <thead style="border: 1px solid #e0e0e0; text-align: start; background-color: #F5F5F7;">
+                    <tr>
+                      <th style="border: 1px solid #e0e0e0; font-size: 14px; color: #666; padding: 10px;">Produit</th>
+                      <th style="border: 1px solid #e0e0e0; font-size: 14px; color: #666; padding: 10px;">Quantité</th>
+                      <th style="border: 1px solid #e0e0e0; font-size: 14px; color: #666; padding: 10px;" colspan="4">Prix</th>
+                    </tr>
+                  </thead>
+                  <tbody style="border: 1px solid #e0e0e0;">
+                    ${productDetails
+                      .map(
+                        (product, index) => `
+                      <tr>
+                        <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px; display: flex; align-items: center;">
+                          <img src="${product.Image_thumbnail}" alt="image" style="border: 1px solid #e0e0e0; width:50px;height:50px" />
+                          <span style="margin-left:10px;">${product.Libelle_prod}</span>
+                        </td>
+                        <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;">${cart.items[index].quantity}</td>
+                        <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;" colspan="4">${product.prix_prod} TND</td>
+                      </tr>
+                    `
+                      )
+                      .join("")}
+                  </tbody>
+                  <tfoot style="border: 1px solid #e0e0e0;">
+                    <tr style="border: 1px solid #e0e0e0;">
+                      <td style="border: 1px solid #e0e0e0; font-size: 14px; color: #666; font-weight: bold; padding: 10px;" colspan="5">Sous-total :</td>
+                      <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;">${cart.subTotalPrice.toFixed(2)} TND</td>
+                    </tr>
+                    <tr style="border: 1px solid #e0e0e0;">
+                      <td style="border: 1px solid #e0e0e0; font-size: 14px; color: #666; font-weight: bold; padding: 10px;" colspan="5">Moyen de paiement :</td>
+                      <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;">Paiement à la livraison</td>
+                    </tr>
+                    <tr style="border: 1px solid #e0e0e0;">
+                      <td style="border: 1px solid #e0e0e0; font-size: 14px; color: #666; font-weight: bold; padding: 10px;" colspan="5">Total :</td>
+                      <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;">${cart.totalPrice.toFixed(2)} TND</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <div style="margin-top:30px;border:1px solid #e0e0e0; padding:10px">
+                <p>
+                  <span style="font-weight: 600; color:#4BAF4F">Nom et Prénom :</span>
+                  ${session.user.Prenom_user} ${session.user.Nom_user}
+                </p>
+                <p>
+                  <span style="font-weight: 600; color:#4BAF4F">Numéro et nom de rue :</span> ${adresse.rue_adr}
+                </p>
+                ${ville
+                  .filter((item) => item.id_ville === adresse.id_ville)
+                  .map(
+                    (filtereditem) => `
+                    <p key="${filtereditem.id_ville}">
+                      <span style="font-weight: 600; color:#4BAF4F">Region : </span>
+                      ${filtereditem.Libelle_ville}
+                    </p>
+                  `
+                  )
+                  .join("")}
+                <p>
+                  <span style="font-weight: 600; color:#4BAF4F">Code postal :</span> ${adresse.code_adr}
+                </p>
+                <p>
+                  <span style="font-weight: 600; color:#4BAF4F">Numéro de télephone :</span> ${session.user.Telephone_user}
+                </p>
+                <p className="mt-3 text-[13.5px]">
+                  <span style="font-weight: 600; color:#4BAF4F">E-mail :</span> ${session.user.Email_user}
+                </p>
+              </div>
+            </body>
+          </html>
+        `;
+  
+        // Send confirmation email
+        const MailCommande = await fetch(
+          `http://localhost:4000/api/v1/commande/MailCommande`,
           {
-            method: "PATCH",
+            method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              ...adresse,
+              to: session.user.Email_user,
+              subject: "Votre commande est en cours de traitement",
+              html: mailContent,
             }),
           }
         );
-
-        if (!res1.ok) {
-          throw new Error("Failed to update address");
-        }
-      }
-
-      const updatedUser = { ...user };
-      delete updatedUser.MotDePasse_user;
-
-      const res2 = await fetch(
-        `http://localhost:4000/api/v1/user/UpdateAccount/${id_user}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedUser),
-        }
-      );
-
-      if (!res2.ok) {
-        throw new Error("Failed to update user");
-      }
-
-      if (!session) {
-        throw new Error("User session is not available.");
-      }
-      const productDetails = await Promise.all(
-        cart.items.map(async (item) => {
-          const res = await fetch(`http://localhost:4000/api/v1/product/get_specProduct/${item.id_prod}`);
-          if (!res.ok) {
-            throw new Error("Failed to fetch product details");
-          }
-          return await res.json();
-        })
-      );
   
-    
-      const commandData = [];
-      const maxIdMainCmdResult =
-      commandeUsers.length > 0
-          ? Math.max(...commandeUsers.map((cmd) => cmd.id_MainCmd))
-          : 0;
-      const id_MainCmd = maxIdMainCmdResult ? maxIdMainCmdResult + 1 : 1;
-      cart.items.forEach((item) => {
-        const existingCommandData = commandData.find(
-          (data) => data.id_magasin === item.id_magasin
-        );
-
-        if (existingCommandData) {
-          existingCommandData.add_CommandeDetail.push({
-            Qte_dtcmd: item.quantity,
-            prix_Total_dtcmd: item.prix_prod * item.quantity,
-            id_prod: item.id_prod,
-            id_magasin: item.id_magasin,
-          });
-          existingCommandData.prix_total += item.prix_prod * item.quantity;
-        } else {
-          commandData.push({
-            id_MainCmd: id_MainCmd,
-            id_user: session.user.id_user,
-            id_magasin: item.id_magasin,
-            prix_total: item.prix_prod * item.quantity,
-            Date_cmd: cart.Date,
-            add_CommandeDetail: [
-              {
-                id_MainCmd: id_MainCmd,
-                Qte_dtcmd: item.quantity,
-                prix_Total_dtcmd: item.prix_prod * item.quantity,
-                id_prod: item.id_prod,
-                id_magasin: item.id_magasin,
-              },
-            ],
-          });
+        if (!MailCommande.ok) {
+          const errorData = await MailCommande.json();
+          throw new Error(errorData.message || "Failed to send confirmation email.");
         }
-      });
-      const Autopro_logo_URL =
-      "https://res.cloudinary.com/dszbzybhk/image/upload/v1723404962/c76ktevrn9lvxad0pmux.png";
-
-      const mailContent = `
-      <html>
-        <head>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              display: flex; justify-content: center;
-              margin: 0;
-              padding: 0;
-          
-              
-        
-         
-            }
-            .container {
-              max-width: 600px;
-              margin: 0 auto;
-              padding: 20px;
-              border-radius: 5px;
-              background-color:white;
-            }
-            h1 {
-              color: #333;
-              flex:center;
-              padding-bottom:10px;
-            }
-            p {
-              color: #666;
-            }
-            .button {
-              display: inline-block;
-              padding: 10px 20px;
-              background-color: #007bff;
-              color:white;
-              flex:center;
-              text-decoration: none;
-              border-radius: 5px;
-            }
-            table {
-              width: 600px;
-              margin-top:25px;
-              border: 1px solid #fafafa ;
-              border-collapse: collapse;
-            }
-                  .logo {
-                width: 200px;
-                text-align:center
-              }
-          </style>
-        </head>
-        <body class="container">
-          <div style="display:flex;justify-content:center">
-                  <img src="${Autopro_logo_URL}" class="logo" alt="logo" />
-                </div>
-          <h1 style="color:#4BAF4F">En Cours De Traitement</h1>
-          <h4> Bonjour ${session.user.Prenom_user} ${session.user.Nom_user}, </h4>
-          <p>Pour information – nous avons reçu votre commande n°${id_MainCmd}, elle est maintenant en cours de traitement :</p>
-          <p>Payer en argent comptant à la livraison ou par chèque libellé au nom de Autopro.</p>
-          <div style="display:flex;justify-content: center; align-items:center;">
-            <table>
-              <thead style="border: 1px solid #e0e0e0; text-align: start; background-color: #F5F5F7;">
-                <tr>
-                  <th style="border: 1px solid #e0e0e0; font-size: 14px; color: #666; padding: 10px;">Produit</th>
-                  <th style="border: 1px solid #e0e0e0; font-size: 14px; color: #666; padding: 10px;">Quantité</th>
-                  <th style="border: 1px solid #e0e0e0; font-size: 14px; color: #666; padding: 10px;" colspan="4">Prix</th>
-                </tr>
-              </thead>
-              <tbody style="border: 1px solid #e0e0e0;">
-                ${productDetails.map((product, index) => `
-                  <tr>
-                  
-                    <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;display: flex;justify-content:space-between;align-items:center"">
-                
-                 <img src=${product.Image_thumbnail}   alt="image" style="border: 1px solid #e0e0e0; width:50px;height:50px" />
-                 <span style="margin-left:10px;margin-top:15px">${product.Libelle_prod}</span> </td>
-                    <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;">${cart.items[index].quantity}</td>
-                    <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;" colspan="4">${product.prix_prod} TND</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-              <tfoot style="border: 1px solid #e0e0e0;">
-                <tr style="border: 1px solid #e0e0e0;">
-                  <td style="border: 1px solid #e0e0e0; font-size: 14px; color: #666; font-weight: bold; padding: 10px;" colspan="5">Sous-total :</td>
-                  <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;">${cart.subTotalPrice} TND</td>
-                </tr>
-                <tr style="border: 1px solid #e0e0e0;">
-                  <td style="border: 1px solid #e0e0e0; font-size: 14px; color: #666; font-weight: bold; padding: 10px;" colspan="5">Moyen de paiement :</td>
-                  <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;">Paiement à la livraison</td>
-                </tr>
-                <tr style="border: 1px solid #e0e0e0;">
-                  <td style="border: 1px solid #e0e0e0; font-size: 14px; color: #666; font-weight: bold; padding: 10px;" colspan="5">Total :</td>
-                  <td style="border: 1px solid #e0e0e0; font-size: 13px; padding: 10px;">${cart.totalPrice} TND</td>
-                </tr>
-              </tfoot>
-            </table>
-
-         </div>
-   <div  style="margin-top:30px;border:1px solid #e0e0e0 ;padding:10px">
-        <p>
-          <span style="font-weight: 600;color:#4BAF4F">
-            Nom et Prénom :
-          </span>
-          ${session.user.Prenom_user} ${session.user.Nom_user}
-        </p>
-
-        <p>
-          <span style="font-weight: 600;color:#4BAF4F">Numéro et nom de rue :</span>${adresse.rue_adr}
-        </p>
-        ${ville
-          .filter((item) => item.id_ville === adresse.id_ville)
-          .map((filtereditem) => `
-            <p key={filtereditem.id_ville}>
-              <span style="font-weight: 600;color:#4BAF4F">Region : </span>
-              ${filtereditem.Libelle_ville}
-            </p>
-        `).join('')}
-        <p>
-          <span style="font-weight: 600;color:#4BAF4F">Code postal : </span>${adresse.code_adr}
-        </p>
-
-        <p>
-          <span style="font-weight: 600;color:#4BAF4F">
-            Numéro de télephone :</span>${session.user.Telephone_user}
-        </p>
-            <p className="mt-3 text-[13.5px]">
-        <span  style="font-weight: 600;color:#4BAF4F">E-mail : </span>
-        ${session.user.Email_user}
-      </p>
-      </div>
   
-    
-        
-        </body>
-      </html>
-    `;
-
-    const MailCommande = await fetch(
-      `http://localhost:4000/api/v1/commande/MailCommande`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          to: session.user.Email_user,
-          subject: "Votre commande est en cours de traitement",
-          html: mailContent,
-        }),
-      }
-    );
-      for (const data of commandData) {
-        const res = await fetch(
-          `http://localhost:4000/api/v1/commande/add_Commande`,
-          {
+        // Add commandes to the database
+        for (const data of commandData) {
+          const res = await fetch(`http://localhost:4000/api/v1/commande/add_Commande`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
+          });
+  
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.message || "Failed to add commande.");
           }
-        );
-
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.message || "Failed to add commande");
         }
-
-        // Assuming the API returns the ID of the new commande
-
-        const encodedId = Buffer.from(String(id_MainCmd)).toString("base64");
-        if (res && res2 && MailCommande) {
-          router.push(`/Panier/${id_MainCmd}`);
-
-          dispatch(removeAllItems());
-        }
+  
+        // Redirect and clear cart
+        router.push(`/Panier/${id_MainCmd}`);
+        dispatch(removeAllItems());
+      } catch (error) {
+        console.error("Error:", error.message);
+        setError(error.message);
+        alert(`Failed to process order: ${error.message}`);
       }
-    } catch (error) {
-      console.error("Failed to update user:", error.message);
-      alert("Failed to update user");
-    }
-  };
-
-  const [selectedOption, setSelectedOption] = useState("");
-
-  const handleToggle = (option) => {
-    setSelectedOption(option);
-  };
-
+    };
+  
   return (
     <div className="md:mx-48  my-20 flex md:flex-row flex-col   justify-center   md:space-x-12">
       <div className="w-1/2  ">
@@ -753,7 +793,7 @@ const Step2 = ({ nextStep }) => {
               <select
                 className="flex rounded-md h-[43px] py-2 w-full border-2 border-grayColor   bg-grayLight text-gray-400 outline-none px-3 text-[12.5px]"
                 onChange={handleChangeValueAdresse}
-                value={adresse.id_ville}
+                value={adresse?.id_ville}
                 name="id_ville" // Handle change event here
               >
                 <option value="">Votre ville</option>
@@ -768,7 +808,7 @@ const Step2 = ({ nextStep }) => {
             <Input
               type={"text"}
               placeholder={"Numéro et nom de rue"}
-              value={adresse.rue_adr}
+              value={adresse?.rue_adr}
               name={"rue_adr"}
               onChange={handleChangeValueAdresse}
             />
@@ -776,7 +816,7 @@ const Step2 = ({ nextStep }) => {
               type={"text"}
               placeholder={"Code postal"}
               name={"code_adr"}
-              value={adresse.code_adr}
+              value={adresse?.code_adr}
               onChange={handleChangeValueAdresse}
             />
           </div>

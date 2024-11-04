@@ -23,8 +23,7 @@ const Cart = (props) => {
   const [adresse, setAdresse] = useState([]);
   const id_user = session?.user?.id_user || "";
   const id_Maincmd = props.params.Cart;
-
-
+  console.log("Detail:", Detailscommande, "Product:", product, "Magasin:", store);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -227,7 +226,7 @@ const Cart = (props) => {
               <table class="table_1">
                 <thead>
                   <tr>
-                    <th style="width: 200px;">Magasin</th>
+        
                     <th style="width: 100px;">Référence</th>
                     <th style="width: 200px;">Désignation</th>
                     <th style="width: 50px;">Qté</th>
@@ -246,12 +245,14 @@ const Cart = (props) => {
                       const magasin = store.find(
                         (item) => item.id_magasin === detail.id_magasin
                       );
-                      return product && magasin
+                      console.log("Detail:", detail);
+                      console.log("Product:", product);
+                      console.log("Magasin:", magasin);
+                      return product  
                         ? `
                       <tr>
                               
-            
-                        <td style="width: 200px;">${magasin.Libelle_magasin}</td>
+             
                         <td style="width: 100px;">${product.Reference_prod}</td>
                         <td style="width:200px;">${product.Libelle_prod}</td>
                         <td style="width: 50px;">${detail.Qte_dtcmd}</td>
@@ -482,7 +483,7 @@ const Cart = (props) => {
           </tr>
           <tr className="text-center text-textColor font-semibold">
             <td className="pb-5 text-[14px]">{id_Maincmd}</td>
-            <td className="pb-5 text-[14px]">08/08/2024</td>
+            <td className="pb-5 text-[14px]">02-10-2024</td>
             <td className="pb-5 text-[14px]">{session.user.Email_user}</td>
 
             <td className="pb-5 text-[14px]">{totalPrix.toFixed(2)} TND</td>

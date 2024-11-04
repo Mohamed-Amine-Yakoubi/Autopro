@@ -68,7 +68,9 @@ const CardsProduit = ({
       )}
       <Link href={link}>
         <div className="px-6 py-4 mt-5 ">
-          <div className="font-bold text-[14px] mb-1">{libelle}</div>
+        <div className="font-bold text-[14px] mb-1">
+  {libelle.length > 25 ? libelle.slice(0, 21) + "..." : libelle}
+</div>
           <p className="text-gray-500 text-[11.5px] ">{categorie}</p>
           <div className="flex justify-between mt-3">
             <p className="text-gray-700 text-[12.5px] font-bold ">{prix} TND</p>

@@ -51,9 +51,11 @@ const Chat = ({ props }) => {
       };
     }
   }, [session, status]);
+
   if (props && props.id) {
     console.log("sdfgsdf", props.id);
   }
+
   const handleSendMessage = () => {
     if (message && recipientId && session?.user?.id_user) {
       const newMessage = {
@@ -92,16 +94,20 @@ const Chat = ({ props }) => {
       setStore(item);
     });
   }, [id_user]);
+
   useEffect(() => {
     if (props) {
       setRecipientId(props);
     }
   }, [props]);
+
   console.log("recipientId", recipientId);
+
   const handleRecipientClick = (recipientId) => {
     setRecipientId(recipientId);
     fetchConversation(recipientId);
   };
+
   const fetchConversation = async (recipientId) => {
     try {
       const response = await fetch(
@@ -119,40 +125,39 @@ const Chat = ({ props }) => {
   }
 
   return (
-    <div className="  ">
-      <div className="flex lg:flex-row flex-col  ">
-        <div className="flex flex-col lg:py-8    px-3     bg-white ">
+    <div className="">
+      <div className="flex lg:flex-row flex-col">
+        <div className="flex flex-col lg:py-8 px-3 bg-white">
           <div className="flex flex-row items-center justify-center h-12 w-full">
             <Image
-              className="   "
+              className=""
               src={Autopro_logo}
               height={150}
               width={150}
               alt="logo"
             />
           </div>
-          <div className="flex flex-col items-center bg-grayLight border border-gray-200 mt-4  py-6 px-5  rounded-lg">
-            <div className="  text-[70px] ">
+          <div className="flex flex-col items-center bg-grayLight border border-gray-200 mt-4 py-6 px-5 rounded-lg">
+            <div className="text-[70px]">
               <FaUserCircle />
             </div>
             <div className="text-sm font-semibold mt-2">
               {session.user.Prenom_user} {session.user.Nom_user}
             </div>
-            <div className="text-xs text-gray-500  ">
+            <div className="text-xs text-gray-500">
               {session.user.Email_user}
             </div>
           </div>
           <div className="flex flex-col mt-8">
             <div className="flex flex-row items-center justify-between text-xs">
               <span className="font-bold">Discussions</span>
-
               <span className="flex items-center justify-center bg-gray-300 h-4 w-4 rounded-full">
                 {conversations.length}
               </span>
             </div>
             {conversations.length > 0 ? (
               <div
-                className="flex flex-col space-y-1 mt-4 -mx-2  mb-5 overflow-y-scroll "
+                className="flex flex-col space-y-1 mt-4 -mx-2 mb-5 overflow-y-scroll"
                 style={{ height: 82 }}
               >
                 <ul>
@@ -170,7 +175,7 @@ const Chat = ({ props }) => {
                         className="flex items-center space-x-2 mt-2"
                       >
                         <Image
-                          className="bg-grayLight border border-greenColor rounded-full"
+                          className="bg-grayLight border border-greenColor w-[35px] h-[35px] object-contain rounded-full"
                           src={StoreItem.Logo_magasin}
                           height={35}
                           width={35}
@@ -193,7 +198,7 @@ const Chat = ({ props }) => {
               </span>
             </div>
             <div
-              className="flex flex-col space-y-1 mt-4 -mx-2  mb-5 overflow-y-scroll   "
+              className="flex flex-col space-y-1 mt-4 -mx-2 mb-5 overflow-y-scroll"
               style={{ height: 82 }}
             >
               <ul>
@@ -205,7 +210,7 @@ const Chat = ({ props }) => {
                     className="flex items-center space-x-2 mt-2"
                   >
                     <Image
-                      className="bg-grayLight border border-greenColor rounded-full"
+                      className="bg-grayLight border border-greenColor w-[35px] h-[35px] object-contain rounded-full"
                       src={StoreItem.Logo_magasin}
                       height={35}
                       width={35}
@@ -220,14 +225,14 @@ const Chat = ({ props }) => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col  w-full     h-full px-6">
-          <div className="  py-3 bg-gray-200 rounded-t-2xl border-b">
+        <div className="flex flex-col w-full h-full px-6">
+          <div className="py-3 bg-gray-200 rounded-t-2xl border-b">
             {store
               .filter((item) => item.id_magasin === recipientId)
               .map((item, index) => (
-                <div key={index} className="flex mx-3 space-x-2 items-center ">
+                <div key={index} className="flex mx-3 space-x-2 items-center">
                   <Image
-                    className="bg-grayLight border border-greenColor rounded-full"
+                    className="bg-grayLight border border-greenColor w-[35px] h-[35px] object-contain rounded-full"
                     src={item.Logo_magasin}
                     height={35}
                     width={35}
@@ -247,34 +252,34 @@ const Chat = ({ props }) => {
                 return (
                   <div
                     key={index}
-                    className={`border rounded px-2 py-2 ${
-                      msg.Expediteur === session.user.id_user
-                        ? "self-end"
-                        : "self-start"
-                    } relative text-sm ${
-                      msg.Expediteur === session.user.id_user
-                        ? "bg-green-100"
-                        : "bg-white"
-                    } my-1 py-2  shadow rounded-xl`}
+                    className={`flex ${
+                      msg.Expediteur === "You" ? "justify-end" : "justify-start"
+                    }`}
                   >
-                    <div className="flex items-center">
-                      {storeRes ? (
-                        <Image
-                          className="bg-grayLight border border-greenColor rounded-full"
-                          src={storeRes.Logo_magasin}
-                          height={35}
-                          width={35}
-                          alt="logo"
-                        />
-                      ) : (
+                    <div
+                      className={`flex  items-center border rounded px-2 py-2${
+                        msg.Expediteur === "You" ? "ml-2 bg-green-100" : "mr-2 bg-white"
+                      } my-1 py-2  shadow rounded-xl`}
+                    >
+                      {msg.Expediteur === "You" ? (
                         <span className="text-darColor text-[30px]   ">
                           <FaUserCircle />
                         </span>
+                      ) : (
+                        storeRes && (
+                          <Image
+                            className="bg-grayLight border border-greenColor w-[35px] h-[35px] object-contain rounded-full"
+                            src={storeRes.Logo_magasin}
+                            height={35}
+                            width={35}
+                            alt="logo"
+                          />
+                        )
                       )}
                       <div
-                        className={`ml-2 ${
-                          msg.Contenu.length > 38 ? "w-72" : "w-auto"
-                        }`}
+                        className={`ml-2
+                      rounded-lg p-2`}
+                        style={{ maxWidth: "70%" }}
                       >
                         {msg.Contenu}
                       </div>
@@ -284,7 +289,7 @@ const Chat = ({ props }) => {
               })}
             </div>
             <div className="mt-10 flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
-              <div className="flex-grow  ">
+              <div className="flex-grow">
                 <input
                   type="text"
                   value={message}
@@ -298,7 +303,7 @@ const Chat = ({ props }) => {
                   onClick={handleSendMessage}
                   className="flex items-center justify-center bg-greenColor hover:bg-darkColor rounded-full text-white px-2 py-2 flex-shrink-0"
                 >
-                  <span className="">
+                  <span>
                     <IoIosSend />
                   </span>
                 </button>

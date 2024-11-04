@@ -30,11 +30,11 @@ const Magasin = sequelize.define(
       allowNull: false,
     },
     Description_magasin: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     Logo_magasin: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     Lien_facebook: {

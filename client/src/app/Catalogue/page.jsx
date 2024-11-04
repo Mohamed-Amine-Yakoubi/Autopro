@@ -1,6 +1,6 @@
 "use client";
 import Header from "@/components/Header";
- 
+
 import { getAllProducts } from "../lib/Product";
 import { useEffect, useState } from "react";
 import { getCategory } from "../lib/Category";
@@ -11,10 +11,12 @@ import { Filter } from "./Filter";
 import CardsFilterCatalogue from "@/components/CardsFilterCatalogue";
 import { addFavoris } from "../lib/Favoris";
 import { useSession } from "next-auth/react";
+import { getAllStore } from "../lib/Magasin";
 
 const Catalogue = () => {
   const { data: session } = useSession();
   const [products, setProducts] = useState([]);
+  const [store, setStore] = useState([]);
   const [loading, setLoading] = useState(true);
   const id_user = session?.user?.id_user || "";
   const [filter, setFilter] = useState({
@@ -37,7 +39,6 @@ const Catalogue = () => {
 
     try {
       await addFavoris(id_prod, id_user);
- 
     } catch (error) {
       alert("Failed to add to favorites");
     }
@@ -51,12 +52,18 @@ const Catalogue = () => {
   };
 
   useEffect(() => {
+    getAllStore().then((itemstore) => {
+      setStore(itemstore); // Set store data
+    });
+  
     getAllProducts()
       .then((products) => {
         const promises = products.map((prod) => {
           return getCategory(prod.id_cat)
             .then((category) => {
-              return { ...prod, category };
+              // Find the store associated with the product
+              const productStore = store.find((s) => s.id_magasin === prod.id_magasin);
+              return { ...prod, category, id_ville: productStore?.id_ville || null };
             })
             .catch((error) => {
               console.error("Error fetching category data:", error);
@@ -69,8 +76,8 @@ const Catalogue = () => {
         setProducts(productsWithCategory);
         setLoading(false);
       });
-  }, []);
-
+  }, [store]); // Add `store` as a dependency
+  
   const filteredProducts = products.filter((product) => {
     return (
       (filter.search === "" ||
@@ -80,8 +87,7 @@ const Catalogue = () => {
       (filter.id_cat === null || product.id_cat === parseInt(filter.id_cat)) &&
       (filter.id_subcat === null ||
         product.id_subcat === parseInt(filter.id_subcat)) &&
-      (filter.id_ville === null ||
-        product.id_ville === parseInt(filter.id_ville)) &&
+      (filter.id_ville === null || product.id_ville === parseInt(filter.id_ville)) && // Updated to filter by store's city
       (filter.id_mat === null || product.id_mat === parseInt(filter.id_mat)) &&
       product.prix_prod <= filter.price &&
       (filter.id_marque === null ||
@@ -92,6 +98,7 @@ const Catalogue = () => {
         product.id_motor === parseInt(filter.id_motor))
     );
   });
+  
 
   // Pagination calculations
 
@@ -166,19 +173,23 @@ const Catalogue = () => {
             )}
           </div>
           <div className="flex justify-center py-4">
-            {pageNumbers.map((number) => (
-              <button
-                key={number}
-                onClick={() => paginate(number)}
-                className={`px-3 py-1 rounded-full text-[13px] ${
-                  number === currentPage
-                    ? "bg-greenColor text-white"
-                    : "bg-gray-200"
-                } mx-1`}
-              >
-                {number}
-              </button>
-            ))}
+            {currentCatalogue.length > 0 ? (
+              pageNumbers.map((number) => (
+                <button
+                  key={number}
+                  onClick={() => paginate(number)}
+                  className={`px-3 py-1 rounded-full text-[13px] ${
+                    number === currentPage
+                      ? "bg-greenColor text-white"
+                      : "bg-gray-200"
+                  } mx-1`}
+                >
+                  {number}
+                </button>
+              ))
+            ) : (
+              <p></p>
+            )}
           </div>
         </div>
       </div>

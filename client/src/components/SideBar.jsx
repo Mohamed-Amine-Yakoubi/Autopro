@@ -24,10 +24,10 @@ const SideBar = ({openSideBar}) => {
       });
     }
   }, [status, session]); // Re-run the effect if status or session changes
-
+console.log("magasin",magasin)
   if (status === "authenticated") {
     return (
-      <div className="absolute  top-20  left-38  h-screen z-50">
+      <div className="absolute  top-20  left-38  h-screen z-50 ">
       <div
         className={`w-64 pb-8 md:mb-28 bg-gray-100 text-iconColor m-5 rounded-lg ${
           openSideBar ? "translate-x-0" : "-translate-x-full opacity-0"

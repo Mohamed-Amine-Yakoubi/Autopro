@@ -21,7 +21,7 @@ const Facture = sequelize.define(
       allowNull: false,
     },
     pdf_fact: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     id_MainCmd: {

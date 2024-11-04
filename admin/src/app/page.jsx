@@ -22,5 +22,5 @@ export default function Home() {
 
   if (loading) return <Loading />;
 
-  return <div>{session && session.user ? <Home_Dashboard /> : <Signin />}</div>;
+  return <div>{session && session.user ? <DefaultLayout /> : <Signin />}</div>;
 }

@@ -45,11 +45,11 @@ const Home_Dashboard = () => {
       setTotalFournisseur(filteredFournisseur.length);
     });
     GetAllUsersClaim().then((item) => {
-      setClaim(item);
+      setClaim(item.slice(0, 5));
       setTotalClaim(item.length);
     });
     getAllStore().then((itemStore) => {
-      setStore(itemStore);
+      setStore(itemStore.slice(0, 5));
       setTotalStore(itemStore.length);
     });
   }, []);

@@ -56,7 +56,7 @@ const CardsFilterCatalogue = ({ filter, onFilterChange }) => {
       setMotor([]);
     }
   },[filter.id_modele, OptionYear])
- console.log("filterrrrrrrrrrr",filter)
+
   return (
     <div className="max-w-md mx-auto">
       <div className="  mx-auto my-2 shadow-sm rounded-lg">
